@@ -1,7 +1,5 @@
 
 
-import styles from "./LandingSlide.module.css";
-
 
 import { useEffect, useState } from "react";
 
