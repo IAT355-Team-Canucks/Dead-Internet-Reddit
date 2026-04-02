@@ -1,0 +1,154 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* VARIABLES */
+:root {
+  --bg: #1A120F;
+  --panel: #1A120F;
+  --text: #d7dadc;
+  --muted: #818384;
+  --accent: #D97757; /* faded reddit orange */
+  --border: #343536;
+}
+
+/* GLOBAL */
+body {
+  font-family: "Inter", "Helvetica Neue", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 220px;
+  height: 100vh;
+  position: fixed;
+  background: #111;
+  padding: 20px;
+  border-right: 1px solid var(--border);
+}
+
+.sidebar h2 {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar li {
+  margin-bottom: 8px;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: var(--text);
+  font-size: 13px;
+}
+
+.sidebar a:hover {
+  color: var(--accent);
+}
+
+/* MAIN */
+main {
+  margin-left: 220px;
+  width: 100%;
+}
+
+/* PANELS */
+.panel {
+  padding: 80px 60px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel);
+}
+
+.hero {
+  background: #181818;
+}
+
+h1 {
+  font-size: 48px;
+  font-weight: 700;
+  max-width: 700px;
+}
+
+h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: var(--muted);
+  margin-top: 10px;
+  max-width: 500px;
+}
+
+/* STATS */
+.stats {
+  display: flex;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.stat-box {
+  flex: 1;
+  padding: 20px;
+  border: 1px solid var(--border);
+  text-align: center;
+  color: var(--muted);
+}
+
+/* VISUALIZATION PLACEHOLDERS */
+.viz-placeholder {
+  margin-top: 30px;
+  height: 200px;
+  border: 1px dashed var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+}
+
+.viz-placeholder.large {
+  height: 350px;
+}
+
+.viz-row {
+  display: flex;
+  gap: 20px;
+}
+
+.viz-row .viz-placeholder {
+  flex: 1;
+}
+
+/* TEXT */
+p {
+  max-width: 600px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.summary {
+  margin-top: 20px;
+}
+
+/* INSIGHTS */
+.insight-grid {
+  display: flex;
+  gap: 40px;
+  margin-top: 30px;
+}

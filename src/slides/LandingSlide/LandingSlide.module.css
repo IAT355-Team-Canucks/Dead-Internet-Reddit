@@ -1,0 +1,25 @@
+
+.titleContainer {
+    display: flex;
+    box-sizing: border-box;
+    flex-flow: column;
+    align-items: flex-start;
+    min-height: auto;
+}
+.titleText {
+    text-align: left;
+    color: #D97757;
+    font-size: 75px;
+
+}
+
+
+.subtitleContainer {
+    max-width: 560px;
+}
+.subtitle {
+    text-align: left;
+    font-size: 25px;
+    line-height: 1.25em;
+}
+
