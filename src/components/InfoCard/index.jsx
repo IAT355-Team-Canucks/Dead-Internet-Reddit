@@ -1,26 +1,103 @@
+import { useEffect, useRef, useState } from "react";
 
+export const InfoCard = ({ Icon, title, subtitle, text }) => {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const hasAnimated = useRef(false);
 
-export const InfoCard = ({Icon, title, subtitle, text}) => {
-    return(
-        <div style={{
-            backgroundColor: "#1E1005",
-            border: "1px solid #2E1A08",
-            borderRadius: "6px",
-            padding: "24px 28px",
-            display: "flex",
-            alignItems: "center",
-            gap: "20px",
-          }}>
-            {/* Some sort of svg icon */}
-            <div style={{ height: "100px", width: "100px"}}>
-            <Icon />
-            </div>
+  // Guarding
+  const target = Number(title) || 0;
 
-            <div>
-              <div style={{ fontSize: "52px", fontWeight: "800", color: "#C4622D", lineHeight: 1, fontFamily: "'Georgia', serif", textAlign: "left"}}>{title}</div>
-              <div style={{ fontSize: "22px", letterSpacing: "2px", color: "#FAF3E0", marginTop: "4px", textAlign: "left"}}>{subtitle}</div>
-              <div style={{ fontSize: "20px", color: "#EAC46A", marginTop: "3px", letterSpacing: "0.5px", textAlign: "left" }}>{text}</div>
-            </div>
-          </div>
-    )
-}
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+
+          let start = 0;
+          const duration = 1200; // ms
+          const startTime = performance.now();
+
+          const animate = (time) => {
+            const progress = Math.min((time - startTime) / duration, 1);
+
+            // apply easing
+            const eased = 1 - Math.pow(1 - progress, 4); // eased dramatic :D
+            const value = Math.floor(eased * title);
+
+            setCount(value);
+
+            if (progress < 1) {
+              requestAnimationFrame(animate);
+            }
+          };
+
+          requestAnimationFrame(animate);
+        }
+      },
+      { threshold: 0.5 } // trigger when 50% visible
+    );
+
+    if (ref.current) observer.observe(ref.current);
+
+    return () => observer.disconnect();
+  }, [title]);
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        backgroundColor: "#1E1005",
+        border: "1px solid #2E1A08",
+        borderRadius: "6px",
+        padding: "24px 28px",
+        display: "flex",
+        alignItems: "center",
+        gap: "20px",
+      }}
+    >
+      <div style={{ height: "100px", width: "100px" }}>
+        <Icon />
+      </div>
+
+      <div>
+        <div
+          style={{
+            fontSize: "52px",
+            fontWeight: "800",
+            color: "#C4622D",
+            lineHeight: 1,
+            fontFamily: "'Georgia', serif",
+            textAlign: "left",
+          }}
+        >
+          {count}
+        </div>
+
+        <div
+          style={{
+            fontSize: "22px",
+            letterSpacing: "2px",
+            color: "#FAF3E0",
+            marginTop: "4px",
+            textAlign: "left",
+          }}
+        >
+          {subtitle}
+        </div>
+
+        <div
+          style={{
+            fontSize: "20px",
+            color: "#EAC46A",
+            marginTop: "3px",
+            letterSpacing: "0.5px",
+            textAlign: "left",
+          }}
+        >
+          {text}
+        </div>
+      </div>
+    </div>
+  );
+};

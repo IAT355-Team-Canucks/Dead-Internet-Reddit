@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 
 export const ScatterPlot = ({
-  width = 1080,
+  width = 980,
   height = 600,
   xKey = "avg_word_length",
   yKey = "user_karma",
@@ -78,7 +78,7 @@ export const ScatterPlot = ({
           .range([innerHeight, 0]);
 
         const color = d3.scaleOrdinal()
-          .domain(["true", "false"])
+          .domain(["false", "true"])
           .range(["#00BA38", "#619CFF"]);
 
         chart.append("g")

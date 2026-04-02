@@ -1,6 +1,6 @@
 
 
-export const Navbar = ({sections, activeId}) => {
+export const Navbar = ({sections, activeId, scrollTo}) => {
     return(
       <nav
       style={{

@@ -51,16 +51,12 @@ export const LandingSlide = () => {
   return (
     <div
       style={{
-        width: "100%",
-        minHeight: "100vh",
-        background: "#1A120F",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-        padding: "0",
-        margin: "0",
-        boxSizing: "border-box",
+        flex: 1,
+                paddingTop: "50px",
+                maxWidth: "100%",
+                position: "relative",
+                boxSizing: "border-box",
+                height: "auto",
       }}
     >
       <div

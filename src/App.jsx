@@ -38,22 +38,45 @@ export default function App() {
   const contentRef = useRef(null);
 
   useEffect(() => {
+    // Scrolling based off CENTER of slides, navbar renders
+    // whatever is closest based off center slide
     const container = contentRef.current;
     if (!container) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActiveId(e.target.id);
-        });
-      },
-      { root: container, threshold: 0.5 }
-    );
+    const sectionEls = Array.from(container.querySelectorAll(".section"));
 
-    const sectionEls = container.querySelectorAll(".section");
-    sectionEls.forEach((s) => observer.observe(s));
+    const updateActiveSection = () => {
+      const containerRect = container.getBoundingClientRect();
+      const containerCenter = containerRect.top + containerRect.height / 2;
 
-    return () => observer.disconnect();
+      let closestSection = null;
+      let closestDistance = Infinity;
+
+      sectionEls.forEach((section) => {
+        const rect = section.getBoundingClientRect();
+        const sectionCenter = rect.top + rect.height / 2;
+        const distance = Math.abs(containerCenter - sectionCenter);
+
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestSection = section;
+        }
+      });
+
+      if (closestSection) {
+        setActiveId(closestSection.id);
+      }
+    };
+
+    updateActiveSection();
+
+    container.addEventListener("scroll", updateActiveSection);
+    window.addEventListener("resize", updateActiveSection);
+
+    return () => {
+      container.removeEventListener("scroll", updateActiveSection);
+      window.removeEventListener("resize", updateActiveSection);
+    };
   }, []);
 
   const scrollTo = (id) => {
@@ -72,8 +95,8 @@ export default function App() {
         fontFamily: "'Courier New', monospace",
       }}
     >
-      
-      <Navbar sections={sections} activeId={activeId}/>
+
+      <Navbar sections={sections} activeId={activeId} scrollTo={scrollTo} />
 
       {/* Scrollable content */}
       <div
@@ -94,14 +117,15 @@ export default function App() {
               id={s.id}
               className="section"
               style={{
-                height: "100vh",
+                minHeight: "100vh",
+                height: "auto",
                 scrollSnapAlign: "start",
                 display: "flex",
-                alignItems: "center",
+                alignItems: "stretch",
                 justifyContent: "center",
               }}
             >
-              <div style={{ width: "100%", height: "100%" }}>
+              <div style={{ width: "100%", minHeight: "100%" }}>
                 <SlideComponent />
               </div>
             </div>
