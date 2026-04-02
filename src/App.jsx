@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from "react";
+
+import { Navbar } from "./components/Navbar";
+
 import { LandingSlide } from "./slides/LandingSlide";
 import { DemoSlide } from "./slides/DemoSlide";
-import { Navbar } from "./components/Navbar";
+import { DatasetCompositionSlide } from "./slides/DatasetCompositionSlide";
 
 const sections = [
   {
@@ -14,6 +17,12 @@ const sections = [
     id: "dataset",
     num: "01",
     label: "Dataset Overview",
+    component: DatasetCompositionSlide,
+  },
+  {
+    id: "demo",
+    num: "02",
+    label: "Demo Slides",
     component: DemoSlide,
   },
   // {
@@ -48,6 +57,7 @@ export default function App() {
   }, []);
 
   const scrollTo = (id) => {
+    // Toggles snap
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
@@ -56,6 +66,7 @@ export default function App() {
     <div
       style={{
         display: "flex",
+        flexDirection: "column",
         height: "100vh",
         background: "#1A120F",
         fontFamily: "'Courier New', monospace",
@@ -71,7 +82,6 @@ export default function App() {
           marginLeft: 300,
           flex: 1,
           overflowY: "scroll",
-          scrollSnapType: "y mandatory",
           height: "100vh",
         }}
       >
