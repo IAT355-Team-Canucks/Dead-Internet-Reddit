@@ -6,7 +6,10 @@ import { LandingSlide } from "./slides/LandingSlide";
 import { DatasetCompositionSlide } from "./slides/DatasetCompositionSlide";
 import { EmotionalRangeSlide } from "./slides/EmotionalRangeSlide";
 import { LanguagePatternSlide } from "./slides/LanguagePatternSlide";
+import { PostDistributionSlide } from "./slides/PostDistributionSlide";
 import { EngagementVelocitySlide } from "./slides/EngagementVelocitySlide";
+import { LinkBehaviourSlide } from "./slides/LinkBehaviourSlide";
+import { ResponseTimingSlide } from "./slides/ResponseTimingSlide";
 
 import { DemoSlide } from "./slides/DemoSlide";
 
@@ -41,17 +44,30 @@ const sections = [
     label: "Language Patterns",
     component: EngagementVelocitySlide,
   },
+  {
+    id: "distribution",
+    num: "05",
+    label: "Post Distribution",
+    component: PostDistributionSlide,
+  },
+  {
+    id: "link",
+    num: "07",
+    label: "Link Behaviour",
+    component: LinkBehaviourSlide,
+  },
+  {
+    id: "response",
+    num: "08",
+    label: "Response Timing",
+    component: ResponseTimingSlide,
+  },
+  
   // {
   //   id: "demo",
-  //   num: "02",
+  //   num: "XX",
   //   label: "Demo Slides",
   //   component: DemoSlide,
-  // },
-  // {
-  //   id: "network",
-  //   num: "06",
-  //   label: "Network Graph",
-  //   component: GraphSlide,
   // },
 ];
 

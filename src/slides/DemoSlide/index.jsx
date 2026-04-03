@@ -5,6 +5,7 @@ import { motion } from 'motion/react'
 import { VerticalBarChart } from "../../components/VerticalBarChart"
 import { AnimatedLineChart } from '../../components/AnimatedLineChart'
 import { ScatterPlot } from '../../components/ScatterPlot'
+import { RadarChart } from '../../components/RadarChart'
 
 
 export const DemoSlide = () => {
@@ -16,6 +17,7 @@ export const DemoSlide = () => {
                 <div>
                     <ScatterPlot />
                     <VerticalBarChart />
+                    <RadarChart />
 
                     { /* Motion Wrappers */}
                     <motion.div

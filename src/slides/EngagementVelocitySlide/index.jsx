@@ -69,9 +69,9 @@ export const EngagementVelocitySlide = () => {
                     </h1>
                     <p style={{
                         textAlign: "left",
-                        fontSize: "20px",
+                        fontSize: "22px",
                         lineHeight: "1.75",
-                        color: "#C4622D",
+                        color: "#EAC46A",
                         maxWidth: "60%",
                         margin: "0 0 40px 0",
                         letterSpacing: "0.2px",
@@ -135,6 +135,7 @@ One of the most noticeable patterns is how quickly bot accounts rack up karma, e
                             <ScatterPlot width={1480} height={670} dotSize={10}
                                 xKey={"account_age_days"}
                                 yKey={"user_karma"}
+                                xLabel={"Account Age Days"}
                             />
                         </div>
 

@@ -131,10 +131,9 @@ export const EmotionalRangeSlide = () => {
       maxWidth: "100%"
     },
     body: {
-      fontFamily: "'Georgia', serif",
       fontSize: "22px",
       lineHeight: "1.65",
-      color: "#c8a96e",
+      color: "#EAC46A",
       margin: 0,
       maxWidth: "80%",
       textAlign: "left"

@@ -78,7 +78,7 @@ export const VerticalBarChart = ({
                 .padding(0.2);
 
             const y = d3.scaleLinear()
-                .domain([0, d3.max(counts, d => d.count)])
+                .domain(d3.extent(counts.map(d => d.count)))
                 .nice()
                 .range([innerHeight, 0]);
 

@@ -23,7 +23,7 @@ export const InfoCard = ({ Icon, title, subtitle, text }) => {
 
             // apply easing
             const eased = 1 - Math.pow(1 - progress, 4); // eased dramatic :D
-            const value = Math.floor(eased * title);
+            const value = Math.round(eased * title * 100) / 100;
 
             setCount(value);
 

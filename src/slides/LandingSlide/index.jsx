@@ -4,40 +4,26 @@
 import { useEffect, useState } from "react";
 
 const BotIcon = () => (
-  <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: "100%", height: "100%" }}>
-    {/* Antenna */}
-    <rect x="52" y="8" width="16" height="6" rx="3" fill="#D4633A" />
-    <rect x="58" y="14" width="4" height="12" fill="#D4633A" />
-    {/* Head */}
-    <rect x="18" y="26" width="84" height="64" rx="12" fill="#D4633A" />
-    {/* Eyes */}
-    <rect x="36" y="46" width="14" height="16" rx="4" fill="#1a1008" />
-    <rect x="70" y="46" width="14" height="16" rx="4" fill="#1a1008" />
-    {/* Mouth line */}
-    <rect x="40" y="74" width="40" height="4" rx="2" fill="#1a1008" />
-    {/* Left arm */}
-    <rect x="2" y="48" width="16" height="8" rx="4" fill="#D4633A" />
-    {/* Right arm */}
-    <rect x="102" y="48" width="16" height="8" rx="4" fill="#D4633A" />
-  </svg>
+  <svg width="248" height="248" viewBox="0 0 248 248" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M124 82.6667V41.3334H82.6665" stroke="#D97757" stroke-width="20.6667" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M186 82.6666H62.0002C50.5863 82.6666 41.3335 91.9194 41.3335 103.333V186C41.3335 197.414 50.5863 206.667 62.0002 206.667H186C197.414 206.667 206.667 197.414 206.667 186V103.333C206.667 91.9194 197.414 82.6666 186 82.6666Z" stroke="#D97757" stroke-width="20.6667" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20.6665 144.667H41.3332" stroke="#D97757" stroke-width="20.6667" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M206.667 144.667H227.333" stroke="#D97757" stroke-width="20.6667" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M155 134.333V155" stroke="#D97757" stroke-width="20.6667" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M93 134.333V155" stroke="#D97757" stroke-width="20.6667" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
 );
 
 const BotIconFixed = () => (
-  <svg viewBox="0 0 120 110" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: "100%", height: "100%" }}>
-    {/* Antenna top */}
-    <rect x="50" y="0" width="20" height="8" rx="4" fill="#D4633A" />
-    {/* Antenna stem */}
-    <rect x="57" y="8" width="6" height="14" fill="#D4633A" />
-    {/* Head */}
-    <rect x="14" y="22" width="92" height="70" rx="14" fill="#D4633A" />
-    {/* Eyes */}
-    <rect x="32" y="42" width="16" height="20" rx="5" fill="#1C1007" />
-    <rect x="72" y="42" width="16" height="20" rx="5" fill="#1C1007" />
-    {/* Left arm */}
-    <rect x="0" y="46" width="14" height="10" rx="5" fill="#D4633A" />
-    {/* Right arm */}
-    <rect x="106" y="46" width="14" height="10" rx="5" fill="#D4633A" />
-  </svg>
+  <svg width="248" height="248" viewBox="0 0 248 248" fill="none" xmlns="http://www.w3.org/2000/svg"style={{ width: "100%", height: "100%" }} >
+<path d="M124 82.6667V41.3334H82.6665" stroke="#D97757" stroke-width="20.6667" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M186 82.6666H62.0002C50.5863 82.6666 41.3335 91.9194 41.3335 103.333V186C41.3335 197.414 50.5863 206.667 62.0002 206.667H186C197.414 206.667 206.667 197.414 206.667 186V103.333C206.667 91.9194 197.414 82.6666 186 82.6666Z" stroke="#D97757" stroke-width="20.6667" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20.6665 144.667H41.3332" stroke="#D97757" stroke-width="20.6667" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M206.667 144.667H227.333" stroke="#D97757" stroke-width="20.6667" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M155 134.333V155" stroke="#D97757" stroke-width="20.6667" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M93 134.333V155" stroke="#D97757" stroke-width="20.6667" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
 );
 
 export const LandingSlide = () => {

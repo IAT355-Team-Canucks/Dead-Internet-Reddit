@@ -70,9 +70,9 @@ export const DatasetCompositionSlide = () => {
                     </h1>
                     <p style={{
                         textAlign: "left",
-                        fontSize: "20px",
+                        fontSize: "22px",
                         lineHeight: "1.75",
-                        color: "#C4622D",
+                        color: "#EAC46A",
                         maxWidth: "60%",
                         margin: "0 0 40px 0",
                         letterSpacing: "0.2px",
