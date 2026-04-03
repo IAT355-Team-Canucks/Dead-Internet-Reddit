@@ -3,8 +3,12 @@ import { useEffect, useRef, useState } from "react";
 import { Navbar } from "./components/Navbar";
 
 import { LandingSlide } from "./slides/LandingSlide";
-import { DemoSlide } from "./slides/DemoSlide";
 import { DatasetCompositionSlide } from "./slides/DatasetCompositionSlide";
+import { EmotionalRangeSlide } from "./slides/EmotionalRangeSlide";
+import { LanguagePatternSlide } from "./slides/LanguagePatternSlide";
+import { EngagementVelocitySlide } from "./slides/EngagementVelocitySlide";
+
+import { DemoSlide } from "./slides/DemoSlide";
 
 const sections = [
   {
@@ -20,11 +24,29 @@ const sections = [
     component: DatasetCompositionSlide,
   },
   {
-    id: "demo",
+    id: "emotion",
     num: "02",
-    label: "Demo Slides",
-    component: DemoSlide,
+    label: "Emotional Range",
+    component: EmotionalRangeSlide,
   },
+  {
+    id: "language",
+    num: "03",
+    label: "Language Patterns",
+    component: LanguagePatternSlide,
+  },
+  {
+    id: "engagement",
+    num: "04",
+    label: "Language Patterns",
+    component: EngagementVelocitySlide,
+  },
+  // {
+  //   id: "demo",
+  //   num: "02",
+  //   label: "Demo Slides",
+  //   component: DemoSlide,
+  // },
   // {
   //   id: "network",
   //   num: "06",
@@ -123,6 +145,7 @@ export default function App() {
                 display: "flex",
                 alignItems: "stretch",
                 justifyContent: "center",
+                marginBottom: "8rem"
               }}
             >
               <div style={{ width: "100%", minHeight: "100%" }}>

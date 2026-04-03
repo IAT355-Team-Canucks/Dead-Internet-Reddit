@@ -1,8 +1,7 @@
 
 import { InfoCard } from "../../components/InfoCard";
 import { useState, useEffect } from 'react';
-import { VerticalBarChart } from "../../components/VerticalBarChart";
-import { HorizontalBarChart } from "../../components/HorizontalBarChart";
+import { ScatterPlot } from "../../components/ScatterPlot";
 
 const BotIcon = () => {
     return (
@@ -28,7 +27,7 @@ const HumanIcon = () => {
     )
 }
 
-export const DatasetCompositionSlide = () => {
+export const EngagementVelocitySlide = () => {
     const [chartMode, setChartMode] = useState("bar");
 
     const [visible, setVisible] = useState(false);
@@ -66,7 +65,7 @@ export const DatasetCompositionSlide = () => {
                         lineHeight: 1,
                         fontFamily: "'Georgia', serif",
                     }}>
-                        Dataset Composition
+                        Engagement Velocity
                     </h1>
                     <p style={{
                         textAlign: "left",
@@ -77,8 +76,7 @@ export const DatasetCompositionSlide = () => {
                         margin: "0 0 40px 0",
                         letterSpacing: "0.2px",
                     }}>
-                        Our analysis examines 500 Reddit accounts, carefully balanced to compare behavioural patterns between automated bots and genuine human users. This foundation enables meaningful insights across multiple dimensions of online behaviour.
-                    </p>
+One of the most noticeable patterns is how quickly bot accounts rack up karma, even when their accounts are relatively new. In contrast, human users tend to build karma more gradually over time, reflecting more organic, ongoing engagement.                    </p>
                 </div>
 
                 {/* Chart area */}
@@ -132,13 +130,11 @@ export const DatasetCompositionSlide = () => {
                         <div style={{
                             transition: "opacity 0.3s, transform 0.3s",
                             opacity: 1,
-                        }}>
-                            <HorizontalBarChart 
-                                width={window.innerWidth - window.innerWidth/3} 
-                                height={300}
-                                title={"Dataset Composition: Bots vs Humans"} 
-                                xLabel={"Number of Accounts"}
-                                yLabel={"Are They A Bot?"}
+                        }}> 
+                        {/*  67-0 HAHA GET IT, 6-7 */}
+                            <ScatterPlot width={1480} height={670} dotSize={10}
+                                xKey={"account_age_days"}
+                                yKey={"user_karma"}
                             />
                         </div>
 
@@ -161,20 +157,25 @@ export const DatasetCompositionSlide = () => {
                     </div>
                 </div>
 
-                {/* Stat cards */}
+                {/* Anomaly */}
                 <div style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    gap: "16px",
-                    opacity: visible ? 1 : 0,
-                    transform: visible ? "translateY(0)" : "translateY(16px)",
-                    transition: "opacity 0.6s 0.5s, transform 0.6s 0.5s",
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: "30px",
+                    fontSize: "24px",
+                    marginTop: "60px"
                 }}>
-                    {/* Human card */}
-                    <InfoCard Icon={HumanIcon} title={"282"} subtitle={"Human Accounts"} text={"56.4% of total dataset"} />
-
-                    {/* Bot card */}
-                    <InfoCard Icon={BotIcon} title={"218"} subtitle={"Bot Accounts"} text={"43.6% of total dataset"} />
+                    <div
+                    style={{
+                        color: "#D97757"
+                    }}
+                    >ANOMALY</div>
+                    <div
+                    style={{
+                        color: "white",
+                        textAlign: "left"
+                    }}
+                    >Bots often reach high karma scores within just a few months, while human users tend to build theirs gradually over years. This suggests that bots may rely on coordinated upvoting or strategic posting to quickly appear more credible.</div>
                 </div>
             </main>
         </section>

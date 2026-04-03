@@ -1,8 +1,7 @@
 
 import { InfoCard } from "../../components/InfoCard";
 import { useState, useEffect } from 'react';
-import { VerticalBarChart } from "../../components/VerticalBarChart";
-import { HorizontalBarChart } from "../../components/HorizontalBarChart";
+import { ScatterPlot } from "../../components/ScatterPlot";
 
 const BotIcon = () => {
     return (
@@ -28,7 +27,7 @@ const HumanIcon = () => {
     )
 }
 
-export const DatasetCompositionSlide = () => {
+export const LanguagePatternSlide = () => {
     const [chartMode, setChartMode] = useState("bar");
 
     const [visible, setVisible] = useState(false);
@@ -66,7 +65,7 @@ export const DatasetCompositionSlide = () => {
                         lineHeight: 1,
                         fontFamily: "'Georgia', serif",
                     }}>
-                        Dataset Composition
+                        Language Patterns
                     </h1>
                     <p style={{
                         textAlign: "left",
@@ -77,8 +76,7 @@ export const DatasetCompositionSlide = () => {
                         margin: "0 0 40px 0",
                         letterSpacing: "0.2px",
                     }}>
-                        Our analysis examines 500 Reddit accounts, carefully balanced to compare behavioural patterns between automated bots and genuine human users. This foundation enables meaningful insights across multiple dimensions of online behaviour.
-                    </p>
+                        Bot accounts demonstrate a clear preference for longer, more complex vocabulary, averaging 6.8 characters per word compared to humans' 4.2. This linguistic formality may be programmed to convey authority or credibility.                    </p>
                 </div>
 
                 {/* Chart area */}
@@ -133,12 +131,7 @@ export const DatasetCompositionSlide = () => {
                             transition: "opacity 0.3s, transform 0.3s",
                             opacity: 1,
                         }}>
-                            <HorizontalBarChart 
-                                width={window.innerWidth - window.innerWidth/3} 
-                                height={300}
-                                title={"Dataset Composition: Bots vs Humans"} 
-                                xLabel={"Number of Accounts"}
-                                yLabel={"Are They A Bot?"}
+                            <ScatterPlot width={1480} height={670} dotSize={10}
                             />
                         </div>
 

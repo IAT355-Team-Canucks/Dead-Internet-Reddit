@@ -52,7 +52,7 @@ export const LandingSlide = () => {
     <div
       style={{
         flex: 1,
-                paddingTop: "50px",
+                paddingTop: "150px",
                 maxWidth: "100%",
                 position: "relative",
                 boxSizing: "border-box",

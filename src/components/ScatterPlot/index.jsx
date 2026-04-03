@@ -8,7 +8,8 @@ export const ScatterPlot = ({
   yKey = "user_karma",
   xLabel = "Average Word Length",
   yLabel = "User Karma",
-  csvPath = `${import.meta.env.BASE_URL}data/reddit_dead_internet_analysis.csv`
+  csvPath = `${import.meta.env.BASE_URL}data/reddit_dead_internet_analysis.csv`,
+  dotSize = 2
 }) => {
   const containerRef = useRef(null);
   const hasAnimatedRef = useRef(false);
@@ -79,7 +80,7 @@ export const ScatterPlot = ({
 
         const color = d3.scaleOrdinal()
           .domain(["false", "true"])
-          .range(["#00BA38", "#619CFF"]);
+          .range(["#619CFF", "#00BA38" ]);
 
         chart.append("g")
           .attr("class", "myXaxis")
@@ -116,7 +117,7 @@ export const ScatterPlot = ({
           .append("circle")
           .attr("cx", 0)
           .attr("cy", innerHeight)
-          .attr("r", 2)
+          .attr("r", dotSize)
           .style("fill", d => color(String(d.is_bot_flag)));
 
         x.domain(xExtent).nice();

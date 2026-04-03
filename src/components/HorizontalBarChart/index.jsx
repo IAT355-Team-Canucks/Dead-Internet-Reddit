@@ -3,7 +3,7 @@ import * as d3 from "d3";
 
 export const HorizontalBarChart = ({
   title = "Horizontal Bar Chart Component",
-  width = 1080,
+  width = 680,
   height = 600,
   xKey = "is_bot_flag",
   yKey = "user_karma", // not used right now since this chart counts categories
@@ -42,6 +42,7 @@ export const HorizontalBarChart = ({
     if (!containerRef.current || !shouldAnimate) return;
 
     const margin = { top: 20, right: 30, bottom: 60, left: 100 };
+
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
@@ -132,7 +133,12 @@ export const HorizontalBarChart = ({
   }, [csvPath, width, height, xKey, yKey, xLabel, yLabel, shouldAnimate]);
 
   return (
-    <div>
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "stretch",
+      margin: 0
+    }}>
       <h2>{title}</h2>
       <div ref={containerRef}></div>
     </div>
