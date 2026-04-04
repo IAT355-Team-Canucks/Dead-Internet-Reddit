@@ -132,7 +132,7 @@ export const LinkBehaviourSlide = () => {
                 }}>
                     <div style={{
                         fontFamily: "Arial",
-                        fontSize: "32px",
+                        fontSize: "2rem",
                         fontWeight: "700",
                         paddingBottom: "0.5em",
                         paddingTop: "0.5em",

@@ -84,7 +84,7 @@ export const DatasetCompositionSlide = () => {
 
                 {/* Chart area */}
                 <div
-                    onClick={() => setChartMode(m => m === "pie" ? "bar" : "pie")}
+                    // onClick={() => setChartMode(m => m === "pie" ? "bar" : "pie")}
                     style={{
                         border: "1.5px dashed #3D2810",
                         borderRadius: "4px",
@@ -101,8 +101,8 @@ export const DatasetCompositionSlide = () => {
                         transition: "opacity 0.6s 0.3s, background-color 0.2s",
                         userSelect: "none",
                     }}
-                    onMouseEnter={e => e.currentTarget.style.backgroundColor = "rgba(196,98,45,0.04)"}
-                    onMouseLeave={e => e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.01)"}
+                    // onMouseEnter={e => e.currentTarget.style.backgroundColor = "rgba(196,98,45,0.04)"}
+                    // onMouseLeave={e => e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.01)"}
                 >
                     {/* Corner accents */}
                     {[["top:0,left:0", "borderTop", "borderLeft"],
@@ -128,38 +128,13 @@ export const DatasetCompositionSlide = () => {
                             }} />
                         );
                     })}
-
-                    <div style={{ textAlign: "left" }}>
-                        <div style={{
-                            transition: "opacity 0.3s, transform 0.3s",
-                            opacity: 1,
-                        }}>
-                            <HorizontalBarChart 
+                                             <HorizontalBarChart 
                                 width={window.innerWidth - window.innerWidth/3} 
                                 height={300}
                                 title={"Dataset Composition: Bots vs Humans"} 
                                 xLabel={"Number of Accounts"}
                                 yLabel={"Are They A Bot?"}
                             />
-                        </div>
-
-                        {/* Legend */}
-                        {/* <div style={{ display: "flex", gap: "24px", justifyContent: "center", marginTop: "20px" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                <div style={{ width: 10, height: 10, backgroundColor: "#C4622D", borderRadius: "2px" }} />
-                                <span style={{ fontSize: "10px", color: "#8B6A3E", letterSpacing: "1.5px" }}>HUMANS</span>
-                            </div>
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                <div style={{ width: 10, height: 10, backgroundColor: "#5C3D1E", border: "1px solid #C4622D", borderRadius: "2px" }} />
-                                <span style={{ fontSize: "10px", color: "#8B6A3E", letterSpacing: "1.5px" }}>BOTS</span>
-                            </div>
-                        </div> */}
-
-                        {/* Click hint */}
-                        {/* <p style={{ fontSize: "10px", color: "#5C3D1E", marginTop: "14px", letterSpacing: "1.2px" }}>
-                            CLICK TO SWITCH TO {chartMode === "pie" ? "BAR" : "PIE"} CHART
-                        </p> */}
-                    </div>
                 </div>
 
                 {/* Stat cards */}
