@@ -8,11 +8,11 @@ export const Navbar = ({sections, activeId, scrollTo}) => {
         left: 0,
         top: 0,
         bottom: 0,
-        width: 300,
+        width: "10%",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        padding: "60px 50px",
+        paddingLeft: "40px",
         zIndex: 100
       }}
     >
@@ -33,7 +33,7 @@ export const Navbar = ({sections, activeId, scrollTo}) => {
             <div
               style={{
                 height: 1.5,
-                width: active ? 60 : 28,
+                width: active ? 30 : 14,
                 background: active ? "#c0614a" : "#5a4a38",
                 flexShrink: 0,
                 transition: "width 0.4s ease, background 0.4s ease",
@@ -41,7 +41,7 @@ export const Navbar = ({sections, activeId, scrollTo}) => {
             />
             <span
               style={{
-                fontSize: 14,
+                fontSize: "0.75rem",
                 color: active ? "#c0614a" : "#5a4a38",
                 minWidth: 24,
                 transition: "color 0.4s ease",
@@ -51,7 +51,7 @@ export const Navbar = ({sections, activeId, scrollTo}) => {
             </span>
             <span
               style={{
-                fontSize: 17,
+                fontSize: "0.75rem",
                 fontWeight: 700,
                 color: "#f0ebe4",
                 opacity: active ? 1 : 0,

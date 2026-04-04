@@ -44,7 +44,8 @@ export const DatasetCompositionSlide = () => {
         <section>
             <main style={{
                 flex: 1,
-                padding: "60px 130px",
+                paddingLeft: "3rem",
+                paddingRight: "3rem",
                 maxWidth: "100%",
                 position: "relative",
                 boxSizing: "border-box",

@@ -20,7 +20,8 @@ export const LinkBehaviourSlide = () => {
         <section>
             <main style={{
                 flex: 1,
-                padding: "60px 130px",
+                paddingLeft: "3rem",
+                paddingRight: "3rem",
                 maxWidth: "100%",
                 position: "relative",
                 boxSizing: "border-box",
@@ -102,21 +103,22 @@ export const LinkBehaviourSlide = () => {
                             }} />
                         );
                     })}
+                    <HorizontalStackedBarChart
+                        width={1280}
+                        height={350}
+                        xKey={"contains_links"}
 
-                    <div style={{ textAlign: "left" }}>
+                    />
+
+                    {/* <div style={{ textAlign: "left" }}>
                         <div style={{
                             transition: "opacity 0.3s, transform 0.3s",
                             opacity: 1,
                         }}>
 
-                            <HorizontalStackedBarChart
-                                width={1280}
-                                height={350}
-                                xKey={"contains_links"}
 
-                            />
                         </div>
-                    </div>
+                    </div> */}
 
                 </div>
                 <div style={{

@@ -9,8 +9,8 @@ export const RadarChart = ({
 
   const cfg = useMemo(
     () => ({
-      w: 700,
-      h: 700,
+      w: 300,
+      h: 300,
       margin: { top: 90, right: 100, bottom: 90, left: 100 },
       levels: 5,
       maxValue: 1,

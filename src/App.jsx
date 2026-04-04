@@ -140,7 +140,7 @@ export default function App() {
       <div
         ref={contentRef}
         style={{
-          marginLeft: 300,
+          marginLeft: "12.5rem",
           flex: 1,
           overflowY: "scroll",
           height: "100vh",

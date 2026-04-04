@@ -23,7 +23,8 @@ export const ResponseTimingSlide = () => {
         <section>
             <main style={{
                 display: "flex",
-                padding: "60px 130px",
+                paddingLeft: "3rem",
+                paddingRight: "3rem",
                 maxWidth: "100%",
                 position: "relative",
                 boxSizing: "border-box",
@@ -120,20 +121,10 @@ export const ResponseTimingSlide = () => {
                             }} />
                         );
                     })}
+                                                <ScatterPlot dotSize={5} width={700} xKey={"reply_delay_seconds"} xLabel={"Average Response Time (in Seconds)"}/>
 
-                    <div style={{ textAlign: "left" }}>
-                        <div style={{
-                            transition: "opacity 0.3s, transform 0.3s",
-                            opacity: 1,
-                        }}>
-                            {/* Plot Graph Thingie Here */}
-                            <ScatterPlot dotSize={5} width={700} xKey={"reply_delay_seconds"} xLabel={"Average Response Time (in Seconds)"}/>
-                            {/* <ScatterPlot width={1480} height={670} dotSize={10}
-                                xKey={"account_age_days"}
-                                yKey={"user_karma"}
-                            /> */}
-                        </div>
-                    </div>
+
+                    
                 </div>
                 <div>
                     <p style={{

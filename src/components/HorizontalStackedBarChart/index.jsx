@@ -3,17 +3,37 @@ import * as d3 from "d3";
 
 export const HorizontalStackedBarChart = ({
   title = "Horizontal Stacked Bar Chart",
-  width = 680,
   height = 600,
-  xKey = "subreddit",       // main group
-  yKey = "is_bot_flag",     // stacked subgroup
+  xKey = "subreddit",
+  yKey = "is_bot_flag",
   xLabel = "Count",
   yLabel = "Category",
   csvPath = `${import.meta.env.BASE_URL}data/reddit_dead_internet_analysis.csv`,
 }) => {
   const containerRef = useRef(null);
   const hasAnimatedRef = useRef(false);
+
   const [shouldAnimate, setShouldAnimate] = useState(false);
+  const [containerWidth, setContainerWidth] = useState(680);
+
+  // Watch container size
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (!entry) return;
+
+      const newWidth = entry.contentRect.width;
+      if (newWidth > 0) {
+        setContainerWidth(newWidth);
+      }
+    });
+
+    resizeObserver.observe(containerRef.current);
+
+    return () => resizeObserver.disconnect();
+  }, []);
 
   // Observer for animation
   useEffect(() => {
@@ -28,42 +48,43 @@ export const HorizontalStackedBarChart = ({
         }
       },
       {
-        threshold: 1,
+        threshold: 0.3,
         rootMargin: "0px 0px -15% 0px",
       }
     );
 
     observer.observe(containerRef.current);
+
     return () => observer.disconnect();
   }, []);
 
   // Render chart
   useEffect(() => {
-    if (!containerRef.current || !shouldAnimate) return;
+    if (!containerRef.current || !shouldAnimate || containerWidth <= 0) return;
 
+    const width = containerWidth;
     const margin = { top: 20, right: 30, bottom: 60, left: 100 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
-    d3.select(containerRef.current).selectAll("*").remove();
+    d3.select(containerRef.current).select("svg").remove();
 
     const svg = d3
       .select(containerRef.current)
       .append("svg")
-      .attr("width", width)
-      .attr("height", height);
+      .attr("viewBox", `0 0 ${width} ${height}`)
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      .style("width", "100%")
+      .style("height", "auto")
+      .style("display", "block");
 
     const chart = svg
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
     d3.csv(csvPath, d3.autoType).then((data) => {
-      // Get all unique stack keys
-      const stackKeys = Array.from(
-        new Set(data.map((d) => String(d[yKey])))
-      );
+      const stackKeys = Array.from(new Set(data.map((d) => String(d[yKey]))));
 
-      // Count occurrences of xKey grouped by yKey
       const grouped = d3.rollup(
         data,
         (rows) => {
@@ -83,14 +104,13 @@ export const HorizontalStackedBarChart = ({
         ...values,
       }));
 
-      // Sort by total count
       stackedData.sort((a, b) => a.total - b.total);
 
       const yDomain = stackedData.map((d) => d.category);
 
       const x = d3
         .scaleLinear()
-        .domain([0, d3.max(stackedData, (d) => d.total)])
+        .domain([0, d3.max(stackedData, (d) => d.total) || 0])
         .nice()
         .range([0, innerWidth]);
 
@@ -115,7 +135,6 @@ export const HorizontalStackedBarChart = ({
       const stack = d3.stack().keys(stackKeys);
       const series = stack(stackedData);
 
-      // Create groups for each stack layer
       const layer = chart
         .selectAll(".layer")
         .data(series)
@@ -124,7 +143,6 @@ export const HorizontalStackedBarChart = ({
         .attr("class", "layer")
         .attr("fill", (d) => color(d.key));
 
-      // Draw animated stacked segments
       layer
         .selectAll("rect")
         .data((d) => d)
@@ -138,20 +156,17 @@ export const HorizontalStackedBarChart = ({
         .duration(1800)
         .attr("width", (d) => x(d[1]) - x(d[0]));
 
-      // X Axis
       chart
         .append("g")
         .attr("transform", `translate(0, ${innerHeight})`)
         .attr("stroke", "#fff")
         .call(d3.axisBottom(x));
 
-      // Y Axis
       chart
         .append("g")
         .attr("stroke", "#fff")
         .call(d3.axisLeft(y));
 
-      // X Axis Label
       chart
         .append("text")
         .attr("stroke", "#fff")
@@ -160,7 +175,6 @@ export const HorizontalStackedBarChart = ({
         .attr("text-anchor", "middle")
         .text(xLabel);
 
-      // Y Axis Label
       chart
         .append("text")
         .attr("transform", "rotate(-90)")
@@ -170,7 +184,6 @@ export const HorizontalStackedBarChart = ({
         .attr("text-anchor", "middle")
         .text(yLabel);
 
-      // Legend
       const legend = svg
         .append("g")
         .attr("transform", `translate(${width - 140}, 20)`);
@@ -195,7 +208,7 @@ export const HorizontalStackedBarChart = ({
           .text(key);
       });
     });
-  }, [csvPath, width, height, xKey, yKey, xLabel, yLabel, shouldAnimate]);
+  }, [csvPath, containerWidth, height, xKey, yKey, xLabel, yLabel, shouldAnimate]);
 
   return (
     <div
@@ -203,11 +216,17 @@ export const HorizontalStackedBarChart = ({
         display: "flex",
         flexDirection: "column",
         alignItems: "stretch",
+        width: "100%",
         margin: 0,
       }}
     >
       <h2>{title}</h2>
-      <div ref={containerRef}></div>
+      <div
+        ref={containerRef}
+        style={{
+          width: "100%",
+        }}
+      />
     </div>
   );
 };

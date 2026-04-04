@@ -43,7 +43,8 @@ export const EngagementVelocitySlide = () => {
         <section>
             <main style={{
                 flex: 1,
-                padding: "60px 130px",
+                paddingLeft: "3rem",
+                paddingRight: "3rem",
                 maxWidth: "100%",
                 position: "relative",
                 boxSizing: "border-box",
@@ -125,37 +126,21 @@ One of the most noticeable patterns is how quickly bot accounts rack up karma, e
                             }} />
                         );
                     })}
-
-                    <div style={{ textAlign: "left" }}>
-                        <div style={{
-                            transition: "opacity 0.3s, transform 0.3s",
-                            opacity: 1,
-                        }}> 
-                        {/*  67-0 HAHA GET IT, 6-7 */}
+                    {/*  67-0 HAHA GET IT, 6-7 */}
                             <ScatterPlot width={1480} height={670} dotSize={10}
                                 xKey={"account_age_days"}
                                 yKey={"user_karma"}
                                 xLabel={"Account Age Days"}
                             />
+
+                    {/* <div style={{ textAlign: "left" }}>
+                        <div style={{
+                            transition: "opacity 0.3s, transform 0.3s",
+                            opacity: 1,
+                        }}> 
+                        
                         </div>
-
-                        {/* Legend */}
-                        {/* <div style={{ display: "flex", gap: "24px", justifyContent: "center", marginTop: "20px" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                <div style={{ width: 10, height: 10, backgroundColor: "#C4622D", borderRadius: "2px" }} />
-                                <span style={{ fontSize: "10px", color: "#8B6A3E", letterSpacing: "1.5px" }}>HUMANS</span>
-                            </div>
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                <div style={{ width: 10, height: 10, backgroundColor: "#5C3D1E", border: "1px solid #C4622D", borderRadius: "2px" }} />
-                                <span style={{ fontSize: "10px", color: "#8B6A3E", letterSpacing: "1.5px" }}>BOTS</span>
-                            </div>
-                        </div> */}
-
-                        {/* Click hint */}
-                        {/* <p style={{ fontSize: "10px", color: "#5C3D1E", marginTop: "14px", letterSpacing: "1.2px" }}>
-                            CLICK TO SWITCH TO {chartMode === "pie" ? "BAR" : "PIE"} CHART
-                        </p> */}
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* Anomaly */}

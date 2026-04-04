@@ -53,7 +53,9 @@ export const LandingSlide = () => {
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-end",
-          padding: "6% 7%",
+          paddingLeft: "3rem",
+          paddingRight: "3rem",
+          paddingBottom: "2rem",
           boxSizing: "border-box",
           overflow: "hidden",
         }}
@@ -107,6 +109,7 @@ export const LandingSlide = () => {
               margin: "0",
               textAlign: "left",
               opacity: 0.85,
+              marginBottom: "1rem"
             }}
           >
             Exploring how automated accounts differ from genuine users through
