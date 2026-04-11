@@ -17,6 +17,7 @@ export const DemoSlide = () => {
                 <div>
                     <ScatterPlot />
                     <VerticalBarChart />
+
                     <RadarChart />
 
                     { /* Motion Wrappers */}

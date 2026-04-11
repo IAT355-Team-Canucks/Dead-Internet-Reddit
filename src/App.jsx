@@ -10,6 +10,7 @@ import { PostDistributionSlide } from "./slides/PostDistributionSlide";
 import { EngagementVelocitySlide } from "./slides/EngagementVelocitySlide";
 import { LinkBehaviourSlide } from "./slides/LinkBehaviourSlide";
 import { ResponseTimingSlide } from "./slides/ResponseTimingSlide";
+import { ConclusionSlide } from "./slides/ConclusionSlide"
 
 import { DemoSlide } from "./slides/DemoSlide";
 
@@ -62,6 +63,12 @@ const sections = [
     label: "Response Timing",
     component: ResponseTimingSlide,
   },
+  {
+    id: "conclusion",
+    num: "09",
+    label: "Conclusion",
+    component: ConclusionSlide,
+  }
   
   // {
   //   id: "demo",
