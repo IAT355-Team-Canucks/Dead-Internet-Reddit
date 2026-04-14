@@ -133,22 +133,11 @@ export const PostDistributionSlide = () => {
                                 }} />
                             );
                         })}
+                        <HorizontalStackedBarChart
+                            xKey={"subreddit"}
+                            title={"Bot vs Human Distribution by Subreddit"}
+                        />
 
-                        <div style={{ textAlign: "left" }}>
-                            <div style={{
-                                transition: "opacity 0.3s, transform 0.3s",
-                                opacity: 1,
-                            }}>
-                                {/* Plot Graph Thingie Here */}
-                                <HorizontalStackedBarChart 
-                                    xKey={"subreddit"}
-                                />
-                                {/* <ScatterPlot width={1480} height={670} dotSize={10}
-                                xKey={"account_age_days"}
-                                yKey={"user_karma"}
-                            /> */}
-                            </div>
-                        </div>
                     </div>
 
                     {/* Chart area 2 */}
@@ -197,6 +186,7 @@ export const PostDistributionSlide = () => {
                                 }} />
                             );
                         })}
+                        <RadarChart />
 
                         <div style={{ textAlign: "left" }}>
                             <div style={{
@@ -204,7 +194,7 @@ export const PostDistributionSlide = () => {
                                 opacity: 1,
                             }}>
                                 {/* Plot Graph Thingie Here */}
-                                <RadarChart />
+                                
                                 {/* <ScatterPlot width={1480} height={670} dotSize={10}
                                 xKey={"account_age_days"}
                                 yKey={"user_karma"}

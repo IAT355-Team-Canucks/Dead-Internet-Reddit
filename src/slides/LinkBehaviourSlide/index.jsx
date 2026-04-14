@@ -54,7 +54,7 @@ export const LinkBehaviourSlide = () => {
                         margin: "0 0 40px 0",
                         letterSpacing: "0.2px",
                     }}>
-                        One of the most noticeable patterns is how quickly bot accounts rack up karma, even when their accounts are relatively new. In contrast, human users tend to build karma more gradually over time, reflecting more organic, ongoing engagement.                    </p>
+                        Posts containing links are a perfect indicator of bot activity in this dataset, as 100% of link posts were made by bots with no human involvement. In contrast, human users only appear in posts without links and make up roughly 70% of that category. However, bots are not limited to posting links—they also generate a significant portion of normal text-only posts, meaning the absence of a link does not guarantee a human author. Overall, while filtering for links is highly effective with no false positives, it still misses a substantial number of bots that blend in through link-free content.                    </p>
                 </div>
 
                 {/* Chart area */}
@@ -107,7 +107,10 @@ export const LinkBehaviourSlide = () => {
                         width={1280}
                         height={350}
                         xKey={"contains_links"}
+                        title={"Posts That Contain Links"}
+                        xLabel={"Number of Posts"}
 
+                        yLabel={"Contains a Link?"}
                     />
 
                     {/* <div style={{ textAlign: "left" }}>
@@ -149,8 +152,7 @@ export const LinkBehaviourSlide = () => {
                         margin: 0,
                         textAlign: "left"
                     }}>
-                        Bots maintaining consistently positive sentiment, even without links, suggests a more controlled tone. Humans fluctuate more depending on context.
-                    </p>
+If we were to build a filter for this Reddit data, simply flagging any post with a link would catch a significant portion of bots with zero "collateral damage" to human users. However, we'd still miss the bots that post plain text to blend in.                    </p>
                 </div>
             </main>
         </section>

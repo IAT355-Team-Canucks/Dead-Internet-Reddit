@@ -125,7 +125,7 @@ export const LanguagePatternSlide = () => {
                                 ...(idx === 3 ? { borderBottomWidth: 2, borderRightWidth: 2 } : {}),
                             }} />
                         );
-                    })}<ScatterPlot dotSize={10}
+                    })}<ScatterPlot dotSize={10} title={"Human vs Bot: Average Word Length"}
                             />
 {/* 
                     <div style={{ textAlign: "left" }}>

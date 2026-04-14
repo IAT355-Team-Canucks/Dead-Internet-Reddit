@@ -6,7 +6,8 @@ import { VerticalBarChart } from "../../components/VerticalBarChart"
 import { AnimatedLineChart } from '../../components/AnimatedLineChart'
 import { ScatterPlot } from '../../components/ScatterPlot'
 import { RadarChart } from '../../components/RadarChart'
-
+import { HorizontalBoxPlot } from '../../components/HorizontalBoxPlot'
+import { VerticalBoxPlot } from '../../components/VerticalBoxPlot'
 
 export const DemoSlide = () => {
 
@@ -16,6 +17,8 @@ export const DemoSlide = () => {
                 <h1>Sample Components Board</h1>
                 <div>
                     <ScatterPlot />
+                    <VerticalBoxPlot />
+                    <HorizontalBoxPlot />
                     <VerticalBarChart />
 
                     <RadarChart />

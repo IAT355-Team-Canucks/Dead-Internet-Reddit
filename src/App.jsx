@@ -68,14 +68,14 @@ const sections = [
     num: "09",
     label: "Conclusion",
     component: ConclusionSlide,
-  }
+  },
   
-  // {
-  //   id: "demo",
-  //   num: "XX",
-  //   label: "Demo Slides",
-  //   component: DemoSlide,
-  // },
+  {
+    id: "demo",
+    num: "XX",
+    label: "Demo Slides",
+    component: DemoSlide,
+  },
 ];
 
 export default function App() {

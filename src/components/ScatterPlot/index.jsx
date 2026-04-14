@@ -2,7 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 
 export const ScatterPlot = ({
-  aspectRatio = 980 / 600,
+  height = 400,
+  width = 980,
+  title="",
   xKey = "avg_word_length",
   yKey = "user_karma",
   xLabel = "Average Word Length",
@@ -10,13 +12,15 @@ export const ScatterPlot = ({
   csvPath = `${import.meta.env.BASE_URL}data/reddit_dead_internet_analysis.csv`,
   dotSize = 2,
 }) => {
+
+  const   aspectRatio = width / height;
   const containerRef = useRef(null);
   const hasAnimatedRef = useRef(false);
 
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const [dimensions, setDimensions] = useState({
-    width: 980,
-    height: 600,
+    width: width,
+    height: height,
   });
 
   // Measure container width responsively
@@ -227,7 +231,7 @@ export const ScatterPlot = ({
 
   return (
     <div style={{ width: "100%" }}>
-      <h2>ScatterPlot Component</h2>
+      <h2>{title}</h2>
       <div
         ref={containerRef}
         style={{

@@ -1,21 +1,27 @@
-import { useRef, useEffect, useMemo } from "react";
+import { useRef, useEffect, useMemo, useState } from "react";
 import * as d3 from "d3";
 
 export const RadarChart = ({
   options = {},
   csvPath = `${import.meta.env.BASE_URL}data/reddit_dead_internet_analysis.csv`,
+  title = "",
+  width = 300,
+  height = 300
 }) => {
   const containerRef = useRef(null);
+  const [containerWidth, setContainerWidth] = useState(600);
+
+  const size = Math.max(260, Math.min(containerWidth, 700));
 
   const cfg = useMemo(
     () => ({
-      w: 300,
-      h: 300,
+      w: size,
+      h: size,
       margin: { top: 90, right: 100, bottom: 90, left: 100 },
       levels: 5,
       maxValue: 1,
       labelFactor: 1.18,
-      wrapWidth: 80,
+      wrapWidth: Math.max(60, size * 0.16),
       opacityArea: 0.35,
       dotRadius: 4,
       opacityCircles: 0.05,
@@ -25,8 +31,24 @@ export const RadarChart = ({
       color: d3.scaleOrdinal().range(["#619CFF", "#00BA38"]),
       ...options,
     }),
-    [options]
+    [size, options]
   );
+
+
+  // Container observer
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (!entry) return;
+      setContainerWidth(entry.contentRect.width);
+    });
+
+    resizeObserver.observe(containerRef.current);
+
+    return () => resizeObserver.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -81,11 +103,16 @@ export const RadarChart = ({
 
       d3.select(containerRef.current).select("svg").remove();
 
+      const fullWidth = cfg.w + cfg.margin.left + cfg.margin.right;
+      const fullHeight = cfg.h + cfg.margin.top + cfg.margin.bottom;
+
       const svg = d3
         .select(containerRef.current)
         .append("svg")
-        .attr("width", cfg.w + cfg.margin.left + cfg.margin.right)
-        .attr("height", cfg.h + cfg.margin.top + cfg.margin.bottom);
+        .attr("viewBox", `0 0 ${fullWidth} ${fullHeight}`)
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .style("width", "100%")
+        .style("height", "auto"); 
 
       const g = svg
         .append("g")
@@ -290,9 +317,9 @@ export const RadarChart = ({
   }, [cfg, csvPath]);
 
   return (
-    <div>
-      <h2>Bot vs Human Distribution by Subreddit</h2>
-      <div ref={containerRef} />
+    <div style={{ width: "100%" }}>
+      <h2>{title}</h2>
+      <div ref={containerRef} style={{ width: "100%" }} />
     </div>
   );
 };

@@ -106,8 +106,8 @@ export const EmotionalRangeSlide = () => {
       bottom: "12px",
       left: "50%",
       transform: "translateX(-50%)",
-      color: "#8a6a3a",
-      fontSize: "0.75rem",
+      color: "#FFF",
+      fontSize: "1rem",
       letterSpacing: "0.1em",
       fontFamily: "'Courier New', monospace",
       opacity: scrollProgress > 0.05 ? 0 : 1,
@@ -182,6 +182,8 @@ export const EmotionalRangeSlide = () => {
             {/* <ChartArea scrollProgress={scrollProgress} /> */}
             <VerticalBarChart width={500} height={1000} 
             xKey={"bot_type_label"} yKey={"sentiment_score"}
+            title={"Emotional Range of Posters"}
+            xLabel={"Poster Type"}
             aggr={false}
             />
           </div>

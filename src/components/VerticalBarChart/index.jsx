@@ -4,7 +4,7 @@ import * as d3 from "d3";
 export const VerticalBarChart = ({
     title = "Bar Chart Component",
     width = 1080,
-    height = 600,
+    height = 200,
     xKey = "is_bot_flag",
     yKey = "user_karma",
     xLabel = "Sample X-Axis Label",
