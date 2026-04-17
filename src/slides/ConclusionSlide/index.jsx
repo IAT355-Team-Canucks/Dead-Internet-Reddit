@@ -45,6 +45,7 @@ const ConclusionCard = ({ title, children }) => (
         color: "#F7EFE2",
         fontSize: "1rem",
         lineHeight: 1.8,
+        textAlign: "left",
         margin: 0,
         opacity: 0.92,
       }}

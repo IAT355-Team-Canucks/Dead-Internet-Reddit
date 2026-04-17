@@ -93,7 +93,7 @@ export const LinkBehaviourSlide = () => {
                                 position: "absolute",
                                 ...positions[idx],
                                 width: 12, height: 12,
-                                borderColor: "#C4622D",
+                                borderColor: "var(--bot-colour)",
                                 borderStyle: "solid",
                                 borderWidth: 0,
                                 ...(idx === 0 ? { borderTopWidth: 2, borderLeftWidth: 2 } : {}),

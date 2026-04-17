@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import "../../App.css";
 import * as d3 from "d3";
 
 export const HorizontalBarChart = ({
@@ -91,7 +92,7 @@ export const HorizontalBarChart = ({
         .enter()
         .append("rect")
         .attr("class", "bar")
-        .attr("fill", (d) => (d.category === "True" ? "#00BA38" : "#619CFF"))
+        .attr("fill", (d) => (d.category === "True" ? "var(--bot-colour)" : "var(--human-colour)"))
         .attr("x", 0)
         .attr("y", (d) => y(d.category))
         .attr("height", y.bandwidth())

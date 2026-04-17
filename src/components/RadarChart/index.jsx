@@ -1,5 +1,6 @@
 import { useRef, useEffect, useMemo, useState } from "react";
 import * as d3 from "d3";
+import "../../App.css";
 
 export const RadarChart = ({
   options = {},
@@ -28,7 +29,7 @@ export const RadarChart = ({
       strokeWidth: 2,
       roundStrokes: false,
       topNSubreddits: 8,
-      color: d3.scaleOrdinal().range(["#619CFF", "#00BA38"]),
+      color: d3.scaleOrdinal().range(["var(--human-colour)", "var(--bot-colour)"]),
       ...options,
     }),
     [size, options]

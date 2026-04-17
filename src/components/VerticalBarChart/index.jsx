@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
+import "../../App.css";
 
 export const VerticalBarChart = ({
     title = "Bar Chart Component",
@@ -88,7 +89,7 @@ export const VerticalBarChart = ({
                 .enter()
                 .append("rect")
                 .attr("class", "bar")
-                .attr("fill", d => d.category === "True" ? "#00BA38" : "#619CFF")
+                .attr("fill", d => d.category === "True" ? "var(--bot-colour)" : "var(--human-colour)")
                 .attr("x", d => x(d.category))
                 .attr("width", x.bandwidth())
                 .attr("y", innerHeight)

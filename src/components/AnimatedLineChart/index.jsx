@@ -1,6 +1,7 @@
 import React, { useMemo, useRef } from "react";
 import { motion, useInView } from "motion/react";
 import * as d3 from "d3";
+import "../../App.css";
 
 export const AnimatedLineChart = () => {
   const data = [

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
+import "../../App.css";
 
 export const HorizontalStackedBarChart = ({
   title = "Horizontal Stacked Bar Chart",
@@ -124,8 +125,8 @@ export const HorizontalStackedBarChart = ({
         .scaleOrdinal()
         .domain(stackKeys)
         .range([
-          "#619CFF",
-          "#00BA38",
+          "var(--human-colour)",
+          "var(--bot-colour)",
           "#F8766D",
           "#C77CFF",
           "#FFB000",

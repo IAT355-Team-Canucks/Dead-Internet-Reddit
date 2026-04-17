@@ -6,14 +6,14 @@ import { ScatterPlot } from "../../components/ScatterPlot";
 const BotIcon = () => {
     return (
         <svg width="100%" viewBox="0 0 36 36" fill="none">
-            <rect x="6" y="14" width="24" height="18" rx="3" stroke="#C4622D" strokeWidth="1.8" fill="none" />
-            <rect x="12" y="19" width="4" height="4" rx="1" fill="#C4622D" />
-            <rect x="20" y="19" width="4" height="4" rx="1" fill="#C4622D" />
-            <line x1="13" y1="28" x2="23" y2="28" stroke="#C4622D" strokeWidth="1.5" strokeLinecap="round" />
-            <line x1="18" y1="14" x2="18" y2="8" stroke="#C4622D" strokeWidth="1.8" />
-            <circle cx="18" cy="6" r="2.5" stroke="#C4622D" strokeWidth="1.5" fill="none" />
-            <line x1="6" y1="22" x2="2" y2="22" stroke="#C4622D" strokeWidth="1.5" strokeLinecap="round" />
-            <line x1="30" y1="22" x2="34" y2="22" stroke="#C4622D" strokeWidth="1.5" strokeLinecap="round" />
+            <rect x="6" y="14" width="24" height="18" rx="3" stroke="var(--bot-colour)" strokeWidth="1.8" fill="none" />
+            <rect x="12" y="19" width="4" height="4" rx="1" fill="var(--bot-colour)" />
+            <rect x="20" y="19" width="4" height="4" rx="1" fill="var(--bot-colour)" />
+            <line x1="13" y1="28" x2="23" y2="28" stroke="var(--bot-colour)" strokeWidth="1.5" strokeLinecap="round" />
+            <line x1="18" y1="14" x2="18" y2="8" stroke="var(--bot-colour)" strokeWidth="1.8" />
+            <circle cx="18" cy="6" r="2.5" stroke="var(--bot-colour)" strokeWidth="1.5" fill="none" />
+            <line x1="6" y1="22" x2="2" y2="22" stroke="var(--bot-colour)" strokeWidth="1.5" strokeLinecap="round" />
+            <line x1="30" y1="22" x2="34" y2="22" stroke="var(--bot-colour)" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
     )
 }
@@ -21,8 +21,8 @@ const BotIcon = () => {
 const HumanIcon = () => {
     return (
         <svg width="100%" viewBox="0 0 36 36" fill="none">
-            <circle cx="18" cy="11" r="6" stroke="#C4622D" strokeWidth="1.8" fill="none" />
-            <path d="M4 32c0-7.732 6.268-14 14-14s14 6.268 14 14" stroke="#C4622D" strokeWidth="1.8" strokeLinecap="round" fill="none" />
+            <circle cx="18" cy="11" r="6" stroke="var(--bot-colour)" strokeWidth="1.8" fill="none" />
+            <path d="M4 32c0-7.732 6.268-14 14-14s14 6.268 14 14" stroke="var(--bot-colour)" strokeWidth="1.8" strokeLinecap="round" fill="none" />
         </svg>
     )
 }
@@ -116,7 +116,7 @@ One of the most noticeable patterns is how quickly bot accounts rack up karma, e
                                 position: "absolute",
                                 ...positions[idx],
                                 width: 12, height: 12,
-                                borderColor: "#C4622D",
+                                borderColor: "var(--bot-colour)",
                                 borderStyle: "solid",
                                 borderWidth: 0,
                                 ...(idx === 0 ? { borderTopWidth: 2, borderLeftWidth: 2 } : {}),
