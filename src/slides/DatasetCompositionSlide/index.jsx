@@ -3,18 +3,19 @@ import { InfoCard } from "../../components/InfoCard";
 import { useState, useEffect } from 'react';
 import { VerticalBarChart } from "../../components/VerticalBarChart";
 import { HorizontalBarChart } from "../../components/HorizontalBarChart";
+import "../../App.css";
 
 const BotIcon = () => {
     return (
         <svg width="100%" viewBox="0 0 36 36" fill="none">
-            <rect x="6" y="14" width="24" height="18" rx="3" stroke="#C4622D" strokeWidth="1.8" fill="none" />
-            <rect x="12" y="19" width="4" height="4" rx="1" fill="#C4622D" />
-            <rect x="20" y="19" width="4" height="4" rx="1" fill="#C4622D" />
-            <line x1="13" y1="28" x2="23" y2="28" stroke="#C4622D" strokeWidth="1.5" strokeLinecap="round" />
-            <line x1="18" y1="14" x2="18" y2="8" stroke="#C4622D" strokeWidth="1.8" />
-            <circle cx="18" cy="6" r="2.5" stroke="#C4622D" strokeWidth="1.5" fill="none" />
-            <line x1="6" y1="22" x2="2" y2="22" stroke="#C4622D" strokeWidth="1.5" strokeLinecap="round" />
-            <line x1="30" y1="22" x2="34" y2="22" stroke="#C4622D" strokeWidth="1.5" strokeLinecap="round" />
+            <rect x="6" y="14" width="24" height="18" rx="3" stroke="var(--bot-colour)" strokeWidth="1.8" fill="none" />
+            <rect x="12" y="19" width="4" height="4" rx="1" fill="var(--bot-colour)" />
+            <rect x="20" y="19" width="4" height="4" rx="1" fill="var(--bot-colour)" />
+            <line x1="13" y1="28" x2="23" y2="28" stroke="var(--bot-colour)" strokeWidth="1.5" strokeLinecap="round" />
+            <line x1="18" y1="14" x2="18" y2="8" stroke="var(--bot-colour)" strokeWidth="1.8" />
+            <circle cx="18" cy="6" r="2.5" stroke="var(--bot-colour)" strokeWidth="1.5" fill="none" />
+            <line x1="6" y1="22" x2="2" y2="22" stroke="var(--bot-colour)" strokeWidth="1.5" strokeLinecap="round" />
+            <line x1="30" y1="22" x2="34" y2="22" stroke="var(--bot-colour)" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
     )
 }
@@ -22,8 +23,8 @@ const BotIcon = () => {
 const HumanIcon = () => {
     return (
         <svg width="100%" viewBox="0 0 36 36" fill="none">
-            <circle cx="18" cy="11" r="6" stroke="#C4622D" strokeWidth="1.8" fill="none" />
-            <path d="M4 32c0-7.732 6.268-14 14-14s14 6.268 14 14" stroke="#C4622D" strokeWidth="1.8" strokeLinecap="round" fill="none" />
+            <circle cx="18" cy="11" r="6" stroke="var(--human-colour)" strokeWidth="1.8" fill="none" />
+            <path d="M4 32c0-7.732 6.268-14 14-14s14 6.268 14 14" stroke="var(--human-colour)" strokeWidth="1.8" strokeLinecap="round" fill="none" />
         </svg>
     )
 }
@@ -101,8 +102,8 @@ export const DatasetCompositionSlide = () => {
                         transition: "opacity 0.6s 0.3s, background-color 0.2s",
                         userSelect: "none",
                     }}
-                    // onMouseEnter={e => e.currentTarget.style.backgroundColor = "rgba(196,98,45,0.04)"}
-                    // onMouseLeave={e => e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.01)"}
+                // onMouseEnter={e => e.currentTarget.style.backgroundColor = "rgba(196,98,45,0.04)"}
+                // onMouseLeave={e => e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.01)"}
                 >
                     {/* Corner accents */}
                     {[["top:0,left:0", "borderTop", "borderLeft"],
@@ -118,7 +119,7 @@ export const DatasetCompositionSlide = () => {
                                 position: "absolute",
                                 ...positions[idx],
                                 width: 12, height: 12,
-                                borderColor: "#C4622D",
+                                borderColor: "var(--bot-colour)",
                                 borderStyle: "solid",
                                 borderWidth: 0,
                                 ...(idx === 0 ? { borderTopWidth: 2, borderLeftWidth: 2 } : {}),
@@ -128,15 +129,14 @@ export const DatasetCompositionSlide = () => {
                             }} />
                         );
                     })}
-                                             <HorizontalBarChart 
-                                width={window.innerWidth - window.innerWidth/3} 
-                                height={300}
-                                title={"Dataset Composition: Bots vs Humans"} 
-                                xLabel={"Number of Accounts"}
-                                yLabel={"Are They A Bot?"}
-                            />
+                    <HorizontalBarChart
+                        width={window.innerWidth - window.innerWidth / 3}
+                        height={300}
+                        title={"Dataset Composition: Bots vs Humans"}
+                        xLabel={"Number of Accounts"}
+                        yLabel={"Are They A Bot?"}
+                    />
                 </div>
-
                 {/* Stat cards */}
                 <div style={{
                     display: "grid",
@@ -147,10 +147,21 @@ export const DatasetCompositionSlide = () => {
                     transition: "opacity 0.6s 0.5s, transform 0.6s 0.5s",
                 }}>
                     {/* Human card */}
-                    <InfoCard Icon={HumanIcon} title={"282"} subtitle={"Human Accounts"} text={"56.4% of total dataset"} />
+                    <div style={{
+                        borderStyle: "dashed",
+                        borderColor: "var(--human-colour)"
+                    }}>
+                        <InfoCard Icon={HumanIcon} title={"282"} subtitle={"Human Accounts"} text={"56.4% of total dataset"} />
+                    </div>
 
+                    <div style={{
+                        borderStyle: "dashed",
+                        borderColor: "var(--bot-colour)"
+                    }}>
+                        <InfoCard Icon={BotIcon} title={"218"} subtitle={"Bot Accounts"} text={"43.6% of total dataset"} />
+                    </div>
                     {/* Bot card */}
-                    <InfoCard Icon={BotIcon} title={"218"} subtitle={"Bot Accounts"} text={"43.6% of total dataset"} />
+
                 </div>
             </main>
         </section>

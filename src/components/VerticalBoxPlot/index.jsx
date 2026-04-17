@@ -1,19 +1,40 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
+import "../../App.css";
 
 export const VerticalBoxPlot = ({
   title = "Box Plot Component",
-  width = 900,
   height = 600,
   xKey = "sentiment_score",
   yKey = "bot_type_label",
-  xLabel = "sentiment_score",
-  yLabel = "Category",
+  xLabel = "Category",
+  yLabel = "sentiment_score",
   csvPath = `${import.meta.env.BASE_URL}data/reddit_dead_internet_analysis.csv`,
 }) => {
   const containerRef = useRef(null);
   const hasAnimatedRef = useRef(false);
+
   const [shouldAnimate, setShouldAnimate] = useState(false);
+  const [containerWidth, setContainerWidth] = useState(900);
+
+  // Track container width
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (!entry) return;
+
+      const width = entry.contentRect.width;
+      if (width > 0) {
+        setContainerWidth(width);
+      }
+    });
+
+    resizeObserver.observe(containerRef.current);
+
+    return () => resizeObserver.disconnect();
+  }, []);
 
   // Observer for animation
   useEffect(() => {
@@ -28,8 +49,8 @@ export const VerticalBoxPlot = ({
         }
       },
       {
-        threshold: 1,
-        rootMargin: "0px 0px -15% 0px",
+        threshold: 0.3,
+        rootMargin: "0px 0px -10% 0px",
       }
     );
 
@@ -38,26 +59,35 @@ export const VerticalBoxPlot = ({
   }, []);
 
   useEffect(() => {
-    if (!containerRef.current || !shouldAnimate) return;
+    if (!containerRef.current || !shouldAnimate || containerWidth <= 0) return;
 
-    const margin = { top: 20, right: 40, bottom: 70, left: 120 };
+    const width = containerWidth;
+    const margin = {
+      top: 20,
+      right: 30,
+      bottom: 80,
+      left: containerWidth < 600 ? 70 : 120,
+    };
+
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
-    d3.select(containerRef.current).selectAll("*").remove();
+    d3.select(containerRef.current).select("svg").remove();
 
     const svg = d3
       .select(containerRef.current)
       .append("svg")
-      .attr("width", width)
-      .attr("height", height);
+      .attr("viewBox", `0 0 ${width} ${height}`)
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      .style("width", "100%")
+      .style("height", "auto")
+      .style("display", "block");
 
     const chart = svg
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
     d3.csv(csvPath, d3.autoType).then((data) => {
-      // Keep only rows with valid values
       const filtered = data.filter(
         (d) =>
           d[xKey] != null &&
@@ -67,13 +97,9 @@ export const VerticalBoxPlot = ({
 
       if (!filtered.length) return;
 
-      // Convert grouping values to strings for categorical scale
       const categories = Array.from(
         new Set(filtered.map((d) => String(d[yKey])))
-      );
-
-      // Match the bar chart style: bottom category first, top category last
-      categories.sort(d3.ascending);
+      ).sort(d3.ascending);
 
       const grouped = d3.groups(filtered, (d) => String(d[yKey]));
 
@@ -89,7 +115,6 @@ export const VerticalBoxPlot = ({
         const max = d3.max(sorted);
         const iqr = q3 - q1;
 
-        // optional whisker rule
         const lowerFence = q1 - 1.5 * iqr;
         const upperFence = q3 + 1.5 * iqr;
 
@@ -99,12 +124,9 @@ export const VerticalBoxPlot = ({
         return {
           category,
           values,
-          sorted,
           q1,
           median,
           q3,
-          min,
-          max,
           whiskerMin,
           whiskerMax,
         };
@@ -116,64 +138,69 @@ export const VerticalBoxPlot = ({
         .scaleBand()
         .domain(categories)
         .range([0, innerWidth])
-        .padding(0.35);
+        .padding(containerWidth < 600 ? 0.2 : 0.35);
 
-        const y = d3
+      const y = d3
         .scaleLinear()
         .domain(xExtent)
         .nice()
-        .range([innerHeight, 0]); // IMPORTANT: inverted
+        .range([innerHeight, 0]);
 
-      // Optional continuous color based on x value
       const color = d3
         .scaleSequential(d3.interpolatePlasma)
         .domain(xExtent);
 
-      // Draw axis
-      chart
+      const xAxis = d3.axisBottom(x);
+      const yAxis = d3.axisLeft(y);
+
+      const xAxisGroup = chart
         .append("g")
         .attr("transform", `translate(0, ${innerHeight})`)
-        .attr("stroke", "#fff")
-        .call(d3.axisBottom(x));
+        .call(xAxis);
 
-        chart
-        .append("g")
-        .attr("stroke", "#fff")
-        .call(d3.axisLeft(y));
+      const yAxisGroup = chart.append("g").call(yAxis);
 
-      // Axis labels
+      xAxisGroup.selectAll("text")
+        .attr("fill", "white")
+        .style("font-size", containerWidth < 600 ? "10px" : "12px")
+        .attr("transform", containerWidth < 600 ? "rotate(-25)" : null)
+        .style("text-anchor", containerWidth < 600 ? "end" : "middle");
+
+      yAxisGroup.selectAll("text")
+        .attr("fill", "white")
+        .style("font-size", containerWidth < 600 ? "10px" : "12px");
+
+      xAxisGroup.selectAll("path, line").attr("stroke", "white");
+      yAxisGroup.selectAll("path, line").attr("stroke", "white");
+
       chart
         .append("text")
-        .attr("stroke", "#fff")
         .attr("x", innerWidth / 2)
-        .attr("y", innerHeight + 50)
+        .attr("y", innerHeight + (containerWidth < 600 ? 60 : 50))
+        .attr("fill", "white")
         .attr("text-anchor", "middle")
         .text(xLabel);
 
       chart
         .append("text")
         .attr("transform", "rotate(-90)")
-        .attr("stroke", "#fff")
         .attr("x", -innerHeight / 2)
-        .attr("y", -80)
+        .attr("y", containerWidth < 600 ? -50 : -80)
+        .attr("fill", "white")
         .attr("text-anchor", "middle")
         .text(yLabel);
 
-      // Draw one boxplot row per category
       stats.forEach((d) => {
         const xPos = x(d.category);
         const centerX = xPos + x.bandwidth() / 2;
         const boxWidth = x.bandwidth() * 0.75;
-      
-        // Jittered dots (vertical now)
         const jitterAmount = boxWidth * 0.85;
-      
+
         chart
           .selectAll(`.dot-${CSS.escape(d.category)}`)
           .data(d.values)
           .enter()
           .append("circle")
-          .attr("class", `dot-${d.category}`)
           .attr("cx", (_, i) => {
             const t = Math.sin((i + 1) * 999);
             return centerX + t * (jitterAmount / 2);
@@ -183,13 +210,12 @@ export const VerticalBoxPlot = ({
           .attr("fill", (p) => color(+p[xKey]))
           .attr("stroke", "black")
           .attr("stroke-width", 0.5)
-          .attr("opacity", 1)
+          .attr("opacity", 0.9)
           .transition()
-          .duration(1400)
-          .delay((_, i) => i * 10)
-          .attr("r", 6);
-      
-        // Whisker line (vertical now)
+          .duration(1200)
+          .delay((_, i) => i * 8)
+          .attr("r", containerWidth < 600 ? 3.5 : 6);
+
         chart
           .append("line")
           .attr("x1", centerX)
@@ -198,9 +224,8 @@ export const VerticalBoxPlot = ({
           .attr("y2", y(d.whiskerMax))
           .attr("stroke", "orange")
           .attr("stroke-width", 2);
-      
-        // Box
-        const box = chart
+
+        chart
           .append("rect")
           .attr("x", centerX - boxWidth / 2)
           .attr("y", y(d.q3))
@@ -209,14 +234,11 @@ export const VerticalBoxPlot = ({
           .attr("fill", "#9eb8b2")
           .attr("fill-opacity", 0.6)
           .attr("stroke", "#7f8c8d")
-          .attr("stroke-width", 1.5);
-      
-        box
+          .attr("stroke-width", 1.5)
           .transition()
-          .duration(1200)
+          .duration(1000)
           .attr("height", y(d.q1) - y(d.q3));
-      
-        // Median line
+
         chart
           .append("line")
           .attr("x1", centerX - boxWidth / 2)
@@ -224,14 +246,15 @@ export const VerticalBoxPlot = ({
           .attr("y1", y(d.median))
           .attr("y2", y(d.median))
           .attr("stroke", "orange")
-          .attr("stroke-width", 4);
+          .attr("stroke-width", 3);
       });
     });
-  }, [csvPath, width, height, xKey, yKey, xLabel, yLabel, shouldAnimate]);
+  }, [csvPath, containerWidth, height, xKey, yKey, xLabel, yLabel, shouldAnimate]);
 
   return (
     <div
       style={{
+        width: "100%",
         display: "flex",
         flexDirection: "column",
         alignItems: "stretch",
@@ -239,7 +262,13 @@ export const VerticalBoxPlot = ({
       }}
     >
       <h2>{title}</h2>
-      <div ref={containerRef}></div>
+      <div
+        ref={containerRef}
+        style={{
+          width: "100%",
+          minWidth: 0,
+        }}
+      />
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import "../../App.css";
 
 export const InfoCard = ({ Icon, title, subtitle, text }) => {
   const [count, setCount] = useState(0);
@@ -65,7 +66,7 @@ export const InfoCard = ({ Icon, title, subtitle, text }) => {
           style={{
             fontSize: "52px",
             fontWeight: "800",
-            color: "#C4622D",
+            color: "#EAC46A",
             lineHeight: 1,
             fontFamily: "'Georgia', serif",
             textAlign: "left",

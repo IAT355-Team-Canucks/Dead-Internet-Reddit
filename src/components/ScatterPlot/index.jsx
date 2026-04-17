@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
+import "../../App.css";
 
 export const ScatterPlot = ({
   height = 400,
@@ -133,7 +134,7 @@ export const ScatterPlot = ({
         const color = d3
           .scaleOrdinal()
           .domain(["false", "true"])
-          .range(["#619CFF", "#00BA38"]);
+          .range(["var(--human-colour)", "var(--bot-colour)"]);
 
         const xAxis = d3.axisBottom(x);
         const yAxis = d3.axisLeft(y);

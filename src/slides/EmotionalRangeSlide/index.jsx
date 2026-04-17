@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 import { VerticalBarChart } from "../../components/VerticalBarChart";
+import { VerticalBoxPlot } from "../../components/VerticalBoxPlot";
 
 const MAX_VAL = 80;
 
@@ -180,12 +181,13 @@ export const EmotionalRangeSlide = () => {
         >
           <div style={styles.chartContainer}>
             {/* <ChartArea scrollProgress={scrollProgress} /> */}
-            <VerticalBarChart width={500} height={1000} 
+            {/* <VerticalBarChart width={500} height={1000} 
             xKey={"bot_type_label"} yKey={"sentiment_score"}
             title={"Emotional Range of Posters"}
             xLabel={"Poster Type"}
             aggr={false}
-            />
+            /> */}
+            <VerticalBoxPlot title={"Emotional Range of Posters"} height={950}/>
           </div>
           <div style={styles.scrollHint}>↕ scroll to reveal</div>
         </div>
