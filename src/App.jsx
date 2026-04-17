@@ -42,7 +42,7 @@ const sections = [
   {
     id: "engagement",
     num: "04",
-    label: "Language Patterns",
+    label: "Engagement Velocity",
     component: EngagementVelocitySlide,
   },
   {
@@ -70,12 +70,12 @@ const sections = [
     component: ConclusionSlide,
   },
   
-  {
-    id: "demo",
-    num: "XX",
-    label: "Demo Slides",
-    component: DemoSlide,
-  },
+  // {
+  //   id: "demo",
+  //   num: "XX",
+  //   label: "Demo Slides",
+  //   component: DemoSlide,
+  // },
 ];
 
 export default function App() {
