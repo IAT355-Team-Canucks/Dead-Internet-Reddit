@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import "../../App.css";
 import { AnnotationLayer } from "../AnnotationLayer";
 import { useViewport } from "../../context/ViewportContext";
+import { useCsvData } from "../../context/CsvDataContext";
 
 export const ScatterPlot = ({
   height = 400,
@@ -12,7 +13,6 @@ export const ScatterPlot = ({
   yKey = "user_karma",
   xLabel = "Average Word Length",
   yLabel = "User Karma",
-  csvPath = `${import.meta.env.BASE_URL}data/reddit_dead_internet_analysis.csv`,
   dotSize = 2,
   annotations = [],
   canAnimate
@@ -21,6 +21,7 @@ export const ScatterPlot = ({
   const aspectRatio = width / height;
   const containerRef = useRef(null);
   const hasAnimatedRef = useRef(false);
+  const { data: rawData, loading } = useCsvData();
 
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const [dimensions, setDimensions] = useState({
@@ -81,7 +82,7 @@ export const ScatterPlot = ({
   // D3 rendering
   useEffect(() => {
     if (!shouldAnimate) return;
-    if (!dimensions.width || !dimensions.height) return;
+    if (!dimensions.width || !dimensions.height || !rawData.length) return;
 
     const { width, height } = dimensions;
 
@@ -112,151 +113,149 @@ export const ScatterPlot = ({
     const chart = svg
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
-    
 
-    d3.csv(csvPath, d3.autoType)
-      .then((data) => {
-        const cleanData = data.filter(
-          (d) =>
-            typeof d[xKey] === "number" &&
-            typeof d[yKey] === "number" &&
-            !Number.isNaN(d[xKey]) &&
-            !Number.isNaN(d[yKey])
-        );
 
-        if (!cleanData.length) return;
 
-        const xExtent = d3.extent(cleanData, (d) => d[xKey]);
-        const yExtent = d3.extent(cleanData, (d) => d[yKey]);
+    const cleanData = rawData.filter(
+      (d) =>
+        typeof d[xKey] === "number" &&
+        typeof d[yKey] === "number" &&
+        !Number.isNaN(d[xKey]) &&
+        !Number.isNaN(d[yKey])
+    );
 
-        const x = d3
-          .scaleLinear()
-          .domain(xExtent)
-          .nice()
-          .range([0, innerWidth]);
+    if (!cleanData.length) return;
 
-        const y = d3
-          .scaleLinear()
-          .domain(yExtent)
-          .nice()
-          .range([innerHeight, 0]);
+    const xExtent = d3.extent(cleanData, (d) => d[xKey]);
+    const yExtent = d3.extent(cleanData, (d) => d[yKey]);
 
-        const color = d3
-          .scaleOrdinal()
-          .domain(["false", "true"])
-          .range(["var(--human-colour)", "var(--bot-colour)"]);
+    const x = d3
+      .scaleLinear()
+      .domain(xExtent)
+      .nice()
+      .range([0, innerWidth]);
 
-        const xTicks = x.ticks(); // default ticks
+    const y = d3
+      .scaleLinear()
+      .domain(yExtent)
+      .nice()
+      .range([innerHeight, 0]);
 
-        // Skip ticks for smaller viewport
-        const xAxis = d3.axisBottom(x).tickValues(
-          sm ? xTicks.filter((_, i) => i % 2 === 0) : xTicks
-        );
+    const color = d3
+      .scaleOrdinal()
+      .domain(["false", "true"])
+      .range(["var(--human-colour)", "var(--bot-colour)"]);
 
-        const yTicks = y.ticks(); // default ticks
+    const xTicks = x.ticks(); // default ticks
 
-        // Skip ticks for smaller viewport
-        const yAxis = d3.axisLeft(y).tickValues(
-          sm ? yTicks.filter((_, i) => i % 2 === 0) : yTicks
-        );
+    // Skip ticks for smaller viewport
+    const xAxis = d3.axisBottom(x).tickValues(
+      sm ? xTicks.filter((_, i) => i % 2 === 0) : xTicks
+    );
 
-        // const yAxis = d3.axisLeft(y);
+    const yTicks = y.ticks(); // default ticks
 
-        chart
-          .append("g")
-          .attr("class", "myXaxis")
-          .attr("transform", `translate(0, ${innerHeight})`)
-          .attr("opacity", 0)
-          .call(xAxis);
+    // Skip ticks for smaller viewport
+    const yAxis = d3.axisLeft(y).tickValues(
+      sm ? yTicks.filter((_, i) => i % 2 === 0) : yTicks
+    );
 
-        chart
-          .append("g")
-          .attr("class", "myYaxis")
-          .attr("opacity", 0)
-          .call(yAxis);
+    // const yAxis = d3.axisLeft(y);
 
-        // Axis text styling
-        chart.selectAll(".myXaxis text, .myYaxis text").attr("fill", "#fff");
-        chart.selectAll(".myXaxis path, .myXaxis line, .myYaxis path, .myYaxis line")
-          .attr("stroke", "#fff");
+    chart
+      .append("g")
+      .attr("class", "myXaxis")
+      .attr("transform", `translate(0, ${innerHeight})`)
+      .attr("opacity", 0)
+      .call(xAxis);
 
-        chart
-          .append("text")
-          .attr("x", innerWidth / 2)
-          .attr("y", innerHeight + (width < 640 ? 45 : 40))
-          .attr("text-anchor", "middle")
-          .attr("fill", "#fff")
-          .style("font-size", width < 640 ? "12px" : "14px")
-          .text(xLabel);
+    chart
+      .append("g")
+      .attr("class", "myYaxis")
+      .attr("opacity", 0)
+      .call(yAxis);
 
-        chart
-          .append("text")
-          .attr("transform", "rotate(-90)")
-          .attr("x", -innerHeight / 2)
-          .attr("y", width < 640 ? -40 : -50)
-          .attr("text-anchor", "middle")
-          .attr("fill", "#fff")
-          .style("font-size", width < 640 ? "12px" : "14px")
-          .text(yLabel);
+    // Axis text styling
+    chart.selectAll(".myXaxis text, .myYaxis text").attr("fill", "#fff");
+    chart.selectAll(".myXaxis path, .myXaxis line, .myYaxis path, .myYaxis line")
+      .attr("stroke", "#fff");
 
-        const responsiveDotSize =
-          width < 480 ? Math.max(1.5, dotSize - 0.5) : dotSize;
+    chart
+      .append("text")
+      .attr("x", innerWidth / 2)
+      .attr("y", innerHeight + (width < 640 ? 45 : 40))
+      .attr("text-anchor", "middle")
+      .attr("fill", "#fff")
+      .style("font-size", width < 640 ? "12px" : "14px")
+      .text(xLabel);
 
-        chart
-          .append("g")
-          .selectAll("circle")
-          .data(cleanData)
-          .enter()
-          .append("circle")
-          .attr("cx", 0)
-          .attr("cy", innerHeight)
-          .attr("r", responsiveDotSize)
-          .style("fill", (d) => color(String(d.is_bot_flag)))
-          .style("opacity", 0.8);
+    chart
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -innerHeight / 2)
+      .attr("y", width < 640 ? -40 : -50)
+      .attr("text-anchor", "middle")
+      .attr("fill", "#fff")
+      .style("font-size", width < 640 ? "12px" : "14px")
+      .text(yLabel);
 
-        chart
-          .select(".myXaxis")
-          .transition()
-          .duration(1200)
-          .attr("opacity", 1)
-          .call(xAxis);
+    const responsiveDotSize =
+      width < 480 ? Math.max(1.5, dotSize - 0.5) : dotSize;
 
-        chart
-          .select(".myYaxis")
-          .transition()
-          .duration(1200)
-          .attr("opacity", 1)
-          .call(yAxis);
+    chart
+      .append("g")
+      .selectAll("circle")
+      .data(cleanData)
+      .enter()
+      .append("circle")
+      .attr("cx", 0)
+      .attr("cy", innerHeight)
+      .attr("r", responsiveDotSize)
+      .style("fill", (d) => color(String(d.is_bot_flag)))
+      .style("opacity", 0.8);
 
-        // Re-apply axis styles after transition
-        chart.selectAll(".myXaxis text, .myYaxis text").attr("fill", "#fff");
-        chart.selectAll(".myXaxis path, .myXaxis line, .myYaxis path, .myYaxis line")
-          .attr("stroke", "#fff");
+    chart
+      .select(".myXaxis")
+      .transition()
+      .duration(1200)
+      .attr("opacity", 1)
+      .call(xAxis);
 
-        if (canAnimate) {
-          chart
-          .selectAll("circle")
-          .transition()
-          .delay((d, i) => i * 2)
-          .duration(1400)
-          .attr("cx", (d) => x(d[xKey]))
-          .attr("cy", (d) => y(d[yKey]));
-        } else {
-          chart
-          .selectAll("circle")
-          .attr("cx", (d) => x(d[xKey]))
-          .attr("cy", (d) => y(d[yKey]));
-        }
+    chart
+      .select(".myYaxis")
+      .transition()
+      .duration(1200)
+      .attr("opacity", 1)
+      .call(yAxis);
 
-          AnnotationLayer(chart, annotations, x, y, {
-            titleSize: xlg ? 22 : 26,
-            labelSize: xlg ? 18 : 20,
-            scaleFactor: Math.max(0.6, Math.min(1, innerWidth / 700)),
-            chartWidth: innerWidth,
-            chartHeight: innerHeight,
-          });
-      })
-      .catch((err) => console.error(err));
+    // Re-apply axis styles after transition
+    chart.selectAll(".myXaxis text, .myYaxis text").attr("fill", "#fff");
+    chart.selectAll(".myXaxis path, .myXaxis line, .myYaxis path, .myYaxis line")
+      .attr("stroke", "#fff");
+
+    if (canAnimate) {
+      chart
+        .selectAll("circle")
+        .transition()
+        .delay((d, i) => i * 2)
+        .duration(1400)
+        .attr("cx", (d) => x(d[xKey]))
+        .attr("cy", (d) => y(d[yKey]));
+    } else {
+      chart
+        .selectAll("circle")
+        .attr("cx", (d) => x(d[xKey]))
+        .attr("cy", (d) => y(d[yKey]));
+    }
+
+    AnnotationLayer(chart, annotations, x, y, {
+      titleSize: xlg ? 22 : 26,
+      labelSize: xlg ? 18 : 20,
+      scaleFactor: Math.max(0.6, Math.min(1, innerWidth / 700)),
+      chartWidth: innerWidth,
+      chartHeight: innerHeight,
+    });
+
   }, [
     shouldAnimate,
     dimensions,
@@ -264,7 +263,6 @@ export const ScatterPlot = ({
     yKey,
     xLabel,
     yLabel,
-    csvPath,
     dotSize,
     annotations
   ]);

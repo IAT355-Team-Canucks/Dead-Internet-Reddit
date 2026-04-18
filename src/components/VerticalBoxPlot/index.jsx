@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 import * as d3 from "d3";
 import "../../App.css";
 import { useViewport } from "../../context/ViewportContext";
+import { useCsvData } from "../../context/CsvDataContext";
 
 export const VerticalBoxPlot = ({
   title = "Box Plot Component",
@@ -12,29 +13,14 @@ export const VerticalBoxPlot = ({
   yKey = "bot_type_label",
   xLabel = "Category",
   yLabel = "sentiment_score",
-  csvPath = `${import.meta.env.BASE_URL}data/reddit_dead_internet_analysis.csv`,
 }) => {
   const containerRef = useRef(null);
   const hasAnimatedRef = useRef(false);
   const { xlg } = useViewport();
-
+  const { data: rawData } = useCsvData();  
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const [containerWidth, setContainerWidth] = useState(900);
   const [chartHeight, setChartHeight] = useState(600);
-  const [rawData, setRawData] = useState([]);
-
-  // Load CSV once
-  useEffect(() => {
-    let cancelled = false;
-
-    d3.csv(csvPath, d3.autoType).then((data) => {
-      if (!cancelled) setRawData(data);
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [csvPath]);
 
   // Watch container size and derive width + height from it
   useEffect(() => {

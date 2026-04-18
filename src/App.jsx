@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ViewportProvider } from "./context/ViewportContext";
+import { CsvDataProvider } from "./context/CsvDataContext";
 
 import { Navbar } from "./components/Navbar";
 
@@ -91,7 +92,7 @@ const sections = [
     label: "Conclusion",
     component: ConclusionSlide,
   }
-  
+
   // {
   //   id: "demo",
   //   num: "XX",
@@ -105,6 +106,7 @@ export default function App() {
   const contentRef = useRef(null);
 
   const [isSmall, setIsSmall] = useState(window.innerWidth < 800);
+  const CSV_PATH = `${import.meta.env.BASE_URL}data/reddit_dead_internet_analysis.csv`;
 
   useEffect(() => {
     const handleResize = () => {
@@ -165,77 +167,81 @@ export default function App() {
 
   return (
     <ViewportProvider>
-    <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          height: "100vh",
-          background: "#1A120F",
-          fontFamily: "'Courier New', monospace",
-        }}
-      >
+      <CsvDataProvider csvPath={CSV_PATH}>
 
-        <Navbar sections={sections} activeId={activeId} scrollTo={scrollTo} />
-
-        {/* Scrollable content */}
         <div
-          ref={contentRef}
           style={{
-            marginLeft: !isSmall ? "12.5rem" : "0",
-            flex: 1,
-            overflowY: "scroll",
+            display: "flex",
+            flexDirection: "column",
             height: "100vh",
+            background: "#1A120F",
+            fontFamily: "'Courier New', monospace",
           }}
         >
-          {sections.map((s) => {
-            const SlideComponent = s.component;
 
-            if (s.id === "_") {
-              return(
+          <Navbar sections={sections} activeId={activeId} scrollTo={scrollTo} />
+
+          {/* Scrollable content */}
+          <div
+            ref={contentRef}
+            style={{
+              marginLeft: !isSmall ? "12.5rem" : "0",
+              flex: 1,
+              overflowY: "scroll",
+              height: "100vh",
+            }}
+          >
+            {sections.map((s) => {
+              const SlideComponent = s.component;
+
+              if (s.id === "_") {
+                return (
+                  <div
+                    key={s.id}
+                    id={s.id}
+                    className="section"
+                    style={{
+                      minHeight: "80vh",
+                      height: "auto",
+                      scrollSnapAlign: "start",
+                      display: "flex",
+                      alignItems: "stretch",
+                      justifyContent: "center",
+                      marginBottom: "6rem"
+                    }}
+                  >
+                    <div style={{ width: "100%", minHeight: "100%" }}>
+                      <SlideComponent />
+                    </div>
+                  </div>
+                )
+              }
+              return (
                 <div
                   key={s.id}
                   id={s.id}
                   className="section"
                   style={{
-                    minHeight: "80vh",
+                    minHeight: "100vh",
                     height: "auto",
                     scrollSnapAlign: "start",
                     display: "flex",
                     alignItems: "stretch",
                     justifyContent: "center",
-                    marginBottom: "6rem"
+                    marginBottom: "12rem"
                   }}
                 >
                   <div style={{ width: "100%", minHeight: "100%" }}>
                     <SlideComponent />
                   </div>
                 </div>
-              )
-            }
-            return (
-              <div
-                key={s.id}
-                id={s.id}
-                className="section"
-                style={{
-                  minHeight: "100vh",
-                  height: "auto",
-                  scrollSnapAlign: "start",
-                  display: "flex",
-                  alignItems: "stretch",
-                  justifyContent: "center",
-                  marginBottom: "12rem"
-                }}
-              >
-                <div style={{ width: "100%", minHeight: "100%" }}>
-                  <SlideComponent />
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
+      </CsvDataProvider>
+
     </ViewportProvider>
-    
+
   );
 }
