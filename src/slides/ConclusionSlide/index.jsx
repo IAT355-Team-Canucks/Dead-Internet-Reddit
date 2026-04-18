@@ -82,7 +82,7 @@ export const ConclusionSlide = () => {
     >
       <div
         style={{
-          opacity: visible ? 1 : 0,
+          opacity: visible ? 1 : 0.01,
           transform: visible ? "translateY(0)" : "translateY(24px)",
           transition: "opacity 0.7s ease, transform 0.7s ease",
         }}

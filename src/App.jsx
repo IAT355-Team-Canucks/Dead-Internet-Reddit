@@ -1,21 +1,79 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { ViewportProvider } from "./context/ViewportContext";
+import { Navbar } from "./components/Navbar";
 import { CsvDataProvider } from "./context/CsvDataContext";
 
-import { Navbar } from "./components/Navbar";
+const LandingSlide = lazy(() =>
+  import("./slides/LandingSlide").then((m) => ({
+    default: m.LandingSlide,
+  }))
+);
 
-import { LandingSlide } from "./slides/LandingSlide";
-import { DatasetCompositionSlide } from "./slides/DatasetCompositionSlide";
-import { EmotionalRangeSlide } from "./slides/EmotionalRangeSlide";
-import { LanguagePatternSlide } from "./slides/LanguagePatternSlide";
-import { PostDistributionSlide } from "./slides/PostDistributionSlide";
-import { EngagementVelocitySlide } from "./slides/EngagementVelocitySlide";
-import { LinkBehaviourSlide } from "./slides/LinkBehaviourSlide";
-import { ResponseTimingSlide } from "./slides/ResponseTimingSlide";
-import { ConclusionSlide } from "./slides/ConclusionSlide"
-import { BackgroundSlide } from "./slides/BackgroundSlide";
-import { ContextSlide } from "./slides/ContextSlide";
-import { ImpactSlide } from "./slides/ImpactSlide";
+const BackgroundSlide = lazy(() =>
+  import("./slides/BackgroundSlide").then((m) => ({
+    default: m.BackgroundSlide,
+  }))
+);
+
+const ContextSlide = lazy(() =>
+  import("./slides/ContextSlide").then((m) => ({
+    default: m.ContextSlide,
+  }))
+);
+
+const ImpactSlide = lazy(() =>
+  import("./slides/ImpactSlide").then((m) => ({
+    default: m.ImpactSlide,
+  }))
+);
+
+const DatasetCompositionSlide = lazy(() =>
+  import("./slides/DatasetCompositionSlide").then((m) => ({
+    default: m.DatasetCompositionSlide,
+  }))
+);
+
+const EmotionalRangeSlide = lazy(() =>
+  import("./slides/EmotionalRangeSlide").then((m) => ({
+    default: m.EmotionalRangeSlide,
+  }))
+);
+
+const LanguagePatternSlide = lazy(() =>
+  import("./slides/LanguagePatternSlide").then((m) => ({
+    default: m.LanguagePatternSlide,
+  }))
+);
+
+const EngagementVelocitySlide = lazy(() =>
+  import("./slides/EngagementVelocitySlide").then((m) => ({
+    default: m.EngagementVelocitySlide,
+  }))
+);
+
+const PostDistributionSlide = lazy(() =>
+  import("./slides/PostDistributionSlide").then((m) => ({
+    default: m.PostDistributionSlide,
+  }))
+);
+
+const LinkBehaviourSlide = lazy(() =>
+  import("./slides/LinkBehaviourSlide").then((m) => ({
+    default: m.LinkBehaviourSlide,
+  }))
+);
+
+const ResponseTimingSlide = lazy(() =>
+  import("./slides/ResponseTimingSlide").then((m) => ({
+    default: m.ResponseTimingSlide,
+  }))
+);
+
+const ConclusionSlide = lazy(() =>
+  import("./slides/ConclusionSlide").then((m) => ({
+    default: m.ConclusionSlide,
+  }))
+);
 
 import { DemoSlide } from "./slides/DemoSlide";
 
@@ -25,72 +83,84 @@ const sections = [
     num: "00",
     label: "Introduction",
     component: LandingSlide,
+    hasChart: false
   },
   {
     id: "background",
     num: "01",
     label: "What are Bots?",
-    component: BackgroundSlide
+    component: BackgroundSlide,
+    hasChart: false
   },
   {
     id: "context",
     num: "02",
     label: "The Big Idea",
-    component: ContextSlide
+    component: ContextSlide,
+    hasChart: false
   },
   {
     id: "impact",
     num: "03",
     label: "Bots on Reddit",
-    component: ImpactSlide
+    component: ImpactSlide,
+    hasChart: true
   },
   {
     id: "dataset",
     num: "04",
     label: "Dataset Overview",
     component: DatasetCompositionSlide,
+    hasChart: true
   },
   {
     id: "emotion",
     num: "05",
     label: "Emotional Range",
     component: EmotionalRangeSlide,
+    hasChart: true
   },
   {
     id: "language",
     num: "06",
     label: "Language Patterns",
     component: LanguagePatternSlide,
+    hasChart: true
   },
   {
     id: "engagement",
     num: "07",
     label: "Engagement Velocity",
     component: EngagementVelocitySlide,
+    hasChart: true
   },
   {
     id: "distribution",
     num: "08",
     label: "Post Distribution",
     component: PostDistributionSlide,
+    hasChart: true
   },
   {
     id: "link",
     num: "09",
     label: "Link Behaviour",
     component: LinkBehaviourSlide,
+    hasChart: true
   },
   {
     id: "response",
     num: "10",
     label: "Response Timing",
     component: ResponseTimingSlide,
+    hasChart: true
   },
   {
     id: "conclusion",
     num: "11",
     label: "Conclusion",
     component: ConclusionSlide,
+    hasChart: false
   }
 
   // {
@@ -194,28 +264,6 @@ export default function App() {
             {sections.map((s) => {
               const SlideComponent = s.component;
 
-              if (s.id === "_") {
-                return (
-                  <div
-                    key={s.id}
-                    id={s.id}
-                    className="section"
-                    style={{
-                      minHeight: "80vh",
-                      height: "auto",
-                      scrollSnapAlign: "start",
-                      display: "flex",
-                      alignItems: "stretch",
-                      justifyContent: "center",
-                      marginBottom: "6rem"
-                    }}
-                  >
-                    <div style={{ width: "100%", minHeight: "100%" }}>
-                      <SlideComponent />
-                    </div>
-                  </div>
-                )
-              }
               return (
                 <div
                   key={s.id}
@@ -232,7 +280,9 @@ export default function App() {
                   }}
                 >
                   <div style={{ width: "100%", minHeight: "100%" }}>
-                    <SlideComponent />
+                    <Suspense fallback={<div style={{ minHeight: "100vh", background: "#1A120F" }} />}>
+                      <SlideComponent />
+                    </Suspense>
                   </div>
                 </div>
               );
