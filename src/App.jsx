@@ -12,6 +12,9 @@ import { EngagementVelocitySlide } from "./slides/EngagementVelocitySlide";
 import { LinkBehaviourSlide } from "./slides/LinkBehaviourSlide";
 import { ResponseTimingSlide } from "./slides/ResponseTimingSlide";
 import { ConclusionSlide } from "./slides/ConclusionSlide"
+import { BackgroundSlide } from "./slides/BackgroundSlide";
+import { ContextSlide } from "./slides/ContextSlide";
+import { ImpactSlide } from "./slides/ImpactSlide";
 
 import { DemoSlide } from "./slides/DemoSlide";
 
@@ -21,6 +24,24 @@ const sections = [
     num: "00",
     label: "Introduction",
     component: LandingSlide,
+  },
+  {
+    id: "_",
+    num: "",
+    label: "",
+    component: BackgroundSlide
+  },
+  {
+    id: "_",
+    num: "",
+    label: "",
+    component: ContextSlide
+  },
+  {
+    id: "_",
+    num: "",
+    label: "",
+    component: ImpactSlide
   },
   {
     id: "dataset",
@@ -169,6 +190,28 @@ export default function App() {
           {sections.map((s) => {
             const SlideComponent = s.component;
 
+            if (s.id === "_") {
+              return(
+                <div
+                  key={s.id}
+                  id={s.id}
+                  className="section"
+                  style={{
+                    minHeight: "80vh",
+                    height: "auto",
+                    scrollSnapAlign: "start",
+                    display: "flex",
+                    alignItems: "stretch",
+                    justifyContent: "center",
+                    marginBottom: "6rem"
+                  }}
+                >
+                  <div style={{ width: "100%", minHeight: "100%" }}>
+                    <SlideComponent />
+                  </div>
+                </div>
+              )
+            }
             return (
               <div
                 key={s.id}

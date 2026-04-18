@@ -74,7 +74,7 @@ export const LandingSlide = () => {
               lineHeight: "1.05",
               margin: "0 0 clamp(0.8rem, 2vw, 1.8rem) 0",
               textTransform: "uppercase",
-              fontFamily: "StyreneA, Helvetica, Arial, sans-serif",
+              fontFamily: "Georgia",
               textAlign: "left"
             }}
           >

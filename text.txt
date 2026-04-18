@@ -1,16 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import "../../App.css";
 import * as d3 from "d3";
 
-export const HorizontalBarChart = ({
-  title = "Horizontal Bar Chart Component",
-  width = 880,
+export const PieChart = ({
+  title = "Pie Chart",
+  data = [
+    { label: "Humans", value: 300 },
+    { label: "Bots", value: 200 },
+  ],
+  width = 600,
   height = 600,
-  xKey = "is_bot_flag",
-  yKey = "user_karma", // not used right now since this chart counts categories
-  xLabel = "Count",
-  yLabel = "Category",
-  csvPath = `${import.meta.env.BASE_URL}data/reddit_dead_internet_analysis.csv`,
+  innerRadius = 0,
+  threshold = 1,
 }) => {
   const containerRef = useRef(null);
   const hasAnimatedRef = useRef(false);
@@ -29,349 +29,101 @@ export const HorizontalBarChart = ({
         }
       },
       {
-        threshold: 1,
+        threshold,
         rootMargin: "0px 0px -15% 0px",
       }
     );
 
     observer.observe(containerRef.current);
-    return () => observer.disconnect();
-  }, []);
 
-  // Actual rendering of D3 graph
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  // Render pie chart
   useEffect(() => {
     if (!containerRef.current || !shouldAnimate) return;
 
-    const margin = { top: 20, right: 30, bottom: 60, left: 100 };
-
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
-
     d3.select(containerRef.current).selectAll("*").remove();
 
-    const svg = d3
-      .select(containerRef.current)
-      .append("svg")
-      .attr("width", width)
-      .attr("height", height);
-
-    const chart = svg
-      .append("g")
-      .attr("transform", `translate(${margin.left}, ${margin.top})`);
-
-    d3.csv(csvPath, d3.autoType).then((data) => {
-      const counts = Array.from(
-        d3.rollup(
-          data,
-          (v) => v.length,
-          (d) => String(d[xKey])
-        ),
-        ([key, value]) => ({
-          category: key,
-          count: value,
-        })
-      );
-
-      counts.sort((a, b) => a.count - b.count);
-
-      const x = d3
-        .scaleLinear()
-        .domain([0, d3.max(counts, (d) => d.count)])
-        .nice()
-        .range([0, innerWidth]);
-
-      const y = d3
-        .scaleBand()
-        .domain(counts.map((d) => d.category))
-        .range([innerHeight, 0])
-        .padding(0.2);
-
-      const bars = chart
-        .selectAll(".bar")
-        .data(counts)
-        .enter()
-        .append("rect")
-        .attr("class", "bar")
-        .attr("fill", (d) => (d.category === "True" ? "var(--bot-colour)" : "var(--human-colour)"))
-        .attr("x", 0)
-        .attr("y", (d) => y(d.category))
-        .attr("height", y.bandwidth())
-        .attr("width", 0);
-
-      bars
-        .transition()
-        .duration(1800)
-        .attr("width", (d) => x(d.count));
-
-      chart
-        .append("g")
-        .attr("transform", `translate(0, ${innerHeight})`)
-        .attr("stroke", "#fff")
-        .call(d3.axisBottom(x));
-
-      chart
-        .append("g")
-        .attr("stroke", "#fff")
-        .call(d3.axisLeft(y));
-
-      chart
-        .append("text")
-        .attr("stroke", "#fff")
-        .attr("x", innerWidth / 2)
-        .attr("y", innerHeight + 45)
-        .attr("text-anchor", "middle")
-        .text(xLabel);
-
-      chart
-        .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("stroke", "#fff")
-        .attr("x", -innerHeight / 2)
-        .attr("y", -70)
-        .attr("text-anchor", "middle")
-        .text(yLabel);
-    });
-  }, [csvPath, width, height, xKey, yKey, xLabel, yLabel, shouldAnimate]);
-
-  return (
-    <div style={{
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "stretch",
-      margin: 0
-    }}>
-      <h2>{title}</h2>
-      <div ref={containerRef}></div>
-    </div>
-  );
-};
-
-
-import React, { useEffect, useRef, useState, useMemo } from "react";
-import * as d3 from "d3";
-import "../../App.css";
-import { useViewport } from "../../context/ViewportContext";
-
-export const HorizontalStackedBarChart = ({
-  title = "Horizontal Stacked Bar Chart",
-  height = 600,
-  xKey = "subreddit",
-  yKey = "is_bot_flag",
-  xLabel = "Count",
-  yLabel = "Category",
-  csvPath = `${import.meta.env.BASE_URL}data/reddit_dead_internet_analysis.csv`,
-}) => {
-  const containerRef = useRef(null);
-  const hasAnimatedRef = useRef(false);
-
-  const [shouldAnimate, setShouldAnimate] = useState(false);
-  const [containerWidth, setContainerWidth] = useState(680);
-  const [rawData, setRawData] = useState([]);
-  const { isDesktop } = useViewport();
-
-  // Load CSV once per path change
-  useEffect(() => {
-    let cancelled = false;
-
-    d3.csv(csvPath, d3.autoType).then((data) => {
-      if (!cancelled) setRawData(data);
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [csvPath]);
-
-  // Watch container size
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const resizeObserver = new ResizeObserver((entries) => {
-      const entry = entries[0];
-      if (!entry) return;
-
-      const newWidth = entry.contentRect.width;
-      if (newWidth > 0) {
-        setContainerWidth(newWidth);
-      }
-    });
-
-    resizeObserver.observe(containerRef.current);
-    return () => resizeObserver.disconnect();
-  }, []);
-
-  // Observer for animation
-  useEffect(() => {
-    if (!containerRef.current || hasAnimatedRef.current) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimatedRef.current) {
-          hasAnimatedRef.current = true;
-          setShouldAnimate(true);
-          observer.disconnect();
-        }
-      },
-      {
-        threshold: 0.3,
-        rootMargin: "0px 0px -15% 0px",
-      }
-    );
-
-    observer.observe(containerRef.current);
-    return () => observer.disconnect();
-  }, []);
-
-  // Preprocess once when data or keys change
-  const { stackedData, stackKeys } = useMemo(() => {
-    if (!rawData.length) {
-      return { stackedData: [], stackKeys: [] };
-    }
-
-    const stackKeys = Array.from(new Set(rawData.map((d) => String(d[yKey]))));
-
-    const grouped = d3.rollup(
-      rawData,
-      (rows) => {
-        const obj = { total: rows.length };
-
-        stackKeys.forEach((key) => {
-          obj[key] = rows.filter((d) => String(d[yKey]) === key).length;
-        });
-
-        return obj;
-      },
-      (d) => String(d[xKey])
-    );
-
-    const stackedData = Array.from(grouped, ([category, values]) => ({
-      category,
-      ...values,
-    })).sort((a, b) => a.total - b.total);
-
-    return { stackedData, stackKeys };
-  }, [rawData, xKey, yKey]);
-
-  // Draw chart on resize using cached data
-  useEffect(() => {
-    if (!containerRef.current || !shouldAnimate || !stackedData.length || containerWidth <= 0) return;
-
-    const width = Math.max(containerWidth, 0);
-    const margin = { top: 20, right: 30, bottom: 60, left: 100 };
-    const innerWidth = Math.max(0, width - margin.left - margin.right);
-    const innerHeight = Math.max(0, height - margin.top - margin.bottom);
-
-    if (innerWidth === 0 || innerHeight === 0) {
-      d3.select(containerRef.current).select("svg").remove();
-      return;
-    }
-
-    d3.select(containerRef.current).select("svg").remove();
+    const radius = Math.min(width, height) / 2;
 
     const svg = d3
       .select(containerRef.current)
       .append("svg")
       .attr("viewBox", `0 0 ${width} ${height}`)
-      .attr("preserveAspectRatio", "xMidYMid meet")
       .style("width", "100%")
       .style("height", "auto")
       .style("display", "block");
 
     const chart = svg
       .append("g")
-      .attr("transform", `translate(${margin.left}, ${margin.top})`);
-
-    const yDomain = stackedData.map((d) => d.category);
-
-    const x = d3
-      .scaleLinear()
-      .domain([0, d3.max(stackedData, (d) => d.total) || 0])
-      .nice()
-      .range([0, innerWidth]);
-
-    const y = d3
-      .scaleBand()
-      .domain(yDomain)
-      .range([innerHeight, 0])
-      .padding(0.2);
+      .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
     const color = d3
       .scaleOrdinal()
-      .domain(stackKeys)
-      .range([
-        "var(--human-colour)",
-        "var(--bot-colour)",
-        "#F8766D",
-        "#C77CFF",
-        "#FFB000",
-        "#00BFC4",
-      ]);
+      .domain(data.map((d) => d.label))
+      .range(d3.schemeTableau10);
 
-    const stack = d3.stack().keys(stackKeys);
-    const series = stack(stackedData);
+    const pie = d3
+      .pie()
+      .sort(null)
+      .value((d) => +d.value);
 
-    const layer = chart
-      .selectAll(".layer")
-      .data(series)
+    const pieData = pie(data);
+
+    const arc = d3
+      .arc()
+      .innerRadius(innerRadius)
+      .outerRadius(radius - 10);
+
+    const labelArc = d3
+      .arc()
+      .innerRadius(radius * 0.6)
+      .outerRadius(radius * 0.6);
+
+    const slices = chart
+      .selectAll(".slice")
+      .data(pieData)
       .enter()
       .append("g")
-      .attr("class", "layer")
-      .attr("fill", (d) => color(d.key));
+      .attr("class", "slice");
 
-    layer
-      .selectAll("rect")
-      .data((d) => d)
-      .enter()
-      .append("rect")
-      .attr("y", (d) => y(d.data.category))
-      .attr("x", (d) => Math.min(x(d[0]), x(d[1])))
-      .attr("height", y.bandwidth())
-      .attr("width", 0)
+    slices
+      .append("path")
+      .attr("fill", (d) => color(d.data.label))
+      .attr("stroke", "#fff")
+      .attr("stroke-width", 2)
       .transition()
       .duration(1800)
-      .attr("width", (d) => Math.max(0, x(d[1]) - x(d[0])));
+      .attrTween("d", function (d) {
+        const interpolate = d3.interpolate(
+          { startAngle: 0, endAngle: 0 },
+          d
+        );
+        return function (t) {
+          return arc(interpolate(t));
+        };
+      });
 
-    chart
-      .append("g")
-      .attr("transform", `translate(0, ${innerHeight})`)
-      .attr("stroke", "#fff")
-      .call(d3.axisBottom(x));
-
-    chart
-      .append("g")
-      .attr("stroke", "#fff")
-      .call(d3.axisLeft(y));
-
-    chart
+    slices
       .append("text")
-      .attr("stroke", "#fff")
-      .attr("x", innerWidth / 2)
-      .attr("y", innerHeight + 45)
+      .text((d) => d.data.label)
+      .attr("transform", (d) => `translate(${labelArc.centroid(d)})`)
       .attr("text-anchor", "middle")
-      .text(xLabel);
-
-    chart
-      .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("stroke", "#fff")
-      .attr("x", -innerHeight / 2)
-      .attr("y", -80)
-      .attr("text-anchor", "middle")
-      .text(yLabel);
-  }, [stackedData, stackKeys, containerWidth, height, xLabel, yLabel, shouldAnimate]);
+      .attr("dominant-baseline", "middle")
+      .style("fill", "#fff")
+      .style("font-size", "14px")
+      .style("opacity", 0)
+      .transition()
+      .delay(1200)
+      .duration(500)
+      .style("opacity", 1);
+  }, [data, width, height, innerRadius, shouldAnimate]);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "stretch",
-        width: "100%",
-        margin: 0,
-      }}
-    >
-      <h2>{title}</h2>
-      <div ref={containerRef} style={{ width: "100%" }} />
+    <div style={{ width: "100%" }}>
+      {title && <h2>{title}</h2>}
+      <div ref={containerRef} />
     </div>
   );
 };

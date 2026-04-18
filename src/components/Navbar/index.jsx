@@ -23,6 +23,7 @@ export const Navbar = ({sections, activeId, scrollTo}) => {
     >
       {sections?.map((s) => {
         const active = activeId === s.id;
+        if (s.id === "_") return;
         return (
           <div
             key={s.id}
