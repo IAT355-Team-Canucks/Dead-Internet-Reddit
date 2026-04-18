@@ -42,6 +42,8 @@ export function AnnotationLayer(
 
   const maskId = `annotation-mask-${Math.random().toString(36).slice(2, 9)}`;
 
+
+
   const mask = defs
     .append("mask")
     .attr("id", maskId)
@@ -171,8 +173,8 @@ export function AnnotationLayer(
         .attr("r", finalR);
 
     } else if (a.subjectShape === "box") {
-      const boxWidth = (a.boxWidth ?? 10) * scaleFactor;
-      const boxHeight = (a.boxHeight ?? 10) * scaleFactor;
+        const boxWidth = resolveSize(a.boxWidth, chartWidth, 80) * scaleFactor;
+        const boxHeight = resolveSize(a.boxHeight, chartHeight, 50) * scaleFactor;
 
       lineStartX = a.pointAt === "corner" ? -boxWidth / 2 : 0;
       lineStartY = a.pointAt === "corner" ? -boxHeight / 2 : 0;

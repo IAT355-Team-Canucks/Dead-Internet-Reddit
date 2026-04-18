@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import * as d3 from "d3";
 import "../../App.css";
+import { useViewport } from "../../context/ViewportContext";
 
 export const HorizontalStackedBarChart = ({
   title = "Horizontal Stacked Bar Chart",
@@ -16,6 +17,21 @@ export const HorizontalStackedBarChart = ({
 
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const [containerWidth, setContainerWidth] = useState(680);
+  const [rawData, setRawData] = useState([]);
+  const { isDesktop } = useViewport();
+
+  // Load CSV once per path change
+  useEffect(() => {
+    let cancelled = false;
+
+    d3.csv(csvPath, d3.autoType).then((data) => {
+      if (!cancelled) setRawData(data);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [csvPath]);
 
   // Watch container size
   useEffect(() => {
@@ -32,7 +48,6 @@ export const HorizontalStackedBarChart = ({
     });
 
     resizeObserver.observe(containerRef.current);
-
     return () => resizeObserver.disconnect();
   }, []);
 
@@ -55,18 +70,52 @@ export const HorizontalStackedBarChart = ({
     );
 
     observer.observe(containerRef.current);
-
     return () => observer.disconnect();
   }, []);
 
-  // Render chart
-  useEffect(() => {
-    if (!containerRef.current || !shouldAnimate || containerWidth <= 0) return;
+  // Preprocess once when data or keys change
+  const { stackedData, stackKeys } = useMemo(() => {
+    if (!rawData.length) {
+      return { stackedData: [], stackKeys: [] };
+    }
 
-    const width = containerWidth;
+    const stackKeys = Array.from(new Set(rawData.map((d) => String(d[yKey]))));
+
+    const grouped = d3.rollup(
+      rawData,
+      (rows) => {
+        const obj = { total: rows.length };
+
+        stackKeys.forEach((key) => {
+          obj[key] = rows.filter((d) => String(d[yKey]) === key).length;
+        });
+
+        return obj;
+      },
+      (d) => String(d[xKey])
+    );
+
+    const stackedData = Array.from(grouped, ([category, values]) => ({
+      category,
+      ...values,
+    })).sort((a, b) => a.total - b.total);
+
+    return { stackedData, stackKeys };
+  }, [rawData, xKey, yKey]);
+
+  // Draw chart on resize using cached data
+  useEffect(() => {
+    if (!containerRef.current || !shouldAnimate || !stackedData.length || containerWidth <= 0) return;
+
+    const width = Math.max(containerWidth, 0);
     const margin = { top: 20, right: 30, bottom: 60, left: 100 };
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
+    const innerWidth = Math.max(0, width - margin.left - margin.right);
+    const innerHeight = Math.max(0, height - margin.top - margin.bottom);
+
+    if (innerWidth === 0 || innerHeight === 0) {
+      d3.select(containerRef.current).select("svg").remove();
+      return;
+    }
 
     d3.select(containerRef.current).select("svg").remove();
 
@@ -83,133 +132,84 @@ export const HorizontalStackedBarChart = ({
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-    d3.csv(csvPath, d3.autoType).then((data) => {
-      const stackKeys = Array.from(new Set(data.map((d) => String(d[yKey]))));
+    const yDomain = stackedData.map((d) => d.category);
 
-      const grouped = d3.rollup(
-        data,
-        (rows) => {
-          const obj = { total: rows.length };
+    const x = d3
+      .scaleLinear()
+      .domain([0, d3.max(stackedData, (d) => d.total) || 0])
+      .nice()
+      .range([0, innerWidth]);
 
-          stackKeys.forEach((key) => {
-            obj[key] = rows.filter((d) => String(d[yKey]) === key).length;
-          });
+    const y = d3
+      .scaleBand()
+      .domain(yDomain)
+      .range([innerHeight, 0])
+      .padding(0.2);
 
-          return obj;
-        },
-        (d) => String(d[xKey])
-      );
+    const color = d3
+      .scaleOrdinal()
+      .domain(stackKeys)
+      .range([
+        "var(--human-colour)",
+        "var(--bot-colour)",
+        "#F8766D",
+        "#C77CFF",
+        "#FFB000",
+        "#00BFC4",
+      ]);
 
-      const stackedData = Array.from(grouped, ([category, values]) => ({
-        category,
-        ...values,
-      }));
+    const stack = d3.stack().keys(stackKeys);
+    const series = stack(stackedData);
 
-      stackedData.sort((a, b) => a.total - b.total);
+    const layer = chart
+      .selectAll(".layer")
+      .data(series)
+      .enter()
+      .append("g")
+      .attr("class", "layer")
+      .attr("fill", (d) => color(d.key));
 
-      const yDomain = stackedData.map((d) => d.category);
+    layer
+      .selectAll("rect")
+      .data((d) => d)
+      .enter()
+      .append("rect")
+      .attr("y", (d) => y(d.data.category))
+      .attr("x", (d) => Math.min(x(d[0]), x(d[1])))
+      .attr("height", y.bandwidth())
+      .attr("width", 0)
+      .transition()
+      .duration(1800)
+      .attr("width", (d) => Math.max(0, x(d[1]) - x(d[0])));
 
-      const x = d3
-        .scaleLinear()
-        .domain([0, d3.max(stackedData, (d) => d.total) || 0])
-        .nice()
-        .range([0, innerWidth]);
+    chart
+      .append("g")
+      .attr("transform", `translate(0, ${innerHeight})`)
+      .attr("stroke", "#fff")
+      .call(d3.axisBottom(x));
 
-      const y = d3
-        .scaleBand()
-        .domain(yDomain)
-        .range([innerHeight, 0])
-        .padding(0.2);
+    chart
+      .append("g")
+      .attr("stroke", "#fff")
+      .call(d3.axisLeft(y));
 
-      const color = d3
-        .scaleOrdinal()
-        .domain(stackKeys)
-        .range([
-          "var(--human-colour)",
-          "var(--bot-colour)",
-          "#F8766D",
-          "#C77CFF",
-          "#FFB000",
-          "#00BFC4",
-        ]);
+    chart
+      .append("text")
+      .attr("stroke", "#fff")
+      .attr("x", innerWidth / 2)
+      .attr("y", innerHeight + 45)
+      .attr("text-anchor", "middle")
+      .text(xLabel);
 
-      const stack = d3.stack().keys(stackKeys);
-      const series = stack(stackedData);
-
-      const layer = chart
-        .selectAll(".layer")
-        .data(series)
-        .enter()
-        .append("g")
-        .attr("class", "layer")
-        .attr("fill", (d) => color(d.key));
-
-      layer
-        .selectAll("rect")
-        .data((d) => d)
-        .enter()
-        .append("rect")
-        .attr("y", (d) => y(d.data.category))
-        .attr("x", (d) => x(d[0]))
-        .attr("height", y.bandwidth())
-        .attr("width", 0)
-        .transition()
-        .duration(1800)
-        .attr("width", (d) => x(d[1]) - x(d[0]));
-
-      chart
-        .append("g")
-        .attr("transform", `translate(0, ${innerHeight})`)
-        .attr("stroke", "#fff")
-        .call(d3.axisBottom(x));
-
-      chart
-        .append("g")
-        .attr("stroke", "#fff")
-        .call(d3.axisLeft(y));
-
-      chart
-        .append("text")
-        .attr("stroke", "#fff")
-        .attr("x", innerWidth / 2)
-        .attr("y", innerHeight + 45)
-        .attr("text-anchor", "middle")
-        .text(xLabel);
-
-      chart
-        .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("stroke", "#fff")
-        .attr("x", -innerHeight / 2)
-        .attr("y", -80)
-        .attr("text-anchor", "middle")
-        .text(yLabel);
-
-      const legend = svg
-        .append("g")
-        .attr("transform", `translate(${width - 140}, 20)`);
-
-      stackKeys.forEach((key, i) => {
-        const row = legend
-          .append("g")
-          .attr("transform", `translate(0, ${i * 22})`);
-
-        row
-          .append("rect")
-          .attr("width", 14)
-          .attr("height", 14)
-          .attr("fill", color(key));
-
-        row
-          .append("text")
-          .attr("x", 20)
-          .attr("y", 11)
-          .attr("fill", "#fff")
-          .style("font-size", "12px")
-          .text(key);
-      });
-    });
-  }, [csvPath, containerWidth, height, xKey, yKey, xLabel, yLabel, shouldAnimate]);
+    chart
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("stroke", "#fff")
+      .attr("x", -innerHeight / 2)
+      .attr("y", -80)
+      .attr("text-anchor", "middle")
+      .text(yLabel);
+  }, [stackedData, stackKeys, containerWidth, height, xLabel, yLabel, shouldAnimate]);
 
   return (
     <div
@@ -222,12 +222,7 @@ export const HorizontalStackedBarChart = ({
       }}
     >
       <h2>{title}</h2>
-      <div
-        ref={containerRef}
-        style={{
-          width: "100%",
-        }}
-      />
+      <div ref={containerRef} style={{ width: "100%" }} />
     </div>
   );
 };

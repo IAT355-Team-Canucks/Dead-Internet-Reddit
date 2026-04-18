@@ -88,8 +88,8 @@ export const EngagementVelocitySlide = () => {
                   type: "callout",
                   subjectShape: "box",
                   note: {
-                    title: "Varied Account Ages",
-                    label: "Humans tend to have varying account ages associated with karma",
+                    title: "Humans' Varied Account Ages",
+                    label: "Humans have no correlation between age and karma",
                   },
                   boxWidth: "90%",
                   boxHeight: "100%",

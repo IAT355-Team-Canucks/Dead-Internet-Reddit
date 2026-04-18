@@ -1,10 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import "../../App.css";
+import { useViewport } from "../../context/ViewportContext";
 
 export const VerticalBoxPlot = ({
   title = "Box Plot Component",
-  height = 600,
+  heightRatio = 0.7, // controls responsiveness
+  minHeight = 370,
+  maxHeight = 950,
   xKey = "sentiment_score",
   yKey = "bot_type_label",
   xLabel = "Category",
@@ -13,11 +16,18 @@ export const VerticalBoxPlot = ({
 }) => {
   const containerRef = useRef(null);
   const hasAnimatedRef = useRef(false);
-
+  const { isDesktop } = useViewport();
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const [containerWidth, setContainerWidth] = useState(900);
+  const [chartHeight, setChartHeight] = useState(600);
 
-  // Track container width
+  useEffect(() => {
+    const updateSize = () => {
+      setChartHeight(Math.max((isDesktop ? 950 : 300), window.innerHeight * 0.7));
+    };
+    updateSize();
+  }, [minHeight, maxHeight, chartHeight]);
+
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -36,7 +46,6 @@ export const VerticalBoxPlot = ({
     return () => resizeObserver.disconnect();
   }, []);
 
-  // Observer for animation
   useEffect(() => {
     if (!containerRef.current || hasAnimatedRef.current) return;
 
@@ -62,11 +71,15 @@ export const VerticalBoxPlot = ({
     if (!containerRef.current || !shouldAnimate || containerWidth <= 0) return;
 
     const width = containerWidth;
+
+    // responsive height based on width
+    const height = chartHeight;
+
     const margin = {
       top: 20,
       right: 30,
-      bottom: 80,
-      left: containerWidth < 600 ? 70 : 120,
+      bottom: width < 600 ? 100 : 80,
+      left: width < 600 ? 70 : 120,
     };
 
     const innerWidth = width - margin.left - margin.right;
@@ -80,7 +93,6 @@ export const VerticalBoxPlot = ({
       .attr("viewBox", `0 0 ${width} ${height}`)
       .attr("preserveAspectRatio", "xMidYMid meet")
       .style("width", "100%")
-      .style("height", "auto")
       .style("display", "block");
 
     const chart = svg
@@ -104,9 +116,7 @@ export const VerticalBoxPlot = ({
       const grouped = d3.groups(filtered, (d) => String(d[yKey]));
 
       const stats = grouped.map(([category, values]) => {
-        const sorted = values
-          .map((d) => +d[xKey])
-          .sort(d3.ascending);
+        const sorted = values.map((d) => +d[xKey]).sort(d3.ascending);
 
         const q1 = d3.quantileSorted(sorted, 0.25);
         const median = d3.quantileSorted(sorted, 0.5);
@@ -138,7 +148,7 @@ export const VerticalBoxPlot = ({
         .scaleBand()
         .domain(categories)
         .range([0, innerWidth])
-        .padding(containerWidth < 600 ? 0.2 : 0.35);
+        .padding(width < 600 ? 0.2 : 0.35);
 
       const y = d3
         .scaleLinear()
@@ -162,13 +172,13 @@ export const VerticalBoxPlot = ({
 
       xAxisGroup.selectAll("text")
         .attr("fill", "white")
-        .style("font-size", containerWidth < 600 ? "10px" : "12px")
-        .attr("transform", containerWidth < 600 ? "rotate(-25)" : null)
-        .style("text-anchor", containerWidth < 600 ? "end" : "middle");
+        .style("font-size", width < 600 ? "10px" : "12px")
+        .attr("transform", width < 600 ? "rotate(-25)" : null)
+        .style("text-anchor", width < 600 ? "end" : "middle");
 
       yAxisGroup.selectAll("text")
         .attr("fill", "white")
-        .style("font-size", containerWidth < 600 ? "10px" : "12px");
+        .style("font-size", width < 600 ? "10px" : "12px");
 
       xAxisGroup.selectAll("path, line").attr("stroke", "white");
       yAxisGroup.selectAll("path, line").attr("stroke", "white");
@@ -176,7 +186,7 @@ export const VerticalBoxPlot = ({
       chart
         .append("text")
         .attr("x", innerWidth / 2)
-        .attr("y", innerHeight + (containerWidth < 600 ? 60 : 50))
+        .attr("y", innerHeight + (width < 600 ? 70 : 50))
         .attr("fill", "white")
         .attr("text-anchor", "middle")
         .text(xLabel);
@@ -185,7 +195,7 @@ export const VerticalBoxPlot = ({
         .append("text")
         .attr("transform", "rotate(-90)")
         .attr("x", -innerHeight / 2)
-        .attr("y", containerWidth < 600 ? -50 : -80)
+        .attr("y", width < 600 ? -50 : -80)
         .attr("fill", "white")
         .attr("text-anchor", "middle")
         .text(yLabel);
@@ -214,7 +224,7 @@ export const VerticalBoxPlot = ({
           .transition()
           .duration(1200)
           .delay((_, i) => i * 8)
-          .attr("r", containerWidth < 600 ? 3.5 : 6);
+          .attr("r", width < 600 ? 3.5 : 6);
 
         chart
           .append("line")
@@ -225,10 +235,10 @@ export const VerticalBoxPlot = ({
           .attr("stroke", "orange")
           .attr("strokeWidth", 2);
 
-          let boxColour = "var(--bot-colour)"
-          if (d.category === "None (Human)") {
-            boxColour = "var(--human-colour)"
-          }
+        let boxColour = "var(--bot-colour)";
+        if (d.category === "None (Human)") {
+          boxColour = "var(--human-colour)";
+        }
 
         chart
           .append("rect")
@@ -254,7 +264,7 @@ export const VerticalBoxPlot = ({
           .attr("strokeWidth", 3);
       });
     });
-  }, [csvPath, containerWidth, height, xKey, yKey, xLabel, yLabel, shouldAnimate]);
+  }, [csvPath, containerWidth, chartHeight, shouldAnimate, heightRatio, minHeight, maxHeight, xKey, yKey, xLabel, yLabel]);
 
   return (
     <div

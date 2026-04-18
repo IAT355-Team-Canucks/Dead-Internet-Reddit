@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { VerticalBarChart } from "../../components/VerticalBarChart";
 import { HorizontalBarChart } from "../../components/HorizontalBarChart";
 import "../../App.css";
+import { useViewport } from "../../context/ViewportContext";
 
 const BotIcon = () => {
     return (
@@ -31,7 +32,7 @@ const HumanIcon = () => {
 
 export const DatasetCompositionSlide = () => {
     const [chartMode, setChartMode] = useState("bar");
-
+    const { isDesktop } = useViewport()
     const [visible, setVisible] = useState(false);
 
     // Animation clear out
@@ -75,7 +76,7 @@ export const DatasetCompositionSlide = () => {
                         fontSize: "22px",
                         lineHeight: "1.75",
                         color: "#EAC46A",
-                        maxWidth: "60%",
+                        maxWidth: isDesktop ? "60%" : "100%",
                         margin: "0 0 40px 0",
                         letterSpacing: "0.2px",
                     }}>
@@ -140,7 +141,7 @@ export const DatasetCompositionSlide = () => {
                 {/* Stat cards */}
                 <div style={{
                     display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
+                    gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr",
                     gap: "16px",
                     opacity: visible ? 1 : 0,
                     transform: visible ? "translateY(0)" : "translateY(16px)",

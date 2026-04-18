@@ -1,8 +1,13 @@
 
+import {useState, useEffect } from 'react';
+import { useViewport } from '../../context/ViewportContext';
+
 
 export const Navbar = ({sections, activeId, scrollTo}) => {
+  const { isDesktop } = useViewport();
+
     return(
-      <nav
+      isDesktop && <nav
       style={{
         position: "fixed",
         left: 0,

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import "../../App.css";
 import { AnnotationLayer } from "../AnnotationLayer";
-
+import { useViewport } from "../../context/ViewportContext";
 
 export const ScatterPlot = ({
   height = 400,
@@ -17,7 +17,7 @@ export const ScatterPlot = ({
   annotations = [],
   canAnimate
 }) => {
-
+  const { isDesktop } = useViewport();
   const aspectRatio = width / height;
   const containerRef = useRef(null);
   const hasAnimatedRef = useRef(false);
@@ -38,7 +38,7 @@ export const ScatterPlot = ({
 
       if (!width) return;
 
-      const height = width / aspectRatio;
+      const height = isDesktop ? width / aspectRatio : 600;
 
       setDimensions({
         width,
@@ -231,8 +231,8 @@ export const ScatterPlot = ({
         }
 
           AnnotationLayer(chart, annotations, x, y, {
-            titleSize: width < 640 ? 14 : 18,
-            labelSize: width < 640 ? 10 : 12,
+            titleSize: isDesktop ? 22 : 26,
+            labelSize: isDesktop ? 18 : 20,
             scaleFactor: Math.max(0.6, Math.min(1, innerWidth / 700)),
             chartWidth: innerWidth,
             chartHeight: innerHeight,

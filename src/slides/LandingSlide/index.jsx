@@ -5,24 +5,24 @@ import { useEffect, useState } from "react";
 
 const BotIcon = () => (
   <svg width="248" height="248" viewBox="0 0 248 248" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M124 82.6667V41.3334H82.6665" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round"/>
-<path d="M186 82.6666H62.0002C50.5863 82.6666 41.3335 91.9194 41.3335 103.333V186C41.3335 197.414 50.5863 206.667 62.0002 206.667H186C197.414 206.667 206.667 197.414 206.667 186V103.333C206.667 91.9194 197.414 82.6666 186 82.6666Z" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round"/>
-<path d="M20.6665 144.667H41.3332" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round"/>
-<path d="M206.667 144.667H227.333" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round"/>
-<path d="M155 134.333V155" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round"/>
-<path d="M93 134.333V155" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round"/>
-</svg>
+    <path d="M124 82.6667V41.3334H82.6665" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M186 82.6666H62.0002C50.5863 82.6666 41.3335 91.9194 41.3335 103.333V186C41.3335 197.414 50.5863 206.667 62.0002 206.667H186C197.414 206.667 206.667 197.414 206.667 186V103.333C206.667 91.9194 197.414 82.6666 186 82.6666Z" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M20.6665 144.667H41.3332" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M206.667 144.667H227.333" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M155 134.333V155" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M93 134.333V155" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
 );
 
 const BotIconFixed = () => (
-  <svg width="248" height="248" viewBox="0 0 248 248" fill="none" xmlns="http://www.w3.org/2000/svg"style={{ width: "100%", height: "100%" }} >
-<path d="M124 82.6667V41.3334H82.6665" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round"/>
-<path d="M186 82.6666H62.0002C50.5863 82.6666 41.3335 91.9194 41.3335 103.333V186C41.3335 197.414 50.5863 206.667 62.0002 206.667H186C197.414 206.667 206.667 197.414 206.667 186V103.333C206.667 91.9194 197.414 82.6666 186 82.6666Z" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round"/>
-<path d="M20.6665 144.667H41.3332" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round"/>
-<path d="M206.667 144.667H227.333" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round"/>
-<path d="M155 134.333V155" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round"/>
-<path d="M93 134.333V155" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round"/>
-</svg>
+  <svg width="248" height="248" viewBox="0 0 248 248" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: "100%", height: "100%" }} >
+    <path d="M124 82.6667V41.3334H82.6665" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M186 82.6666H62.0002C50.5863 82.6666 41.3335 91.9194 41.3335 103.333V186C41.3335 197.414 50.5863 206.667 62.0002 206.667H186C197.414 206.667 206.667 197.414 206.667 186V103.333C206.667 91.9194 197.414 82.6666 186 82.6666Z" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M20.6665 144.667H41.3332" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M206.667 144.667H227.333" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M155 134.333V155" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M93 134.333V155" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
 
 );
 
@@ -38,11 +38,8 @@ export const LandingSlide = () => {
     <div
       style={{
         flex: 1,
-                paddingTop: "10rem",
-                maxWidth: "100%",
-                position: "relative",
-                boxSizing: "border-box",
-                height: "auto",
+        height: "100vh",
+        display: "flex"
       }}
     >
       <div
@@ -55,7 +52,7 @@ export const LandingSlide = () => {
           justifyContent: "flex-end",
           paddingLeft: "3rem",
           paddingRight: "3rem",
-          paddingBottom: "2rem",
+          paddingBottom: "6rem",
           boxSizing: "border-box",
           overflow: "hidden",
         }}

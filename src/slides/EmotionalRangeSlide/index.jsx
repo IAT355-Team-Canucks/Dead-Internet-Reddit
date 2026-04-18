@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 
 import { VerticalBarChart } from "../../components/VerticalBarChart";
 import { VerticalBoxPlot } from "../../components/VerticalBoxPlot";
+import { useViewport } from "../../context/ViewportContext";
 
 const MAX_VAL = 80;
 
@@ -10,48 +11,8 @@ export const EmotionalRangeSlide = () => {
   const [insightVisible, setInsightVisible] = useState(false);
   const vizRef = useRef(null);
   const containerRef = useRef(null);
+  const { isDesktop } = useViewport();
 
-  useEffect(() => {
-    const el = vizRef.current;
-    if (!el) return;
-
-    const handleScroll = (e) => {
-      e.preventDefault();
-      const scrollable = el.scrollHeight - el.clientHeight;
-      if (scrollable <= 0) return;
-      el.scrollTop = Math.min(Math.max(el.scrollTop + e.deltaY * 0.5, 0), scrollable);
-      const progress = el.scrollTop / scrollable;
-      setScrollProgress(progress);
-      if (progress >= 0.98) setInsightVisible(true);
-    };
-
-    el.addEventListener("wheel", handleScroll, { passive: false });
-    return () => el.removeEventListener("wheel", handleScroll);
-  }, []);
-
-  // Touch support
-  useEffect(() => {
-    const el = vizRef.current;
-    if (!el) return;
-    let startY = 0;
-    const onTouchStart = (e) => { startY = e.touches[0].clientY; };
-    const onTouchMove = (e) => {
-      e.preventDefault();
-      const dy = startY - e.touches[0].clientY;
-      startY = e.touches[0].clientY;
-      const scrollable = el.scrollHeight - el.clientHeight;
-      el.scrollTop = Math.min(Math.max(el.scrollTop + dy, 0), scrollable);
-      const progress = el.scrollTop / scrollable;
-      setScrollProgress(progress);
-      if (progress >= 0.98) setInsightVisible(true);
-    };
-    el.addEventListener("touchstart", onTouchStart, { passive: false });
-    el.addEventListener("touchmove", onTouchMove, { passive: false });
-    return () => {
-      el.removeEventListener("touchstart", onTouchStart);
-      el.removeEventListener("touchmove", onTouchMove);
-    };
-  }, []);
 
   // Trying out in file styling
   const styles = {
@@ -59,11 +20,11 @@ export const EmotionalRangeSlide = () => {
       background: "#1a1208",
       minHeight: "100vh",
       display: "grid",
-      gridTemplateColumns: "1fr 1fr",
+      gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr",
       fontFamily: "'Georgia', 'Times New Roman', serif",
       color: "#f5e6c8",
-                      paddingLeft: "3rem",
-                paddingRight: "3rem",
+      paddingLeft: "3rem",
+      paddingRight: "3rem",
       gap: "48px",
       boxSizing: "border-box",
     },
@@ -75,20 +36,13 @@ export const EmotionalRangeSlide = () => {
       border: "1.5px dashed #6b4f2a",
       borderRadius: "4px",
       flex: 1,
-
+      maxHeight: "100%",
       position: "relative",
-      cursor: "ns-resize",
       minHeight: "520px",
     },
     vizInner: {
       height: "100%",
-
       position: "relative",
-    },
-    scrollArea: {
-      height: "200%",
-      width: "100%",
-      pointerEvents: "none",
     },
     chartContainer: {
       position: "absolute",
@@ -181,7 +135,7 @@ export const EmotionalRangeSlide = () => {
             xLabel={"Poster Type"}
             aggr={false}
             /> */}
-            <VerticalBoxPlot title={"Emotional Range of Posters"} height={950}/>
+            <VerticalBoxPlot title={"Emotional Range of Posters"} height={950} />
           </div>
         </div>
       </div>
