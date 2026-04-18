@@ -68,9 +68,11 @@
 
 
 
-body {
+html, body {
   margin: 0;
   color: #1A120F;
+  max-width: 100%;
+    overflow-x: hidden;
 }
 
 #root {

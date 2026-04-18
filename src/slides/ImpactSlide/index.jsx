@@ -4,7 +4,7 @@ import { PieChart } from "../../components/PieChart"
 
 export const ImpactSlide = () => {
 
-  const { isDesktop } = useViewport()
+  const { xlg } = useViewport()
   const [count, setCount] = useState(0);
   const ref = useRef(null);
   const hasAnimated = useRef(false);
@@ -23,7 +23,7 @@ export const ImpactSlide = () => {
           hasAnimated.current = true;
 
           let start = 0;
-          const duration = 7200; // ms
+          const duration = 2450; // ms
           const startTime = performance.now();
 
           const animate = (time) => {
@@ -90,9 +90,9 @@ export const ImpactSlide = () => {
           >
             <p
               style={{
-                fontSize: "1.5rem",
+                fontSize: "clamp(0.5rem, 6.5vw, 1rem)",
                 color: "#EAC46A",
-                maxWidth: isDesktop ? "70%" : "90%",
+                maxWidth: xlg ? "90%" : "100%",
               }}
             >
               According to Reddit’s Transparency Report (2025), close to 6 billion
@@ -106,7 +106,7 @@ export const ImpactSlide = () => {
                 marginBottom: "1.25rem",
                 fontFamily: "'Georgia', serif",
                 color: "#FAF3E0",
-                fontSize: "8rem",
+                fontSize: "clamp(4.2rem, 6.25vw, 8rem)",
                 wordBreak: "break-word",
               }}
             >
@@ -115,7 +115,7 @@ export const ImpactSlide = () => {
 
             <p
               style={{
-                fontSize: "1.5rem",
+                fontSize: "clamp(0.5rem, 6.5vw, 1rem)",
                 color: "#EAC46A",
                 marginBottom: "0.75rem",
                 lineHeight: "1.1",

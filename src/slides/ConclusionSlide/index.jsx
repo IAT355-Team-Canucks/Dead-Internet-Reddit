@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { useViewport } from "../../context/ViewportContext";
+
 const ConclusionCard = ({ title, children }) => (
   <div
     style={{
@@ -58,6 +60,7 @@ const ConclusionCard = ({ title, children }) => (
 
 export const ConclusionSlide = () => {
   const [visible, setVisible] = useState(false);
+  const {xlg, sm} = useViewport();
 
   useEffect(() => {
     const timer = setTimeout(() => setVisible(true), 120);
@@ -104,7 +107,7 @@ export const ConclusionSlide = () => {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
+          gridTemplateColumns: !sm ? "1fr 1fr" : "1fr",
           gap: "2rem",
         }}
       >

@@ -35,7 +35,7 @@ export const PostDistributionSlide = () => {
     const [chartMode, setChartMode] = useState("bar");
 
     const [visible, setVisible] = useState(false);
-    const {isDesktop } = useViewport();
+    const {xlg } = useViewport();
 
     // Animation clear out
     useEffect(() => {
@@ -49,7 +49,7 @@ export const PostDistributionSlide = () => {
             <main style={{
                 flex: 1,
                 paddingLeft: "3rem",
-                paddingRight: isDesktop? "3rem" : "0re,",
+                paddingRight: xlg? "3rem" : "0re,",
                 maxWidth: "100%",
                 position: "relative",
                 boxSizing: "border-box",
@@ -75,10 +75,10 @@ export const PostDistributionSlide = () => {
                     </h1>
                     <p style={{
                         textAlign: "left",
-                        fontSize: "22px",
+                        fontSize: "clamp(0.5rem, 6.5vw, 1rem)",
                         lineHeight: "1.75",
                         color: "#EAC46A",
-                        maxWidth: isDesktop ? "60%" : "90%",
+                        maxWidth: xlg ? "60%" : "90%",
                         margin: "0 0 40px 0",
                         letterSpacing: "0.2px",
                     }}>
@@ -87,13 +87,13 @@ export const PostDistributionSlide = () => {
 
                 <div style={{
                     display: "grid",
-                    gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr",
+                    gridTemplateColumns: xlg ? "1fr 1fr" : "1fr",
                     gap: "2rem"
                 }}>
                     {/* Chart area  1 */}
                     <div
                         style={{
-                            width: isDesktop? "100%" : "80%",
+                            width: xlg? "100%" : "80%",
                             border: "1.5px dashed #3D2810",
                             borderRadius: "4px",
                             padding: "40px",
@@ -108,7 +108,7 @@ export const PostDistributionSlide = () => {
                             opacity: visible ? 1 : 0,
                             transition: "opacity 0.6s 0.3s, background-color 0.2s",
                             userSelect: "none",
-                            order: isDesktop ? -1 : 1
+                            order: xlg ? -1 : 1
                         }}
                         onMouseEnter={e => e.currentTarget.style.backgroundColor = "rgba(196,98,45,0.04)"}
                         onMouseLeave={e => e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.01)"}

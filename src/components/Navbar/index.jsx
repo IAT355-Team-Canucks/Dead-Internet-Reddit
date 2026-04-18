@@ -4,10 +4,10 @@ import { useViewport } from '../../context/ViewportContext';
 
 
 export const Navbar = ({sections, activeId, scrollTo}) => {
-  const { isDesktop } = useViewport();
+  const { xlg } = useViewport();
 
     return(
-      isDesktop && <nav
+      xlg && <nav
       style={{
         position: "fixed",
         left: 0,

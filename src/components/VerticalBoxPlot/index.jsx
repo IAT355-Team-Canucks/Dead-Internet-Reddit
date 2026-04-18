@@ -16,7 +16,7 @@ export const VerticalBoxPlot = ({
 }) => {
   const containerRef = useRef(null);
   const hasAnimatedRef = useRef(false);
-  const { isDesktop } = useViewport();
+  const { xlg } = useViewport();
 
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const [containerWidth, setContainerWidth] = useState(900);

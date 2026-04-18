@@ -2,6 +2,21 @@ import { createContext, useContext, useState, useEffect } from "react";
 
 const ViewportContext = createContext();
 
+// // Small devices (landscape phones, 576px and up)
+// @media (min-width: 576px) { ... }
+
+// // Medium devices (tablets, 768px and up)
+// @media (min-width: 768px) { ... }
+
+// // Large devices (desktops, 992px and up)
+// @media (min-width: 992px) { ... }
+
+// // X-Large devices (large desktops, 1200px and up)
+// @media (min-width: 1200px) { ... }
+
+// // XX-Large devices (larger desktops, 1400px and up)
+// @media (min-width: 1400px) { ... }
+
 export function ViewportProvider({ children }) {
   const [width, setWidth] = useState(window.innerWidth);
 
@@ -15,8 +30,10 @@ export function ViewportProvider({ children }) {
     <ViewportContext.Provider
       value={{
         width,
-        isMobile: width < 800,
-        isDesktop: width >= 800,
+        xlg: width >= 1200,
+        lg: width < 992,
+        med: width < 768,
+        sm: width < 600
       }}
     >
       {children}

@@ -32,13 +32,17 @@ export const LanguagePatternSlide = () => {
     const [chartMode, setChartMode] = useState("bar");
     const [canAnimate, setCanAnimate] = useState(true)
     const [visible, setVisible] = useState(false);
-    const {isDesktop} = useViewport()
+    const {xlg} = useViewport()
 
     // Animation clear out
     useEffect(() => {
         const t = setTimeout(() => setVisible(true), 100);
         return () => clearTimeout(t);
     }, []);
+
+    const handleClick = () => {
+        return;
+    }
 
 
     return (
@@ -72,10 +76,10 @@ export const LanguagePatternSlide = () => {
                     </h1>
                     <p style={{
                         textAlign: "left",
-                        fontSize: "22px",
+                        fontSize: "clamp(0.5rem, 6.5vw, 1rem)",
                         lineHeight: "1.75",
                         color: "#EAC46A",
-                        maxWidth: isDesktop? "60%" : "100%",
+                        maxWidth: xlg? "60%" : "100%",
                         margin: "0 0 40px 0",
                         letterSpacing: "0.2px",
                     }}>
@@ -84,7 +88,7 @@ export const LanguagePatternSlide = () => {
 
                 {/* Chart area */}
                 <div
-                    onClick={() => setChartMode(m => m === "pie" ? "bar" : "pie")}
+                    onClick={() => handleClick()}
                     style={{
                         border: "1.5px dashed #3D2810",
                         borderRadius: "4px",
@@ -127,16 +131,21 @@ export const LanguagePatternSlide = () => {
                                 ...(idx === 3 ? { borderBottomWidth: 2, borderRightWidth: 2 } : {}),
                             }} />
                         );
-                    })}<ScatterPlot dotSize={10} title={"Human vs Bot: Average Word Length"} canAnimate={canAnimate}
+                    })}
+                    {/*  67-0 HAHA GET IT, 6-7 */}
+                            <ScatterPlot dotSize={10}
+                                xKey={"avg_word_length"}
+                                yKey={"user_karma"}
+                                xLabel={"Average Word Length"}
+                                canAnimate={canAnimate}
                             />
-{/* 
-                    <div style={{ textAlign: "left" }}>
+
+                    {/* <div style={{ textAlign: "left" }}>
                         <div style={{
                             transition: "opacity 0.3s, transform 0.3s",
                             opacity: 1,
-                            width: "100%", maxWidth: "1080px", margin: "0 auto"
-                        }}>
-                            
+                        }}> 
+                        
                         </div>
                     </div> */}
                 </div>
@@ -144,7 +153,7 @@ export const LanguagePatternSlide = () => {
                 {/* Stat cards */}
                 <div style={{
                     display: "grid",
-                    gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr",
+                    gridTemplateColumns: xlg ? "1fr 1fr" : "1fr",
                     gap: "16px",
                     opacity: visible ? 1 : 0,
                     transform: visible ? "translateY(0)" : "translateY(16px)",

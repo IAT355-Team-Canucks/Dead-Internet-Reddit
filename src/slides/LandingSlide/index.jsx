@@ -68,7 +68,7 @@ export const LandingSlide = () => {
           <h1
             style={{
               color: "#D97757",
-              fontSize: "clamp(2.5rem, 7vw, 6.5rem)",
+              fontSize: "clamp(3.5rem, 7vw, 6.5rem)",
               fontWeight: "300",
               letterSpacing: "0.01em",
               lineHeight: "1.05",
@@ -100,7 +100,7 @@ export const LandingSlide = () => {
           <p
             style={{
               color: "#F7EFDD",
-              fontSize: "clamp(1.5rem, 1.3vw, 2.5rem)",
+              fontSize: "clamp(0.5rem, 6.5vw, 1rem)",
               fontWeight: "400",
               lineHeight: "1.3",
               margin: "0",

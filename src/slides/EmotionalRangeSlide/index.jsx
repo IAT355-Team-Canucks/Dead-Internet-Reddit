@@ -11,7 +11,7 @@ export const EmotionalRangeSlide = () => {
   const [insightVisible, setInsightVisible] = useState(false);
   const vizRef = useRef(null);
   const containerRef = useRef(null);
-  const { isDesktop } = useViewport();
+  const { xlg } = useViewport();
 
 
   // Trying out in file styling
@@ -19,7 +19,7 @@ export const EmotionalRangeSlide = () => {
     page: {
       minHeight: "100vh",
       display: "grid",
-      gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr",
+      gridTemplateColumns: xlg ? "1fr 1fr" : "1fr",
       fontFamily: "'Georgia', 'Times New Roman', serif",
       color: "#f5e6c8",
       paddingLeft: "3rem",
@@ -47,7 +47,7 @@ export const EmotionalRangeSlide = () => {
       display: "flex",
       flexDirection: "column",
       gap: "0",
-      marginBottom: isDesktop ? "0rem" : "2rem"
+      marginBottom: xlg ? "0rem" : "2rem"
     },
     scrollHint: {
       position: "absolute",
@@ -80,11 +80,11 @@ export const EmotionalRangeSlide = () => {
       maxWidth: "100%"
     },
     body: {
-      fontSize: "22px",
+      fontSize: "clamp(0.5rem, 6.5vw, 1rem)",
       lineHeight: "1.65",
       color: "#EAC46A",
       margin: 0,
-      maxWidth: isDesktop ? "80%" : "100%",
+      maxWidth: xlg ? "80%" : "100%",
       textAlign: "left"
     },
     spacer: { flex: 1 },
@@ -97,7 +97,7 @@ export const EmotionalRangeSlide = () => {
     },
     insightLabel: {
       fontFamily: "Arial",
-      fontSize: "32px",
+      fontSize: "clamp(0.75rem, 6.5vw, 1.25rem)",
       fontWeight: "700",
       paddingBottom: "0.5em",
       paddingTop: "0.5em",
@@ -108,7 +108,7 @@ export const EmotionalRangeSlide = () => {
     },
     insightText: {
       fontFamily: "'Georgia', serif",
-      fontSize: "22px",
+      fontSize: "clamp(0.5rem, 6.5vw, 1rem)",
       lineHeight: "1.6",
       color: "#f5e6c8",
       margin: 0,

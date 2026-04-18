@@ -17,7 +17,7 @@ export const ScatterPlot = ({
   annotations = [],
   canAnimate
 }) => {
-  const { isDesktop } = useViewport();
+  const { xlg, sm } = useViewport();
   const aspectRatio = width / height;
   const containerRef = useRef(null);
   const hasAnimatedRef = useRef(false);
@@ -27,6 +27,11 @@ export const ScatterPlot = ({
     width: width,
     height: height,
   });
+
+  if (sm) {
+    dotSize = 4;
+
+  }
 
   // Measure container width responsively
   useEffect(() => {
@@ -38,7 +43,7 @@ export const ScatterPlot = ({
 
       if (!width) return;
 
-      const height = isDesktop ? width / aspectRatio : 600;
+      const height = xlg ? width / aspectRatio : 600;
 
       setDimensions({
         width,
@@ -82,9 +87,9 @@ export const ScatterPlot = ({
 
     const margin = {
       top: 10,
-      right: width < 640 ? 20 : 30,
-      bottom: width < 640 ? 60 : 50,
-      left: width < 640 ? 55 : 70,
+      right: sm ? 20 : 30,
+      bottom: sm ? 60 : 50,
+      left: sm ? 55 : 70,
     };
 
     const innerWidth = width - margin.left - margin.right;
@@ -141,8 +146,21 @@ export const ScatterPlot = ({
           .domain(["false", "true"])
           .range(["var(--human-colour)", "var(--bot-colour)"]);
 
-        const xAxis = d3.axisBottom(x);
-        const yAxis = d3.axisLeft(y);
+        const xTicks = x.ticks(); // default ticks
+
+        // Skip ticks for smaller viewport
+        const xAxis = d3.axisBottom(x).tickValues(
+          sm ? xTicks.filter((_, i) => i % 2 === 0) : xTicks
+        );
+
+        const yTicks = y.ticks(); // default ticks
+
+        // Skip ticks for smaller viewport
+        const yAxis = d3.axisLeft(y).tickValues(
+          sm ? yTicks.filter((_, i) => i % 2 === 0) : yTicks
+        );
+
+        // const yAxis = d3.axisLeft(y);
 
         chart
           .append("g")
@@ -231,8 +249,8 @@ export const ScatterPlot = ({
         }
 
           AnnotationLayer(chart, annotations, x, y, {
-            titleSize: isDesktop ? 22 : 26,
-            labelSize: isDesktop ? 18 : 20,
+            titleSize: xlg ? 22 : 26,
+            labelSize: xlg ? 18 : 20,
             scaleFactor: Math.max(0.6, Math.min(1, innerWidth / 700)),
             chartWidth: innerWidth,
             chartHeight: innerHeight,

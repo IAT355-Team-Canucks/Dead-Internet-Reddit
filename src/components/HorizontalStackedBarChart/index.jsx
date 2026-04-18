@@ -18,7 +18,7 @@ export const HorizontalStackedBarChart = ({
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const [containerWidth, setContainerWidth] = useState(680);
   const [rawData, setRawData] = useState([]);
-  const { isDesktop } = useViewport();
+  const { xlg } = useViewport();
 
   // Load CSV once per path change
   useEffect(() => {
@@ -206,7 +206,7 @@ segments
   .attr("dy", "0.35em")
   .attr("text-anchor", "middle")
   .attr("fill", "#fff")
-  .style("font-size", isDesktop ? "24px" : "12px")
+  .style("font-size", xlg ? "24px" : "12px")
   .style("font-weight", "700")
   .style("pointer-events", "none")
   .style("opacity", 0)

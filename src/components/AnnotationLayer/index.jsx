@@ -17,7 +17,7 @@ export function AnnotationLayer(
   xScale,
   yScale,
   {
-    titleSize = 18,
+    titleSize = 16,
     labelSize = 12,
     scaleFactor = 1,
     chartWidth,

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import "../../App.css";
 import * as d3 from "d3";
+import { useViewport } from "../../context/ViewportContext";
 
 export const HorizontalBarChart = ({
   title = "Horizontal Bar Chart Component",
@@ -13,6 +14,8 @@ export const HorizontalBarChart = ({
 }) => {
   const containerRef = useRef(null);
   const hasAnimatedRef = useRef(false);
+
+  const { xlg, sm} = useViewport();
 
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const [containerWidth, setContainerWidth] = useState(680);
@@ -157,11 +160,18 @@ export const HorizontalBarChart = ({
       .duration(1800)
       .attr("width", (d) => Math.max(0, x(d.count)));
 
+    const xTicks = x.ticks(); // default ticks
+    
+    // Skip ticks for smaller viewport
+    const xAxis = d3.axisBottom(x).tickValues(
+      sm ? xTicks.filter((_, i) => i % 2 === 0) : xTicks
+    );
+
     chart
       .append("g")
       .attr("transform", `translate(0, ${innerHeight})`)
       .attr("stroke", "#fff")
-      .call(d3.axisBottom(x));
+      .call(xAxis);
 
     chart
       .append("g")

@@ -6,7 +6,7 @@ import { useViewport } from "../../context/ViewportContext";
 
 export const LinkBehaviourSlide = () => {
     const [chartMode, setChartMode] = useState("bar");
-    const { isDesktop } = useViewport();
+    const { xlg } = useViewport();
     const [visible, setVisible] = useState(false);
 
     // Animation clear out
@@ -20,8 +20,8 @@ export const LinkBehaviourSlide = () => {
         <section>
             <main style={{
                 flex: 1,
-                paddingLeft: isDesktop? "3rem": "3rem",
-                paddingRight: isDesktop? "3rem" : "3rem",
+                paddingLeft: xlg? "3rem": "3rem",
+                paddingRight: xlg? "3rem" : "3rem",
                 maxWidth: "100%",
                 position: "relative",
                 boxSizing: "border-box",
@@ -47,10 +47,10 @@ export const LinkBehaviourSlide = () => {
                     </h1>
                     <p style={{
                         textAlign: "left",
-                        fontSize: "22px",
+                        fontSize: "clamp(0.5rem, 6.5vw, 1rem)",
                         lineHeight: "1.75",
                         color: "#EAC46A",
-                        maxWidth: isDesktop? "60%" : "100%",
+                        maxWidth: xlg? "70%" : "100%",
                         margin: "0 0 40px 0",
                         letterSpacing: "0.2px",
                     }}>
@@ -129,7 +129,7 @@ export const LinkBehaviourSlide = () => {
                     borderRadius: "6px",
                     padding: "20px 24px",
                     marginTop: "2rem",
-                    width: isDesktop ? "50%" : "90%",
+                    width: xlg ? "50%" : "90%",
                     background: "rgba(139, 90, 43, 0.08)",
                     transition: "opacity 0.7s ease, transform 0.7s ease",
                 }}>
@@ -146,7 +146,7 @@ export const LinkBehaviourSlide = () => {
                     }}>KEY INSIGHT</div>
                     <p style={{
                         fontFamily: "'Georgia', serif",
-                        fontSize: "22px",
+                        fontSize: "clamp(0.5rem, 6.5vw, 1rem)",
                         lineHeight: "1.6",
                         color: "#f5e6c8",
                         margin: 0,

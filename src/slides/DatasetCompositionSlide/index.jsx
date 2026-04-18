@@ -32,7 +32,7 @@ const HumanIcon = () => {
 
 export const DatasetCompositionSlide = () => {
     const [chartMode, setChartMode] = useState("bar");
-    const { isDesktop } = useViewport()
+    const { xlg, sm } = useViewport()
     const [visible, setVisible] = useState(false);
 
     // Animation clear out
@@ -73,10 +73,10 @@ export const DatasetCompositionSlide = () => {
                     </h1>
                     <p style={{
                         textAlign: "left",
-                        fontSize: "22px",
+                        fontSize: "clamp(0.5rem, 6.5vw, 1rem)",
                         lineHeight: "1.75",
                         color: "#EAC46A",
-                        maxWidth: isDesktop ? "60%" : "100%",
+                        maxWidth: xlg ? "60%" : "100%",
                         margin: "0 0 40px 0",
                         letterSpacing: "0.2px",
                     }}>
@@ -137,10 +137,11 @@ export const DatasetCompositionSlide = () => {
                         yLabel={"Are They A Bot?"}
                     />
                 </div>
+                
                 {/* Stat cards */}
                 <div style={{
                     display: "grid",
-                    gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr",
+                    gridTemplateColumns: xlg ? "1fr 1fr" : "1fr",
                     gap: "16px",
                     opacity: visible ? 1 : 0,
                     transform: visible ? "translateY(0)" : "translateY(16px)",

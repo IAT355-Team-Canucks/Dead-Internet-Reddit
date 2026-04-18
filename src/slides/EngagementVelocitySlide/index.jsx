@@ -34,36 +34,25 @@ export const EngagementVelocitySlide = () => {
     const [visible, setVisible] = useState(false);
     const [canAnimate, setCanAnimate] = useState(true)
     const [annotationToggle, setAnnotationToggle] = useState(true)
-    const { isDesktop } = useViewport();
+    const { xlg } = useViewport();
 
-    const [currentAnnotation, setCurrentAnnotation] = useState([
-        {
-          xValue: 1450,
-          yValue: 25000,
-          dx: 100,
-          dy: 100,
-          type: "callout",
-          subjectShape: "box",
-          note: {
-            title: "Varied Account Ages",
-            label: "Humans tend to have varying account ages associated with karma",
-          },
-          boxWidth: "90%",
-        boxHeight: "100%",
-          pointAt: "center",
-          focus: true
-        },
-      ]);
-
-    // Animation clear out
-    useEffect(() => {
-        const t = setTimeout(() => setVisible(true), 100);
-        return () => clearTimeout(t);
-    }, []);
-
-    const handleClick = () => {
-        if (annotationToggle) {
-            setCurrentAnnotation([
+    const annotationsTable = [
+                {
+                  xValue: 1350,
+                  yValue: 25000,
+                  dx: 75,
+                  dy: 100,
+                  type: "callout",
+                  subjectShape: "box",
+                  note: {
+                    title: "Human Accounts Vary in Age & Karma",
+                    label: "Little to no correlation",
+                  },
+                  boxWidth: "80%",
+                  boxHeight: "100%",
+                  pointAt: "center",
+                  focus: true
+                },
                 {
                   xValue: 5,
                   yValue: 25000,
@@ -80,25 +69,26 @@ export const EngagementVelocitySlide = () => {
                   pointAt: "center",
                   focus: true
                 },
+              ]
+
+    const [currentAnnotation, setCurrentAnnotation] = useState([
+                annotationsTable[0]
+              ]);
+
+    // Animation clear out
+    useEffect(() => {
+        const t = setTimeout(() => setVisible(true), 100);
+        return () => clearTimeout(t);
+    }, []);
+
+    const handleClick = () => {
+        if (annotationToggle) {
+            setCurrentAnnotation([
+                annotationsTable[1]
               ])
         } else {
             setCurrentAnnotation([
-                {
-                  xValue: 1400,
-                  yValue: 25000,
-                  dx: 100,
-                  dy: 100,
-                  type: "callout",
-                  subjectShape: "box",
-                  note: {
-                    title: "Humans' Varied Account Ages",
-                    label: "Humans have no correlation between age and karma",
-                  },
-                  boxWidth: "90%",
-                  boxHeight: "100%",
-                  pointAt: "center",
-                  focus: true
-                },
+                annotationsTable[0]
               ])
         }
         setAnnotationToggle(!annotationToggle)
@@ -139,10 +129,10 @@ export const EngagementVelocitySlide = () => {
                     </h1>
                     <p style={{
                         textAlign: "left",
-                        fontSize: "22px",
+                        fontSize: "clamp(0.5rem, 6.5vw, 1rem)",
                         lineHeight: "1.75",
                         color: "#EAC46A",
-                        maxWidth: isDesktop? "60%" : "100%",
+                        maxWidth: xlg? "60%" : "100%",
                         margin: "0 0 40px 0",
                         letterSpacing: "0.2px",
                     }}>
@@ -196,7 +186,7 @@ One of the most noticeable patterns is how quickly bot accounts rack up karma, e
                         );
                     })}
                     {/*  67-0 HAHA GET IT, 6-7 */}
-                            <ScatterPlot width={1480} height={670} dotSize={10}
+                            <ScatterPlot dotSize={10}
                                 xKey={"account_age_days"}
                                 yKey={"user_karma"}
                                 xLabel={"Account Age Days"}
