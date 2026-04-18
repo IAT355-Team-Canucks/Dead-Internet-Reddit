@@ -171,7 +171,7 @@ export const RadarChart = ({
         .attr("x2", (_, i) => rScale(cfg.maxValue * 1.05) * Math.cos(angleSlice * i - Math.PI / 2))
         .attr("y2", (_, i) => rScale(cfg.maxValue * 1.05) * Math.sin(angleSlice * i - Math.PI / 2))
         .style("stroke", "#999")
-        .style("stroke-width", "1px");
+        .style("strokeWidth", "1px");
 
       axis
         .append("text")
@@ -219,7 +219,7 @@ export const RadarChart = ({
         .append("path")
         .attr("class", "radarStroke")
         .attr("d", (d) => radarLine(d))
-        .style("stroke-width", `${cfg.strokeWidth}px`)
+        .style("strokeWidth", `${cfg.strokeWidth}px`)
         .style("stroke", (_, i) => cfg.color(i))
         .style("fill", "none")
         .style("filter", "url(#glow)");

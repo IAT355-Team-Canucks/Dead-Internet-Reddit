@@ -75,23 +75,19 @@ export const EmotionalRangeSlide = () => {
       border: "1.5px dashed #6b4f2a",
       borderRadius: "4px",
       flex: 1,
-      overflow: "hidden",
+
       position: "relative",
       cursor: "ns-resize",
       minHeight: "520px",
     },
     vizInner: {
       height: "100%",
-      overflow: "hidden",
+
       position: "relative",
     },
     scrollArea: {
       height: "200%",
       width: "100%",
-      overflow: "hidden",
-      position: "absolute",
-      top: 0,
-      left: 0,
       pointerEvents: "none",
     },
     chartContainer: {
@@ -146,8 +142,6 @@ export const EmotionalRangeSlide = () => {
       borderRadius: "6px",
       padding: "20px 24px",
       background: "rgba(139, 90, 43, 0.08)",
-      opacity: insightVisible ? 1 : 0,
-      transform: insightVisible ? "translateY(0)" : "translateY(12px)",
       transition: "opacity 0.7s ease, transform 0.7s ease",
     },
     insightLabel: {
@@ -189,7 +183,6 @@ export const EmotionalRangeSlide = () => {
             /> */}
             <VerticalBoxPlot title={"Emotional Range of Posters"} height={950}/>
           </div>
-          <div style={styles.scrollHint}>↕ scroll to reveal</div>
         </div>
       </div>
 
@@ -197,10 +190,10 @@ export const EmotionalRangeSlide = () => {
       <div style={styles.rightCol}>
         <h1 style={styles.heading}>Emotional Range</h1>
         <p style={styles.body}>
-          Genuine human users express a far wider spectrum of emotions in their
-          posts, which range from deeply negative to highly positive. Bots, by
+          Genuine human users express a far more diversive spectrum of emotions in their
+          posts, which concentrates on either deeply negative or highly positive. Bots, by
           contrast, tend to cluster around neutral sentiment, rarely venturing
-          into emotional extremes. [Scroll Inside the Chart to See Insights]
+          into emotional extremes.
         </p>
         <div style={styles.spacer} />
         <div style={styles.insightBox}>
