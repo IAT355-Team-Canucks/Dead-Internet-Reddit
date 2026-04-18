@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import * as d3 from "d3";
 import "../../App.css";
 import { useViewport } from "../../context/ViewportContext";
 
 export const VerticalBoxPlot = ({
   title = "Box Plot Component",
-  heightRatio = 0.7, // controls responsiveness
-  minHeight = 370,
+  heightRatio = 0.7, // height = containerWidth * heightRatio
+  minHeight = 870,
   maxHeight = 950,
   xKey = "sentiment_score",
   yKey = "bot_type_label",
@@ -17,17 +17,26 @@ export const VerticalBoxPlot = ({
   const containerRef = useRef(null);
   const hasAnimatedRef = useRef(false);
   const { isDesktop } = useViewport();
+
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const [containerWidth, setContainerWidth] = useState(900);
   const [chartHeight, setChartHeight] = useState(600);
+  const [rawData, setRawData] = useState([]);
 
+  // Load CSV once
   useEffect(() => {
-    const updateSize = () => {
-      setChartHeight(Math.max((isDesktop ? 950 : 300), window.innerHeight * 0.7));
-    };
-    updateSize();
-  }, [minHeight, maxHeight, chartHeight, containerWidth]);
+    let cancelled = false;
 
+    d3.csv(csvPath, d3.autoType).then((data) => {
+      if (!cancelled) setRawData(data);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [csvPath]);
+
+  // Watch container size and derive width + height from it
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -38,14 +47,21 @@ export const VerticalBoxPlot = ({
       const width = entry.contentRect.width;
       if (width > 0) {
         setContainerWidth(width);
+
+        const nextHeight = Math.max(
+          minHeight,
+          Math.min(maxHeight, width * heightRatio)
+        );
+
+        setChartHeight(nextHeight);
       }
     });
 
     resizeObserver.observe(containerRef.current);
-
     return () => resizeObserver.disconnect();
-  }, []);
+  }, [heightRatio, minHeight, maxHeight]);
 
+  // Observer for animation
   useEffect(() => {
     if (!containerRef.current || hasAnimatedRef.current) return;
 
@@ -67,13 +83,70 @@ export const VerticalBoxPlot = ({
     return () => observer.disconnect();
   }, []);
 
+  // Preprocess once
+  const processed = useMemo(() => {
+    if (!rawData.length) {
+      return { filtered: [], categories: [], stats: [], xExtent: [0, 1] };
+    }
+
+    const filtered = rawData.filter(
+      (d) => d[xKey] != null && d[yKey] != null && !Number.isNaN(+d[xKey])
+    );
+
+    if (!filtered.length) {
+      return { filtered: [], categories: [], stats: [], xExtent: [0, 1] };
+    }
+
+    const categories = Array.from(
+      new Set(filtered.map((d) => String(d[yKey])))
+    ).sort(d3.ascending);
+
+    const grouped = d3.groups(filtered, (d) => String(d[yKey]));
+
+    const stats = grouped.map(([category, values]) => {
+      const sorted = values.map((d) => +d[xKey]).sort(d3.ascending);
+
+      const q1 = d3.quantileSorted(sorted, 0.25);
+      const median = d3.quantileSorted(sorted, 0.5);
+      const q3 = d3.quantileSorted(sorted, 0.75);
+      const min = d3.min(sorted);
+      const max = d3.max(sorted);
+      const iqr = q3 - q1;
+
+      const lowerFence = q1 - 1.5 * iqr;
+      const upperFence = q3 + 1.5 * iqr;
+
+      const whiskerMin = d3.min(sorted.filter((v) => v >= lowerFence)) ?? min;
+      const whiskerMax = d3.max(sorted.filter((v) => v <= upperFence)) ?? max;
+
+      return {
+        category,
+        values,
+        q1,
+        median,
+        q3,
+        whiskerMin,
+        whiskerMax,
+      };
+    });
+
+    const xExtent = d3.extent(filtered, (d) => +d[xKey]);
+
+    return { filtered, categories, stats, xExtent };
+  }, [rawData, xKey, yKey]);
+
   useEffect(() => {
-    if (!containerRef.current || !shouldAnimate || containerWidth <= 0) return;
+    if (
+      !containerRef.current ||
+      !shouldAnimate ||
+      containerWidth <= 0 ||
+      !processed.filtered.length
+    ) {
+      return;
+    }
 
-    const width = containerWidth;
-
-    // responsive height based on width
-    const height = chartHeight;
+    const width = Math.max(containerWidth, 0);
+    const height = Math.max(chartHeight, 0);
 
     const margin = {
       top: 20,
@@ -82,8 +155,13 @@ export const VerticalBoxPlot = ({
       left: width < 600 ? 70 : 120,
     };
 
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
+    const innerWidth = Math.max(0, width - margin.left - margin.right);
+    const innerHeight = Math.max(0, height - margin.top - margin.bottom);
+
+    if (innerWidth === 0 || innerHeight === 0) {
+      d3.select(containerRef.current).select("svg").remove();
+      return;
+    }
 
     d3.select(containerRef.current).select("svg").remove();
 
@@ -93,178 +171,144 @@ export const VerticalBoxPlot = ({
       .attr("viewBox", `0 0 ${width} ${height}`)
       .attr("preserveAspectRatio", "xMidYMid meet")
       .style("width", "100%")
+      .style("height", "auto")
       .style("display", "block");
 
     const chart = svg
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-    d3.csv(csvPath, d3.autoType).then((data) => {
-      const filtered = data.filter(
-        (d) =>
-          d[xKey] != null &&
-          d[yKey] != null &&
-          !Number.isNaN(+d[xKey])
-      );
+    const { categories, stats, xExtent } = processed;
 
-      if (!filtered.length) return;
+    const x = d3
+      .scaleBand()
+      .domain(categories)
+      .range([0, innerWidth])
+      .padding(width < 600 ? 0.2 : 0.35);
 
-      const categories = Array.from(
-        new Set(filtered.map((d) => String(d[yKey])))
-      ).sort(d3.ascending);
+    const y = d3
+      .scaleLinear()
+      .domain(xExtent)
+      .nice()
+      .range([innerHeight, 0]);
 
-      const grouped = d3.groups(filtered, (d) => String(d[yKey]));
+    const color = d3
+      .scaleSequential(d3.interpolatePlasma)
+      .domain(xExtent);
 
-      const stats = grouped.map(([category, values]) => {
-        const sorted = values.map((d) => +d[xKey]).sort(d3.ascending);
+    const xAxis = d3.axisBottom(x);
+    const yAxis = d3.axisLeft(y);
 
-        const q1 = d3.quantileSorted(sorted, 0.25);
-        const median = d3.quantileSorted(sorted, 0.5);
-        const q3 = d3.quantileSorted(sorted, 0.75);
-        const min = d3.min(sorted);
-        const max = d3.max(sorted);
-        const iqr = q3 - q1;
+    const xAxisGroup = chart
+      .append("g")
+      .attr("transform", `translate(0, ${innerHeight})`)
+      .call(xAxis);
 
-        const lowerFence = q1 - 1.5 * iqr;
-        const upperFence = q3 + 1.5 * iqr;
+    const yAxisGroup = chart.append("g").call(yAxis);
 
-        const whiskerMin = d3.min(sorted.filter((v) => v >= lowerFence)) ?? min;
-        const whiskerMax = d3.max(sorted.filter((v) => v <= upperFence)) ?? max;
+    xAxisGroup
+      .selectAll("text")
+      .attr("fill", "white")
+      .style("font-size", width < 600 ? "10px" : "12px")
+      .attr("transform", width < 600 ? "rotate(-25)" : null)
+      .style("text-anchor", width < 600 ? "end" : "middle");
 
-        return {
-          category,
-          values,
-          q1,
-          median,
-          q3,
-          whiskerMin,
-          whiskerMax,
-        };
-      });
+    yAxisGroup
+      .selectAll("text")
+      .attr("fill", "white")
+      .style("font-size", width < 600 ? "10px" : "12px");
 
-      const xExtent = d3.extent(filtered, (d) => +d[xKey]);
+    xAxisGroup.selectAll("path, line").attr("stroke", "white");
+    yAxisGroup.selectAll("path, line").attr("stroke", "white");
 
-      const x = d3
-        .scaleBand()
-        .domain(categories)
-        .range([0, innerWidth])
-        .padding(width < 600 ? 0.2 : 0.35);
+    chart
+      .append("text")
+      .attr("x", innerWidth / 2)
+      .attr("y", innerHeight + (width < 600 ? 70 : 50))
+      .attr("fill", "white")
+      .attr("text-anchor", "middle")
+      .text(xLabel);
 
-      const y = d3
-        .scaleLinear()
-        .domain(xExtent)
-        .nice()
-        .range([innerHeight, 0]);
+    chart
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -innerHeight / 2)
+      .attr("y", width < 600 ? -50 : -80)
+      .attr("fill", "white")
+      .attr("text-anchor", "middle")
+      .text(yLabel);
 
-      const color = d3
-        .scaleSequential(d3.interpolatePlasma)
-        .domain(xExtent);
-
-      const xAxis = d3.axisBottom(x);
-      const yAxis = d3.axisLeft(y);
-
-      const xAxisGroup = chart
-        .append("g")
-        .attr("transform", `translate(0, ${innerHeight})`)
-        .call(xAxis);
-
-      const yAxisGroup = chart.append("g").call(yAxis);
-
-      xAxisGroup.selectAll("text")
-        .attr("fill", "white")
-        .style("font-size", width < 600 ? "10px" : "12px")
-        .attr("transform", width < 600 ? "rotate(-25)" : null)
-        .style("text-anchor", width < 600 ? "end" : "middle");
-
-      yAxisGroup.selectAll("text")
-        .attr("fill", "white")
-        .style("font-size", width < 600 ? "10px" : "12px");
-
-      xAxisGroup.selectAll("path, line").attr("stroke", "white");
-      yAxisGroup.selectAll("path, line").attr("stroke", "white");
+    stats.forEach((d) => {
+      const xPos = x(d.category);
+      const centerX = xPos + x.bandwidth() / 2;
+      const boxWidth = x.bandwidth() * 0.75;
+      const jitterAmount = boxWidth * 0.85;
 
       chart
-        .append("text")
-        .attr("x", innerWidth / 2)
-        .attr("y", innerHeight + (width < 600 ? 70 : 50))
-        .attr("fill", "white")
-        .attr("text-anchor", "middle")
-        .text(xLabel);
+        .selectAll(`.dot-${CSS.escape(d.category)}`)
+        .data(d.values)
+        .enter()
+        .append("circle")
+        .attr("cx", (_, i) => {
+          const t = Math.sin((i + 1) * 999);
+          return centerX + t * (jitterAmount / 2);
+        })
+        .attr("cy", (p) => y(+p[xKey]))
+        .attr("r", 0)
+        .attr("fill", (p) => color(+p[xKey]))
+        .attr("stroke", "black")
+        .attr("strokeWidth", 0.5)
+        .attr("opacity", 0.9)
+        .transition()
+        .duration(1200)
+        .delay((_, i) => i * 8)
+        .attr("r", width < 600 ? 3.5 : 6);
 
       chart
-        .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("x", -innerHeight / 2)
-        .attr("y", width < 600 ? -50 : -80)
-        .attr("fill", "white")
-        .attr("text-anchor", "middle")
-        .text(yLabel);
+        .append("line")
+        .attr("x1", centerX)
+        .attr("x2", centerX)
+        .attr("y1", y(d.whiskerMin))
+        .attr("y2", y(d.whiskerMax))
+        .attr("stroke", "orange")
+        .attr("strokeWidth", 2);
 
-      stats.forEach((d) => {
-        const xPos = x(d.category);
-        const centerX = xPos + x.bandwidth() / 2;
-        const boxWidth = x.bandwidth() * 0.75;
-        const jitterAmount = boxWidth * 0.85;
+      let boxColour = "var(--bot-colour)";
+      if (d.category === "None (Human)") {
+        boxColour = "var(--human-colour)";
+      }
 
-        chart
-          .selectAll(`.dot-${CSS.escape(d.category)}`)
-          .data(d.values)
-          .enter()
-          .append("circle")
-          .attr("cx", (_, i) => {
-            const t = Math.sin((i + 1) * 999);
-            return centerX + t * (jitterAmount / 2);
-          })
-          .attr("cy", (p) => y(+p[xKey]))
-          .attr("r", 0)
-          .attr("fill", (p) => color(+p[xKey]))
-          .attr("stroke", "black")
-          .attr("strokeWidth", 0.5)
-          .attr("opacity", 0.9)
-          .transition()
-          .duration(1200)
-          .delay((_, i) => i * 8)
-          .attr("r", width < 600 ? 3.5 : 6);
+      chart
+        .append("rect")
+        .attr("x", centerX - boxWidth / 2)
+        .attr("y", y(d.q3))
+        .attr("width", boxWidth)
+        .attr("height", 0)
+        .attr("fill", boxColour)
+        .attr("fill-opacity", 0.6)
+        .attr("stroke", "#7f8c8d")
+        .attr("strokeWidth", 1.5)
+        .transition()
+        .duration(1000)
+        .attr("height", y(d.q1) - y(d.q3));
 
-        chart
-          .append("line")
-          .attr("x1", centerX)
-          .attr("x2", centerX)
-          .attr("y1", y(d.whiskerMin))
-          .attr("y2", y(d.whiskerMax))
-          .attr("stroke", "orange")
-          .attr("strokeWidth", 2);
-
-        let boxColour = "var(--bot-colour)";
-        if (d.category === "None (Human)") {
-          boxColour = "var(--human-colour)";
-        }
-
-        chart
-          .append("rect")
-          .attr("x", centerX - boxWidth / 2)
-          .attr("y", y(d.q3))
-          .attr("width", boxWidth)
-          .attr("height", 0)
-          .attr("fill", boxColour)
-          .attr("fill-opacity", 0.6)
-          .attr("stroke", "#7f8c8d")
-          .attr("strokeWidth", 1.5)
-          .transition()
-          .duration(1000)
-          .attr("height", y(d.q1) - y(d.q3));
-
-        chart
-          .append("line")
-          .attr("x1", centerX - boxWidth / 2)
-          .attr("x2", centerX + boxWidth / 2)
-          .attr("y1", y(d.median))
-          .attr("y2", y(d.median))
-          .attr("stroke", "orange")
-          .attr("strokeWidth", 3);
-      });
+      chart
+        .append("line")
+        .attr("x1", centerX - boxWidth / 2)
+        .attr("x2", centerX + boxWidth / 2)
+        .attr("y1", y(d.median))
+        .attr("y2", y(d.median))
+        .attr("stroke", "orange")
+        .attr("strokeWidth", 3);
     });
-  }, [csvPath, containerWidth, chartHeight, shouldAnimate, heightRatio, minHeight, maxHeight, xKey, yKey, xLabel, yLabel]);
+  }, [
+    processed,
+    containerWidth,
+    chartHeight,
+    shouldAnimate,
+    xLabel,
+    yLabel,
+  ]);
 
   return (
     <div

@@ -17,7 +17,6 @@ export const EmotionalRangeSlide = () => {
   // Trying out in file styling
   const styles = {
     page: {
-      background: "#1a1208",
       minHeight: "100vh",
       display: "grid",
       gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr",
@@ -38,15 +37,12 @@ export const EmotionalRangeSlide = () => {
       flex: 1,
       maxHeight: "100%",
       position: "relative",
-      minHeight: "520px",
     },
     vizInner: {
       height: "100%",
       position: "relative",
     },
     chartContainer: {
-      position: "absolute",
-      inset: 0,
       padding: "0",
       display: "flex",
       flexDirection: "column",
@@ -123,22 +119,9 @@ export const EmotionalRangeSlide = () => {
   return (
     <div style={styles.page}>
       {/* LEFT: Visualization */}
-      <div style={styles.leftCol}>
-        <div
-          style={styles.vizWrapper}
-          ref={vizRef}
-        >
-          <div style={styles.chartContainer}>
-            {/* <ChartArea scrollProgress={scrollProgress} /> */}
-            {/* <VerticalBarChart width={500} height={1000} 
-            xKey={"bot_type_label"} yKey={"sentiment_score"}
-            title={"Emotional Range of Posters"}
-            xLabel={"Poster Type"}
-            aggr={false}
-            /> */}
-            <VerticalBoxPlot title={"Emotional Range of Posters"} height={950} />
-          </div>
-        </div>
+      <div style={styles.vizWrapper}>
+        <VerticalBoxPlot title={"Emotional Range of Posters"} />
+
       </div>
 
       {/* RIGHT: Text */}
