@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 import * as d3 from "d3";
 import "../../App.css";
 import { useViewport } from "../../context/ViewportContext";
+import { useCsvData } from "../../context/CsvDataContext";
 
 export const HorizontalStackedBarChart = ({
   title = "Horizontal Stacked Bar Chart",
@@ -10,28 +11,14 @@ export const HorizontalStackedBarChart = ({
   yKey = "is_bot_flag",
   xLabel = "Count",
   yLabel = "Category",
-  csvPath = `${import.meta.env.BASE_URL}data/reddit_dead_internet_analysis.csv`,
 }) => {
   const containerRef = useRef(null);
   const hasAnimatedRef = useRef(false);
 
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const [containerWidth, setContainerWidth] = useState(680);
-  const [rawData, setRawData] = useState([]);
+  const { data: rawData } = useCsvData();  
   const { xlg } = useViewport();
-
-  // Load CSV once per path change
-  useEffect(() => {
-    let cancelled = false;
-
-    d3.csv(csvPath, d3.autoType).then((data) => {
-      if (!cancelled) setRawData(data);
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [csvPath]);
 
   // Watch container size
   useEffect(() => {
