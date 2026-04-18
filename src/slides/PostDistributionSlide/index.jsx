@@ -78,7 +78,7 @@ export const PostDistributionSlide = () => {
                         fontSize: "22px",
                         lineHeight: "1.75",
                         color: "#EAC46A",
-                        maxWidth: isDesktop ? "60%" : "100%",
+                        maxWidth: isDesktop ? "60%" : "90%",
                         margin: "0 0 40px 0",
                         letterSpacing: "0.2px",
                     }}>

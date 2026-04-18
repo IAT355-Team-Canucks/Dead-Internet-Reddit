@@ -12,6 +12,9 @@ import { EngagementVelocitySlide } from "./slides/EngagementVelocitySlide";
 import { LinkBehaviourSlide } from "./slides/LinkBehaviourSlide";
 import { ResponseTimingSlide } from "./slides/ResponseTimingSlide";
 import { ConclusionSlide } from "./slides/ConclusionSlide"
+import { BackgroundSlide } from "./slides/BackgroundSlide";
+import { ContextSlide } from "./slides/ContextSlide";
+import { ImpactSlide } from "./slides/ImpactSlide";
 
 import { DemoSlide } from "./slides/DemoSlide";
 
@@ -23,53 +26,71 @@ const sections = [
     component: LandingSlide,
   },
   {
-    id: "dataset",
+    id: "background",
     num: "01",
+    label: "What are Bots?",
+    component: BackgroundSlide
+  },
+  {
+    id: "context",
+    num: "02",
+    label: "The Big Idea",
+    component: ContextSlide
+  },
+  {
+    id: "impact",
+    num: "03",
+    label: "Bots on Reddit",
+    component: ImpactSlide
+  },
+  {
+    id: "dataset",
+    num: "04",
     label: "Dataset Overview",
     component: DatasetCompositionSlide,
   },
   {
     id: "emotion",
-    num: "02",
+    num: "05",
     label: "Emotional Range",
     component: EmotionalRangeSlide,
   },
   {
     id: "language",
-    num: "03",
+    num: "06",
     label: "Language Patterns",
     component: LanguagePatternSlide,
   },
   {
     id: "engagement",
-    num: "04",
+    num: "07",
     label: "Engagement Velocity",
     component: EngagementVelocitySlide,
   },
   {
     id: "distribution",
-    num: "05",
+    num: "08",
     label: "Post Distribution",
     component: PostDistributionSlide,
   },
   {
     id: "link",
-    num: "07",
+    num: "09",
     label: "Link Behaviour",
     component: LinkBehaviourSlide,
   },
   {
     id: "response",
-    num: "08",
+    num: "10",
     label: "Response Timing",
     component: ResponseTimingSlide,
   },
   {
     id: "conclusion",
-    num: "09",
+    num: "11",
     label: "Conclusion",
     component: ConclusionSlide,
-  },
+  }
   
   // {
   //   id: "demo",
@@ -169,6 +190,28 @@ export default function App() {
           {sections.map((s) => {
             const SlideComponent = s.component;
 
+            if (s.id === "_") {
+              return(
+                <div
+                  key={s.id}
+                  id={s.id}
+                  className="section"
+                  style={{
+                    minHeight: "80vh",
+                    height: "auto",
+                    scrollSnapAlign: "start",
+                    display: "flex",
+                    alignItems: "stretch",
+                    justifyContent: "center",
+                    marginBottom: "6rem"
+                  }}
+                >
+                  <div style={{ width: "100%", minHeight: "100%" }}>
+                    <SlideComponent />
+                  </div>
+                </div>
+              )
+            }
             return (
               <div
                 key={s.id}

@@ -182,6 +182,44 @@ export const HorizontalStackedBarChart = ({
       .duration(1800)
       .attr("width", (d) => Math.max(0, x(d[1]) - x(d[0])));
 
+      const segments = layer
+  .selectAll("g.segment")
+  .data((d) => d)
+  .enter()
+  .append("g")
+  .attr("class", "segment");
+
+segments
+  .append("rect")
+  .attr("y", (d) => y(d.data.category))
+  .attr("x", (d) => Math.min(x(d[0]), x(d[1])))
+  .attr("height", y.bandwidth())
+  .attr("width", 0)
+  .transition()
+  .duration(1800)
+  .attr("width", (d) => Math.max(0, x(d[1]) - x(d[0])));
+
+segments
+  .append("text")
+  .attr("x", (d) => (x(d[0]) + x(d[1])) / 2)
+  .attr("y", (d) => (y(d.data.category) ?? 0) + y.bandwidth() / 2)
+  .attr("dy", "0.35em")
+  .attr("text-anchor", "middle")
+  .attr("fill", "#fff")
+  .style("font-size", isDesktop ? "24px" : "12px")
+  .style("font-weight", "700")
+  .style("pointer-events", "none")
+  .style("opacity", 0)
+  .text((d) => {
+    const value = d[1] - d[0];
+    return value > 0 ? value : "";
+  })
+  .filter((d) => x(d[1]) - x(d[0]) > 24) // only show if segment is wide enough
+  .transition()
+  .delay(1800)
+  .duration(300)
+  .style("opacity", 1);
+
     chart
       .append("g")
       .attr("transform", `translate(0, ${innerHeight})`)
