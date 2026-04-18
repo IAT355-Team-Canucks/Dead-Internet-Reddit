@@ -29,7 +29,7 @@ export const LinkBehaviourSlide = () => {
             }}>
                 {/* Header */}
                 <div style={{
-                    opacity: visible ? 1 : 0,
+                    opacity: visible ? 1 : 0.01,
                     transform: visible ? "translateY(0)" : "translateY(-16px)",
                     transition: "opacity 0.6s 0.1s, transform 0.6s 0.1s",
                 }}>
@@ -72,7 +72,7 @@ export const LinkBehaviourSlide = () => {
                         minHeight: "clamp(300px, 40vh, 620px)",
                         position: "relative",
                         backgroundColor: "rgba(255,255,255,0.01)",
-                        opacity: visible ? 1 : 0,
+                        opacity: visible ? 1 : 0.01,
                         transition: "opacity 0.6s 0.3s, background-color 0.2s",
                         userSelect: "none",
                     }}

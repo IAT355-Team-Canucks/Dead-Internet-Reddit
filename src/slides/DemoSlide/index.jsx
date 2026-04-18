@@ -1,9 +1,8 @@
 
-import { motion } from 'motion/react'
+// import { motion } from 'motion/react'
 
 // Components
 import { VerticalBarChart } from "../../components/VerticalBarChart"
-import { AnimatedLineChart } from '../../components/AnimatedLineChart'
 import { ScatterPlot } from '../../components/ScatterPlot'
 import { RadarChart } from '../../components/RadarChart'
 import { HorizontalBoxPlot } from '../../components/HorizontalBoxPlot'
@@ -24,14 +23,14 @@ export const DemoSlide = () => {
                     <RadarChart />
 
                     { /* Motion Wrappers */}
-                    <motion.div
+                    {/* <motion.div
                         initial={{ opacity: 0, y: 40 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, amount: 0.3 }}
                         transition={{ duration: 0.8 }}
                     >
                         <AnimatedLineChart />
-                    </motion.div>
+                    </motion.div> */}
 
                     <p>
                         You've reached the end! Wow!

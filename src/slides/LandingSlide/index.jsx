@@ -4,7 +4,8 @@
 import { useEffect, useState } from "react";
 
 const BotIcon = () => (
-  <svg width="248" height="248" viewBox="0 0 248 248" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="248" height="248" viewBox="0 0 248 248" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
+    <title>Bot Icon</title>
     <path d="M124 82.6667V41.3334H82.6665" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M186 82.6666H62.0002C50.5863 82.6666 41.3335 91.9194 41.3335 103.333V186C41.3335 197.414 50.5863 206.667 62.0002 206.667H186C197.414 206.667 206.667 197.414 206.667 186V103.333C206.667 91.9194 197.414 82.6666 186 82.6666Z" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M20.6665 144.667H41.3332" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round" />
@@ -15,7 +16,8 @@ const BotIcon = () => (
 );
 
 const BotIconFixed = () => (
-  <svg width="248" height="248" viewBox="0 0 248 248" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: "100%", height: "100%" }} >
+  <svg width="248" height="248" viewBox="0 0 248 248" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: "100%", height: "100%" }} role="img">
+    <title>Bot Icon</title>
     <path d="M124 82.6667V41.3334H82.6665" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M186 82.6666H62.0002C50.5863 82.6666 41.3335 91.9194 41.3335 103.333V186C41.3335 197.414 50.5863 206.667 62.0002 206.667H186C197.414 206.667 206.667 197.414 206.667 186V103.333C206.667 91.9194 197.414 82.6666 186 82.6666Z" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M20.6665 144.667H41.3332" stroke="#D97757" strokeWidth="20.6667" strokeLinecap="round" strokeLinejoin="round" />
@@ -60,7 +62,7 @@ export const LandingSlide = () => {
         {/* Main Heading */}
         <div
           style={{
-            opacity: visible ? 1 : 0,
+            opacity: visible ? 1 : 0.01,
             transform: visible ? "translateY(0)" : "translateY(30px)",
             transition: "opacity 0.7s ease, transform 0.7s ease",
           }}
@@ -91,7 +93,7 @@ export const LandingSlide = () => {
         {/* Subtitle */}
         <div
           style={{
-            opacity: visible ? 1 : 0,
+            opacity: visible ? 1 : 0.01,
             transform: visible ? "translateY(0)" : "translateY(20px)",
             transition: "opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s",
             maxWidth: "650px",
@@ -122,7 +124,7 @@ export const LandingSlide = () => {
             right: "6%",
             bottom: "6%",
             width: "clamp(80px, 14vw, 360px)",
-            opacity: visible ? 1 : 0,
+            opacity: visible ? 1 : 0.01,
             transform: visible ? "translateY(0)" : "translateY(20px)",
             transition: "opacity 0.7s ease 0.35s, transform 0.7s ease 0.35s",
           }}
