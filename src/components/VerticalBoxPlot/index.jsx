@@ -26,7 +26,7 @@ export const VerticalBoxPlot = ({
       setChartHeight(Math.max((isDesktop ? 950 : 300), window.innerHeight * 0.7));
     };
     updateSize();
-  }, [minHeight, maxHeight, chartHeight]);
+  }, [minHeight, maxHeight, chartHeight, containerWidth]);
 
   useEffect(() => {
     if (!containerRef.current) return;

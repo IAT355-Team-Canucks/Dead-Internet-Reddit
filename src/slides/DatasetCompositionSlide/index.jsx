@@ -131,7 +131,6 @@ export const DatasetCompositionSlide = () => {
                         );
                     })}
                     <HorizontalBarChart
-                        width={window.innerWidth - window.innerWidth / 3}
                         height={300}
                         title={"Dataset Composition: Bots vs Humans"}
                         xLabel={"Number of Accounts"}

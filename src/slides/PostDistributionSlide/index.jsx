@@ -5,6 +5,8 @@ import { ScatterPlot } from "../../components/ScatterPlot";
 import { RadarChart } from "../../components/RadarChart";
 import { HorizontalStackedBarChart } from "../../components/HorizontalStackedBarChart";
 
+import { useViewport } from "../../context/ViewportContext";
+
 const BotIcon = () => {
     return (
         <svg width="100%" viewBox="0 0 36 36" fill="none">
@@ -33,6 +35,7 @@ export const PostDistributionSlide = () => {
     const [chartMode, setChartMode] = useState("bar");
 
     const [visible, setVisible] = useState(false);
+    const {isDesktop } = useViewport();
 
     // Animation clear out
     useEffect(() => {
@@ -46,7 +49,7 @@ export const PostDistributionSlide = () => {
             <main style={{
                 flex: 1,
                 paddingLeft: "3rem",
-                paddingRight: "3rem",
+                paddingRight: isDesktop? "3rem" : "0re,",
                 maxWidth: "100%",
                 position: "relative",
                 boxSizing: "border-box",
@@ -75,7 +78,7 @@ export const PostDistributionSlide = () => {
                         fontSize: "22px",
                         lineHeight: "1.75",
                         color: "#EAC46A",
-                        maxWidth: "60%",
+                        maxWidth: isDesktop ? "60%" : "100%",
                         margin: "0 0 40px 0",
                         letterSpacing: "0.2px",
                     }}>
@@ -83,14 +86,14 @@ export const PostDistributionSlide = () => {
                 </div>
 
                 <div style={{
-                    display: "flex",
-                    flexDirection: "row",
+                    display: "grid",
+                    gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr",
                     gap: "2rem"
                 }}>
                     {/* Chart area  1 */}
                     <div
                         style={{
-                            width: "45%",
+                            width: isDesktop? "100%" : "80%",
                             border: "1.5px dashed #3D2810",
                             borderRadius: "4px",
                             padding: "40px",
@@ -105,6 +108,7 @@ export const PostDistributionSlide = () => {
                             opacity: visible ? 1 : 0,
                             transition: "opacity 0.6s 0.3s, background-color 0.2s",
                             userSelect: "none",
+                            order: isDesktop ? -1 : 1
                         }}
                         onMouseEnter={e => e.currentTarget.style.backgroundColor = "rgba(196,98,45,0.04)"}
                         onMouseLeave={e => e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.01)"}
@@ -143,7 +147,7 @@ export const PostDistributionSlide = () => {
                     {/* Chart area 2 */}
                     <div
                         style={{
-                            width: "45%",
+                            width: "80%",
                             border: "1.5px dashed #3D2810",
                             borderRadius: "4px",
                             padding: "40px",

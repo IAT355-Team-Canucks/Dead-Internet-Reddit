@@ -2,11 +2,11 @@
 import { InfoCard } from "../../components/InfoCard";
 import { useState, useEffect } from 'react';
 import { HorizontalStackedBarChart } from "../../components/HorizontalStackedBarChart";
-
+import { useViewport } from "../../context/ViewportContext";
 
 export const LinkBehaviourSlide = () => {
     const [chartMode, setChartMode] = useState("bar");
-
+    const { isDesktop } = useViewport();
     const [visible, setVisible] = useState(false);
 
     // Animation clear out
@@ -20,8 +20,8 @@ export const LinkBehaviourSlide = () => {
         <section>
             <main style={{
                 flex: 1,
-                paddingLeft: "3rem",
-                paddingRight: "3rem",
+                paddingLeft: isDesktop? "3rem": "3rem",
+                paddingRight: isDesktop? "3rem" : "3rem",
                 maxWidth: "100%",
                 position: "relative",
                 boxSizing: "border-box",
@@ -50,7 +50,7 @@ export const LinkBehaviourSlide = () => {
                         fontSize: "22px",
                         lineHeight: "1.75",
                         color: "#EAC46A",
-                        maxWidth: "60%",
+                        maxWidth: isDesktop? "60%" : "100%",
                         margin: "0 0 40px 0",
                         letterSpacing: "0.2px",
                     }}>
@@ -129,7 +129,7 @@ export const LinkBehaviourSlide = () => {
                     borderRadius: "6px",
                     padding: "20px 24px",
                     marginTop: "2rem",
-                    width: "50%",
+                    width: isDesktop ? "50%" : "90%",
                     background: "rgba(139, 90, 43, 0.08)",
                     transition: "opacity 0.7s ease, transform 0.7s ease",
                 }}>

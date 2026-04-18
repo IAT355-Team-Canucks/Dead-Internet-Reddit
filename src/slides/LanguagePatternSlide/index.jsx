@@ -2,6 +2,7 @@
 import { InfoCard } from "../../components/InfoCard";
 import { useState, useEffect } from 'react';
 import { ScatterPlot } from "../../components/ScatterPlot";
+import { useViewport } from "../../context/ViewportContext";
 
 const BotIcon = () => {
     return (
@@ -31,6 +32,7 @@ export const LanguagePatternSlide = () => {
     const [chartMode, setChartMode] = useState("bar");
     const [canAnimate, setCanAnimate] = useState(true)
     const [visible, setVisible] = useState(false);
+    const {isDesktop} = useViewport()
 
     // Animation clear out
     useEffect(() => {
@@ -43,7 +45,7 @@ export const LanguagePatternSlide = () => {
         <section>
             <main style={{
                 flex: 1,
-                paddingLeft: "3rem",
+                paddingLeft:"3rem",
                 paddingRight: "3rem",
                 maxWidth: "100%",
                 position: "relative",
@@ -73,7 +75,7 @@ export const LanguagePatternSlide = () => {
                         fontSize: "22px",
                         lineHeight: "1.75",
                         color: "#EAC46A",
-                        maxWidth: "60%",
+                        maxWidth: isDesktop? "60%" : "100%",
                         margin: "0 0 40px 0",
                         letterSpacing: "0.2px",
                     }}>
@@ -142,7 +144,7 @@ export const LanguagePatternSlide = () => {
                 {/* Stat cards */}
                 <div style={{
                     display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
+                    gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr",
                     gap: "16px",
                     opacity: visible ? 1 : 0,
                     transform: visible ? "translateY(0)" : "translateY(16px)",

@@ -3,6 +3,8 @@ import { InfoCard } from "../../components/InfoCard";
 import { useState, useEffect } from 'react';
 import { ScatterPlot } from "../../components/ScatterPlot";
 
+import { useViewport } from "../../context/ViewportContext";
+
 const BotIcon = () => {
     return (
         <svg width="100%" viewBox="0 0 36 36" fill="none">
@@ -32,6 +34,7 @@ export const EngagementVelocitySlide = () => {
     const [visible, setVisible] = useState(false);
     const [canAnimate, setCanAnimate] = useState(true)
     const [annotationToggle, setAnnotationToggle] = useState(true)
+    const { isDesktop } = useViewport();
 
     const [currentAnnotation, setCurrentAnnotation] = useState([
         {
@@ -46,7 +49,7 @@ export const EngagementVelocitySlide = () => {
             label: "Humans tend to have varying account ages associated with karma",
           },
           boxWidth: "90%",
-            boxHeight: "100%",
+        boxHeight: "100%",
           pointAt: "center",
           focus: true
         },
@@ -139,7 +142,7 @@ export const EngagementVelocitySlide = () => {
                         fontSize: "22px",
                         lineHeight: "1.75",
                         color: "#EAC46A",
-                        maxWidth: "60%",
+                        maxWidth: isDesktop? "60%" : "100%",
                         margin: "0 0 40px 0",
                         letterSpacing: "0.2px",
                     }}>

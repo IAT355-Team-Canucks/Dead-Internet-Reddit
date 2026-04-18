@@ -51,6 +51,7 @@ export const EmotionalRangeSlide = () => {
       display: "flex",
       flexDirection: "column",
       gap: "0",
+      marginBottom: isDesktop ? "0rem" : "2rem"
     },
     scrollHint: {
       position: "absolute",
@@ -87,7 +88,7 @@ export const EmotionalRangeSlide = () => {
       lineHeight: "1.65",
       color: "#EAC46A",
       margin: 0,
-      maxWidth: "80%",
+      maxWidth: isDesktop ? "80%" : "100%",
       textAlign: "left"
     },
     spacer: { flex: 1 },

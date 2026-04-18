@@ -34,6 +34,7 @@ const ConclusionCard = ({ title, children }) => (
           letterSpacing: "0.18em",
           margin: 0,
           fontWeight: 600,
+          textAlign: "left"
         }}
       >
         {title}
@@ -93,6 +94,7 @@ export const ConclusionSlide = () => {
             lineHeight: 1.05,
             fontFamily: "'Georgia', serif",
             maxWidth: "16ch",
+            textAlign: "left"
           }}
         >
           So what does this mean?
