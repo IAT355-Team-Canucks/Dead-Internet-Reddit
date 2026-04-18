@@ -209,7 +209,7 @@ export const VerticalBoxPlot = ({
           .attr("r", 0)
           .attr("fill", (p) => color(+p[xKey]))
           .attr("stroke", "black")
-          .attr("stroke-width", 0.5)
+          .attr("strokeWidth", 0.5)
           .attr("opacity", 0.9)
           .transition()
           .duration(1200)
@@ -223,7 +223,7 @@ export const VerticalBoxPlot = ({
           .attr("y1", y(d.whiskerMin))
           .attr("y2", y(d.whiskerMax))
           .attr("stroke", "orange")
-          .attr("stroke-width", 2);
+          .attr("strokeWidth", 2);
 
         chart
           .append("rect")
@@ -234,7 +234,7 @@ export const VerticalBoxPlot = ({
           .attr("fill", "#9eb8b2")
           .attr("fill-opacity", 0.6)
           .attr("stroke", "#7f8c8d")
-          .attr("stroke-width", 1.5)
+          .attr("strokeWidth", 1.5)
           .transition()
           .duration(1000)
           .attr("height", y(d.q1) - y(d.q3));
@@ -246,7 +246,7 @@ export const VerticalBoxPlot = ({
           .attr("y1", y(d.median))
           .attr("y2", y(d.median))
           .attr("stroke", "orange")
-          .attr("stroke-width", 3);
+          .attr("strokeWidth", 3);
       });
     });
   }, [csvPath, containerWidth, height, xKey, yKey, xLabel, yLabel, shouldAnimate]);

@@ -29,14 +29,80 @@ const HumanIcon = () => {
 
 export const EngagementVelocitySlide = () => {
     const [chartMode, setChartMode] = useState("bar");
-
     const [visible, setVisible] = useState(false);
+    const [canAnimate, setCanAnimate] = useState(true)
+    const [annotationToggle, setAnnotationToggle] = useState(true)
+
+    const [currentAnnotation, setCurrentAnnotation] = useState([
+        {
+          xValue: 1450,
+          yValue: 25000,
+          dx: 100,
+          dy: 100,
+          type: "callout",
+          subjectShape: "box",
+          note: {
+            title: "Varied Account Ages",
+            label: "Humans tend to have varying account ages associated with karma",
+          },
+          boxWidth: "90%",
+            boxHeight: "100%",
+          pointAt: "center",
+          focus: true
+        },
+      ]);
 
     // Animation clear out
     useEffect(() => {
         const t = setTimeout(() => setVisible(true), 100);
         return () => clearTimeout(t);
     }, []);
+
+    const handleClick = () => {
+        if (annotationToggle) {
+            setCurrentAnnotation([
+                {
+                  xValue: 5,
+                  yValue: 25000,
+                  dx: 100,
+                  dy: 100,
+                  type: "callout",
+                  subjectShape: "box",
+                  note: {
+                    title: "High Bot Cluster",
+                    label: "Bots tend to be New Accounts with High Engagement",
+                  },
+                  boxWidth: "3%",
+                  boxHeight: "100%",
+                  pointAt: "center",
+                  focus: true
+                },
+              ])
+        } else {
+            setCurrentAnnotation([
+                {
+                  xValue: 1400,
+                  yValue: 25000,
+                  dx: 100,
+                  dy: 100,
+                  type: "callout",
+                  subjectShape: "box",
+                  note: {
+                    title: "Varied Account Ages",
+                    label: "Humans tend to have varying account ages associated with karma",
+                  },
+                  boxWidth: "90%",
+                  boxHeight: "100%",
+                  pointAt: "center",
+                  focus: true
+                },
+              ])
+        }
+        setAnnotationToggle(!annotationToggle)
+        if (canAnimate) {
+            setCanAnimate(false); // flag for dot animations
+        }
+    }
 
 
     return (
@@ -82,7 +148,7 @@ One of the most noticeable patterns is how quickly bot accounts rack up karma, e
 
                 {/* Chart area */}
                 <div
-                    onClick={() => setChartMode(m => m === "pie" ? "bar" : "pie")}
+                    onClick={() => handleClick()}
                     style={{
                         border: "1.5px dashed #3D2810",
                         borderRadius: "4px",
@@ -131,6 +197,8 @@ One of the most noticeable patterns is how quickly bot accounts rack up karma, e
                                 xKey={"account_age_days"}
                                 yKey={"user_karma"}
                                 xLabel={"Account Age Days"}
+                                annotations={currentAnnotation}
+                                canAnimate={canAnimate}
                             />
 
                     {/* <div style={{ textAlign: "left" }}>

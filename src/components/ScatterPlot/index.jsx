@@ -1,20 +1,24 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import "../../App.css";
+import { AnnotationLayer } from "../AnnotationLayer";
+
 
 export const ScatterPlot = ({
   height = 400,
   width = 980,
-  title="",
+  title = "",
   xKey = "avg_word_length",
   yKey = "user_karma",
   xLabel = "Average Word Length",
   yLabel = "User Karma",
   csvPath = `${import.meta.env.BASE_URL}data/reddit_dead_internet_analysis.csv`,
   dotSize = 2,
+  annotations = [],
+  canAnimate
 }) => {
 
-  const   aspectRatio = width / height;
+  const aspectRatio = width / height;
   const containerRef = useRef(null);
   const hasAnimatedRef = useRef(false);
 
@@ -103,6 +107,7 @@ export const ScatterPlot = ({
     const chart = svg
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
+    
 
     d3.csv(csvPath, d3.autoType)
       .then((data) => {
@@ -210,13 +215,28 @@ export const ScatterPlot = ({
         chart.selectAll(".myXaxis path, .myXaxis line, .myYaxis path, .myYaxis line")
           .attr("stroke", "#fff");
 
-        chart
+        if (canAnimate) {
+          chart
           .selectAll("circle")
           .transition()
           .delay((d, i) => i * 2)
           .duration(1400)
           .attr("cx", (d) => x(d[xKey]))
           .attr("cy", (d) => y(d[yKey]));
+        } else {
+          chart
+          .selectAll("circle")
+          .attr("cx", (d) => x(d[xKey]))
+          .attr("cy", (d) => y(d[yKey]));
+        }
+
+          AnnotationLayer(chart, annotations, x, y, {
+            titleSize: width < 640 ? 14 : 18,
+            labelSize: width < 640 ? 10 : 12,
+            scaleFactor: Math.max(0.6, Math.min(1, innerWidth / 700)),
+            chartWidth: innerWidth,
+            chartHeight: innerHeight,
+          });
       })
       .catch((err) => console.error(err));
   }, [
@@ -228,6 +248,7 @@ export const ScatterPlot = ({
     yLabel,
     csvPath,
     dotSize,
+    annotations
   ]);
 
   return (

@@ -29,7 +29,7 @@ const HumanIcon = () => {
 
 export const LanguagePatternSlide = () => {
     const [chartMode, setChartMode] = useState("bar");
-
+    const [canAnimate, setCanAnimate] = useState(true)
     const [visible, setVisible] = useState(false);
 
     // Animation clear out
@@ -125,7 +125,7 @@ export const LanguagePatternSlide = () => {
                                 ...(idx === 3 ? { borderBottomWidth: 2, borderRightWidth: 2 } : {}),
                             }} />
                         );
-                    })}<ScatterPlot dotSize={10} title={"Human vs Bot: Average Word Length"}
+                    })}<ScatterPlot dotSize={10} title={"Human vs Bot: Average Word Length"} canAnimate={canAnimate}
                             />
 {/* 
                     <div style={{ textAlign: "left" }}>
