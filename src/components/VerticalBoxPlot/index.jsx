@@ -225,13 +225,18 @@ export const VerticalBoxPlot = ({
           .attr("stroke", "orange")
           .attr("strokeWidth", 2);
 
+          let boxColour = "var(--bot-colour)"
+          if (d.category === "None (Human)") {
+            boxColour = "var(--human-colour)"
+          }
+
         chart
           .append("rect")
           .attr("x", centerX - boxWidth / 2)
           .attr("y", y(d.q3))
           .attr("width", boxWidth)
           .attr("height", 0)
-          .attr("fill", "#9eb8b2")
+          .attr("fill", boxColour)
           .attr("fill-opacity", 0.6)
           .attr("stroke", "#7f8c8d")
           .attr("strokeWidth", 1.5)

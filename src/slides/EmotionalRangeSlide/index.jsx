@@ -190,8 +190,8 @@ export const EmotionalRangeSlide = () => {
       <div style={styles.rightCol}>
         <h1 style={styles.heading}>Emotional Range</h1>
         <p style={styles.body}>
-          Genuine human users express a far wider spectrum of emotions in their
-          posts, which range from deeply negative to highly positive. Bots, by
+          Genuine human users express a far more diversive spectrum of emotions in their
+          posts, which concentrates on either deeply negative or highly positive. Bots, by
           contrast, tend to cluster around neutral sentiment, rarely venturing
           into emotional extremes.
         </p>
