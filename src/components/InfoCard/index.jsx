@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import "../../App.css";
 
-export const InfoCard = ({ Icon, title, subtitle, text }) => {
+export const InfoCard = ({ Icon, title, subtitle, text, round=true }) => {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
   const hasAnimated = useRef(false);
@@ -24,7 +24,13 @@ export const InfoCard = ({ Icon, title, subtitle, text }) => {
 
             // apply easing
             const eased = 1 - Math.pow(1 - progress, 4); // eased dramatic :D
-            const value = Math.round(eased * title * 100) / 100;
+            let value;
+            if (round) {
+              value = Math.round(Math.round(eased * target * 100) / 100);
+            } else {
+              value = Math.round(eased * target * 100) / 100;
+            }
+            
 
             setCount(value);
 
@@ -42,7 +48,7 @@ export const InfoCard = ({ Icon, title, subtitle, text }) => {
     if (ref.current) observer.observe(ref.current);
 
     return () => observer.disconnect();
-  }, [title]);
+  }, [target]);
 
   return (
     <div

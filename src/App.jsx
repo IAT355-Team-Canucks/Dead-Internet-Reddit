@@ -26,71 +26,71 @@ const sections = [
     component: LandingSlide,
   },
   {
-    id: "_",
-    num: "",
-    label: "",
+    id: "background",
+    num: "01",
+    label: "What are Bots?",
     component: BackgroundSlide
   },
   {
-    id: "_",
-    num: "",
-    label: "",
+    id: "context",
+    num: "02",
+    label: "The Big Idea",
     component: ContextSlide
   },
   {
-    id: "_",
-    num: "",
-    label: "",
+    id: "impact",
+    num: "03",
+    label: "Bots on Reddit",
     component: ImpactSlide
   },
   {
     id: "dataset",
-    num: "01",
+    num: "04",
     label: "Dataset Overview",
     component: DatasetCompositionSlide,
   },
   {
     id: "emotion",
-    num: "02",
+    num: "05",
     label: "Emotional Range",
     component: EmotionalRangeSlide,
   },
   {
     id: "language",
-    num: "03",
+    num: "06",
     label: "Language Patterns",
     component: LanguagePatternSlide,
   },
   {
     id: "engagement",
-    num: "04",
+    num: "07",
     label: "Engagement Velocity",
     component: EngagementVelocitySlide,
   },
   {
     id: "distribution",
-    num: "05",
+    num: "08",
     label: "Post Distribution",
     component: PostDistributionSlide,
   },
   {
     id: "link",
-    num: "07",
+    num: "09",
     label: "Link Behaviour",
     component: LinkBehaviourSlide,
   },
   {
     id: "response",
-    num: "08",
+    num: "10",
     label: "Response Timing",
     component: ResponseTimingSlide,
   },
   {
     id: "conclusion",
-    num: "09",
+    num: "11",
     label: "Conclusion",
     component: ConclusionSlide,
-  },
+  }
   
   // {
   //   id: "demo",

@@ -132,7 +132,7 @@ export const DatasetCompositionSlide = () => {
                     })}
                     <HorizontalBarChart
                         height={300}
-                        title={"Dataset Composition: Bots vs Humans"}
+                        title={"Bots vs Humans"}
                         xLabel={"Number of Accounts"}
                         yLabel={"Are They A Bot?"}
                     />

@@ -155,14 +155,14 @@ export const LanguagePatternSlide = () => {
                         borderStyle: "dashed",
                         borderColor: "var(--human-colour)"
                     }}>
-                    <InfoCard Icon={HumanIcon} title={"5.049"} subtitle={"Average Characters Per Word"} text={"Conversational, natural Language"} />
+                    <InfoCard Icon={HumanIcon} title={"5.049"} subtitle={"Average Characters Per Word"} text={"Conversational, natural Language"} round={false} />
                     </div>
                 
                     <div style={{
                         borderStyle: "dashed",
                         borderColor: "var(--bot-colour)"
                     }}>
-                    <InfoCard Icon={BotIcon} title={"6.438"} subtitle={"Average Characters Per Word"} text={"Formal, calculated vocabulary"} />
+                    <InfoCard Icon={BotIcon} title={"6.438"} subtitle={"Average Characters Per Word"} text={"Formal, calculated vocabulary"} round={false}/>
                     </div>
                     {/* Bot card */}
                     
