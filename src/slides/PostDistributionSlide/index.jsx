@@ -12,7 +12,7 @@ export const PostDistributionSlide = () => {
     const [chartMode, setChartMode] = useState("bar");
     const [canAnimate, setCanAnimate] = useState(true)
     const [visible, setVisible] = useState(false);
-    const {xlg } = useViewport();
+    const {xlg, med } = useViewport();
 
     // Animation clear out
     useEffect(() => {
@@ -64,7 +64,7 @@ export const PostDistributionSlide = () => {
 
                 <div style={{
                     display: "grid",
-                    gridTemplateColumns: xlg ? "1fr 1fr" : "1fr",
+                    gridTemplateColumns: med ? "1fr 1fr" : "1fr",
                     gap: "2rem"
                 }}>
                     {/* Chart area  1 */}
@@ -85,7 +85,7 @@ export const PostDistributionSlide = () => {
                             opacity: visible ? 1 : 0.01,
                             transition: "opacity 0.6s 0.3s, background-color 0.2s",
                             userSelect: "none",
-                            order: xlg ? -1 : 1
+                            order: (xlg || med) ? -1 : 1
                         }}
                         onMouseEnter={e => e.currentTarget.style.backgroundColor = "rgba(196,98,45,0.04)"}
                         onMouseLeave={e => e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.01)"}

@@ -30,9 +30,9 @@ export function ViewportProvider({ children }) {
     <ViewportContext.Provider
       value={{
         width,
-        xlg: width >= 1200,
-        lg: width < 992,
-        med: width < 768,
+        xlg: width >= 1920,
+        lg: width >= 992,
+        med: width >= 768,
         sm: width < 600
       }}
     >

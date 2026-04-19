@@ -11,7 +11,7 @@ export const EmotionalRangeSlide = () => {
   const [insightVisible, setInsightVisible] = useState(false);
   const vizRef = useRef(null);
   const containerRef = useRef(null);
-  const { xlg } = useViewport();
+  const { xlg, med} = useViewport();
 
 
   // Trying out in file styling
@@ -19,7 +19,7 @@ export const EmotionalRangeSlide = () => {
     page: {
       minHeight: "100vh",
       display: "grid",
-      gridTemplateColumns: xlg ? "1fr 1fr" : "1fr",
+      gridTemplateColumns: med ? "1fr 1fr" : "1fr",
       fontFamily: "'Georgia', 'Times New Roman', serif",
       color: "#f5e6c8",
       paddingLeft: "3rem",

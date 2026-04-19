@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 
+
 function resolveSize(value, chartSize, fallback) {
   if (typeof value === "function") return value(chartSize);
   if (typeof value === "string" && value.endsWith("%")) {
@@ -54,6 +55,10 @@ export function AnnotationLayer(
     console.warn("AnnotationLayer requires chartWidth and chartHeight.");
     return;
   }
+
+  const xlg = chartWidth >= 1920;
+  const med = chartWidth >= 768;
+
 
   chart.selectAll(".annotation-layer").remove();
   chart.selectAll(".annotation-defs").remove();
@@ -329,7 +334,7 @@ export function AnnotationLayer(
         .attr("y", 0)
         .attr("fill", "#fff")
         .style("font-weight", "bold")
-        .style("font-size", `${titleSize * scaleFactor}px`)
+        .style("font-size", "clamp(0.75rem, 6.5vw, 1rem)")
         .text(a.note.title);
     }
 
@@ -339,7 +344,7 @@ export function AnnotationLayer(
         .attr("x", 0)
         .attr("y", 16 * scaleFactor)
         .attr("fill", "#fff")
-        .style("font-size", `${labelSize * scaleFactor}px`)
+        .style("font-size", "clamp(0.5rem, 6.5vw, 0.75rem)")
         .text(a.note.label);
     }
 

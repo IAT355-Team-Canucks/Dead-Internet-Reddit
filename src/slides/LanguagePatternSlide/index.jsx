@@ -32,7 +32,7 @@ export const LanguagePatternSlide = () => {
     const [chartMode, setChartMode] = useState("bar");
     const [canAnimate, setCanAnimate] = useState(true)
     const [visible, setVisible] = useState(false);
-    const {xlg} = useViewport()
+    const {xlg, med} = useViewport()
 
     // Animation clear out
     useEffect(() => {
@@ -153,7 +153,7 @@ export const LanguagePatternSlide = () => {
                 {/* Stat cards */}
                 <div style={{
                     display: "grid",
-                    gridTemplateColumns: xlg ? "1fr 1fr" : "1fr",
+                    gridTemplateColumns: med ? "1fr 1fr" : "1fr",
                     gap: "16px",
                     opacity: visible ? 1 : 0.01,
                     transform: visible ? "translateY(0)" : "translateY(16px)",

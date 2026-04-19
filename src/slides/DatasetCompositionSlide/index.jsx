@@ -32,7 +32,7 @@ const HumanIcon = () => {
 
 export const DatasetCompositionSlide = () => {
     const [chartMode, setChartMode] = useState("bar");
-    const { xlg, sm } = useViewport()
+    const { xlg, sm, med } = useViewport()
     const [visible, setVisible] = useState(false);
 
     // Animation clear out
@@ -141,7 +141,7 @@ export const DatasetCompositionSlide = () => {
                 {/* Stat cards */}
                 <div style={{
                     display: "grid",
-                    gridTemplateColumns: xlg ? "1fr 1fr" : "1fr",
+                    gridTemplateColumns: med ? "1fr 1fr" : "1fr",
                     gap: "16px",
                     opacity: visible ? 1 : 0.01,
                     transform: visible ? "translateY(0)" : "translateY(16px)",
