@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import "../../App.css";
+import { useViewport } from "../../context/ViewportContext";
 
 export const InfoCard = ({ Icon, title, subtitle, text, round=true }) => {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
   const hasAnimated = useRef(false);
+  const { xlg } = useViewport();
 
   // Guarding
   const target = Number(title) || 0;
@@ -70,7 +72,7 @@ export const InfoCard = ({ Icon, title, subtitle, text, round=true }) => {
       <div>
         <div
           style={{
-            fontSize: "52px",
+            fontSize: "clamp(36px, 5vw, 52px)",
             fontWeight: "800",
             color: "#EAC46A",
             lineHeight: 1,
@@ -83,7 +85,7 @@ export const InfoCard = ({ Icon, title, subtitle, text, round=true }) => {
 
         <div
           style={{
-            fontSize: "22px",
+            fontSize: "clamp(0.5rem, 6.5vw, 1rem)",
             letterSpacing: "2px",
             color: "#FAF3E0",
             marginTop: "4px",
@@ -95,7 +97,7 @@ export const InfoCard = ({ Icon, title, subtitle, text, round=true }) => {
 
         <div
           style={{
-            fontSize: "20px",
+            fontSize: "clamp(0.4rem, 6.5vw, 0.9rem)",
             color: "#EAC46A",
             marginTop: "3px",
             letterSpacing: "0.5px",

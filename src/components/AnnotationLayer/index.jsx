@@ -1,15 +1,33 @@
 import * as d3 from "d3";
 
-const resolveSize = (value, chartSize, fallback) => {
-    if (typeof value === "function") return value(chartSize);
-    if (typeof value === "string" && value.endsWith("%")) {
-      return (parseFloat(value) / 100) * chartSize;
-    }
-    if (typeof value === "number" && value > 0 && value <= 1) {
-      return value * chartSize; // treat 0–1 as ratio
-    }
-    return value ?? fallback;
-  };
+function resolveSize(value, chartSize, fallback) {
+  if (typeof value === "function") return value(chartSize);
+  if (typeof value === "string" && value.endsWith("%")) {
+    return (parseFloat(value) / 100) * chartSize;
+  }
+  if (typeof value === "number" && value > 0 && value <= 1) {
+    return value * chartSize;
+  }
+  return value ?? fallback;
+}
+
+function getScalePosition(scale, value, align = "center") {
+  if (value == null) return null;
+
+  const scaled = scale(value);
+  if (scaled == null || Number.isNaN(scaled)) return null;
+
+  // band scales: center/start/end support
+  if (typeof scale.bandwidth === "function") {
+    const bw = scale.bandwidth();
+
+    if (align === "start") return scaled;
+    if (align === "end") return scaled + bw;
+    return scaled + bw / 2; // default center
+  }
+
+  return scaled;
+}
 
 export function AnnotationLayer(
   chart,
@@ -17,7 +35,7 @@ export function AnnotationLayer(
   xScale,
   yScale,
   {
-    titleSize = 16,
+    titleSize = 18,
     labelSize = 12,
     scaleFactor = 1,
     chartWidth,
@@ -26,6 +44,9 @@ export function AnnotationLayer(
     highlightPadding = 8,
     duration = 1200,
     delayStep = 150,
+    defaultXAlign = "center",
+    defaultYAlign = "center",
+    animate = true,
   } = {}
 ) {
   if (!annotations?.length) return;
@@ -42,14 +63,11 @@ export function AnnotationLayer(
 
   const maskId = `annotation-mask-${Math.random().toString(36).slice(2, 9)}`;
 
-
-
   const mask = defs
     .append("mask")
     .attr("id", maskId)
     .attr("maskUnits", "userSpaceOnUse");
 
-  // White = keep overlay visible
   mask
     .append("rect")
     .attr("x", 0)
@@ -58,183 +76,251 @@ export function AnnotationLayer(
     .attr("height", chartHeight)
     .attr("fill", "white");
 
-  // Create animated cutout shapes in the mask
   const cutoutGroup = mask.append("g").attr("class", "annotation-cutouts");
 
-  annotations.forEach((a, i) => {
-    const x = xScale(a.xValue);
-    const y = yScale(a.yValue);
-    const startDelay = i * delayStep;
+  const preparedAnnotations = annotations
+    .map((a, i) => {
 
-    if (a.subjectShape === "circle") {
-      const finalR = ((a.radius ?? 5) + highlightPadding) * scaleFactor;
+      const x = getScalePosition(xScale, a.xValue, a.xAlign ?? defaultXAlign);
+      const y = getScalePosition(yScale, a.yValue, a.yAlign ?? defaultYAlign);
 
-      cutoutGroup
-        .append("circle")
-        .attr("cx", x)
-        .attr("cy", y)
-        .attr("r", 0)
-        .attr("fill", "black")
-        .transition()
-        .delay(startDelay)
-        .duration(duration)
-        .attr("r", finalR);
+      if (x == null || y == null) {
+        console.warn("Invalid annotation", {
+          annotation: a,
+          xValue: a.xValue,
+          yValue: a.yValue,
+          scaledX: x,
+          scaledY: y,
+          xDomain: typeof xScale.domain === "function" ? xScale.domain() : null,
+          yDomain: typeof yScale.domain === "function" ? yScale.domain() : null,
+        });
+        return null;
+      }
 
-    } else if (a.subjectShape === "box") {
-        const boxWidth =
+      const preferredDx = (a.dx ?? 40) * scaleFactor;
+      const preferredDy = (a.dy ?? -30) * scaleFactor;
+
+      // Flip label inward if it would overflow right edge
+      const shouldFlipX = x + preferredDx > chartWidth - 120;
+      const dx = shouldFlipX ? -Math.abs(preferredDx) : preferredDx;
+
+      // Push label upward if too close to bottom
+      const shouldFlipY = y + preferredDy > chartHeight - 40;
+      const dy = shouldFlipY ? -Math.abs(preferredDy) : preferredDy;
+
+      const boxWidth =
         resolveSize(a.boxWidth, chartWidth, 80) * scaleFactor;
-      
       const boxHeight =
         resolveSize(a.boxHeight, chartHeight, 50) * scaleFactor;
+      const radius =
+        resolveSize(a.radius, Math.min(chartWidth, chartHeight), 5) * scaleFactor;
 
-      // centered box
-      cutoutGroup
+      return {
+        ...a,
+        _index: i,
+        _x: x,
+        _y: y,
+        _dx: dx,
+        _dy: dy,
+        _boxWidth: boxWidth,
+        _boxHeight: boxHeight,
+        _radius: radius,
+      };
+    })
+    .filter(Boolean);
+
+  if (!preparedAnnotations.length) return;
+
+  // Animated cutouts
+  preparedAnnotations.forEach((a) => {
+    const startDelay = a._index * delayStep;
+
+    if (a.subjectShape === "circle") {
+      const finalR = a._radius + highlightPadding;
+
+      const circle = cutoutGroup
+        .append("circle")
+        .attr("cx", a._x)
+        .attr("cy", a._y)
+        .attr("r", animate ? 0 : finalR)
+        .attr("fill", "black");
+
+      if (animate) {
+        circle
+          .transition()
+          .delay(startDelay)
+          .duration(duration)
+          .attr("r", finalR);
+      }
+    } else if (a.subjectShape === "box") {
+      const finalX = a._x - a._boxWidth / 2 - highlightPadding;
+      const finalY = a._y - a._boxHeight / 2 - highlightPadding;
+      const finalW = a._boxWidth + highlightPadding * 2;
+      const finalH = a._boxHeight + highlightPadding * 2;
+
+      const rect = cutoutGroup
         .append("rect")
-        .attr("x", x)
-        .attr("y", y)
-        .attr("width", 0)
-        .attr("height", 0)
-        .attr("fill", "black")
-        .transition()
-        .delay(startDelay)
-        .duration(duration)
-        .attr("x", x - boxWidth / 2 - highlightPadding)
-        .attr("y", y - boxHeight / 2 - highlightPadding)
-        .attr("width", boxWidth + highlightPadding * 2)
-        .attr("height", boxHeight + highlightPadding * 2);
+        .attr("x", animate ? a._x : finalX)
+        .attr("y", animate ? a._y : finalY)
+        .attr("width", animate ? 0 : finalW)
+        .attr("height", animate ? 0 : finalH)
+        .attr("fill", "black");
+
+      if (animate) {
+        rect
+          .transition()
+          .delay(startDelay)
+          .duration(duration)
+          .attr("x", finalX)
+          .attr("y", finalY)
+          .attr("width", finalW)
+          .attr("height", finalH);
+      }
     }
   });
 
-  // Dark overlay fades in
-  if (annotations[0]?.focus) {
-    layer
-    .append("rect")
-    .attr("class", "annotation-dim-overlay")
-    .attr("x", 0)
-    .attr("y", 0)
-    .attr("width", chartWidth)
-    .attr("height", chartHeight)
-    .attr("fill", "black")
-    .attr("opacity", 0)
-    .attr("mask", `url(#${maskId})`)
-    .style("pointer-events", "none")
-    .transition()
-    .duration(400)
-    .attr("opacity", overlayOpacity);
+  if (preparedAnnotations[0]?.focus) {
+    const overlay = layer
+      .append("rect")
+      .attr("class", "annotation-dim-overlay")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", chartWidth)
+      .attr("height", chartHeight)
+      .attr("fill", "black")
+      .attr("opacity", animate ? 0 : overlayOpacity)
+      .attr("mask", `url(#${maskId})`)
+      .style("pointer-events", "none");
+
+    if (animate) {
+      overlay
+        .transition()
+        .duration(400)
+        .attr("opacity", overlayOpacity);
+    }
   }
 
-
-  // Draw annotations on top
-  annotations.forEach((a, i) => {
-    const x = xScale(a.xValue);
-    const y = yScale(a.yValue);
-
-    const dx = (a.dx ?? 40) * scaleFactor;
-    const dy = (a.dy ?? -30) * scaleFactor;
-
-    const startDelay = i * delayStep;
+  preparedAnnotations.forEach((a) => {
+    const startDelay = a._index * delayStep;
 
     const g = layer
       .append("g")
       .attr("class", "annotation")
-      .attr("transform", `translate(${x}, ${y})`);
+      .attr("transform", `translate(${a._x}, ${a._y})`);
 
-    let subject;
     let lineStartX = 0;
     let lineStartY = 0;
 
     if (a.subjectShape === "circle") {
-      const finalR = (a.radius ?? 5) * scaleFactor;
-      lineStartX = 0;
-      lineStartY = 0;
-
-      // soft glow
       g.append("circle")
-        .attr("r", 0)
+        .attr("r", animate ? 0 : a._radius + 4)
         .attr("fill", "white")
         .attr("opacity", 0.08)
-        .transition()
-        .delay(startDelay)
-        .duration(duration)
-        .attr("r", finalR + 4);
+        .call((sel) => {
+          if (animate) {
+            sel.transition()
+              .delay(startDelay)
+              .duration(duration)
+              .attr("r", a._radius + 4);
+          }
+        });
 
-      subject = g
-        .append("circle")
-        .attr("r", 0)
+      g.append("circle")
+        .attr("r", animate ? 0 : a._radius)
         .attr("fill", a.fill ?? "none")
-        .attr("opacity", a.opacity ?? 1)
+        .attr("opacity", 0.01)
         .attr("stroke", "#fff")
-        .attr("stroke-width", 1.5);
-
-      subject
-        .transition()
-        .delay(startDelay)
-        .duration(duration)
-        .attr("r", finalR);
-
+        .attr("stroke-width", 1.5)
+        .call((sel) => {
+          if (animate) {
+            sel.transition()
+              .delay(startDelay)
+              .duration(duration)
+              .attr("opacity", a.opacity ?? 1)
+              .attr("r", a._radius);
+          }
+        });
     } else if (a.subjectShape === "box") {
-        const boxWidth = resolveSize(a.boxWidth, chartWidth, 80) * scaleFactor;
-        const boxHeight = resolveSize(a.boxHeight, chartHeight, 50) * scaleFactor;
-
-      lineStartX = a.pointAt === "corner" ? -boxWidth / 2 : 0;
-      lineStartY = a.pointAt === "corner" ? -boxHeight / 2 : 0;
+      lineStartX = a.pointAt === "corner" ? -a._boxWidth / 2 : 0;
+      lineStartY = a.pointAt === "corner" ? -a._boxHeight / 2 : 0;
 
       g.append("rect")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("width", 0)
-        .attr("height", 0)
+        .attr(
+          "x",
+          animate ? 0 : -a._boxWidth / 2 - 4
+        )
+        .attr(
+          "y",
+          animate ? 0 : -a._boxHeight / 2 - 4
+        )
+        .attr("width", animate ? 0 : a._boxWidth + 8)
+        .attr("height", animate ? 0 : a._boxHeight + 8)
         .attr("fill", "white")
         .attr("opacity", 0.08)
-        .transition()
-        .delay(startDelay)
-        .duration(duration)
-        .attr("x", -boxWidth / 2 - 4)
-        .attr("y", -boxHeight / 2 - 4)
-        .attr("width", boxWidth + 8)
-        .attr("height", boxHeight + 8);
+        .call((sel) => {
+          if (animate) {
+            sel.transition()
+              .delay(startDelay)
+              .duration(duration)
+              .attr("x", -a._boxWidth / 2 - 4)
+              .attr("y", -a._boxHeight / 2 - 4)
+              .attr("width", a._boxWidth + 8)
+              .attr("height", a._boxHeight + 8);
+          }
+        });
 
-      subject = g
-        .append("rect")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("width", 0)
-        .attr("height", 0)
+      g.append("rect")
+        .attr("x", animate ? 0 : -a._boxWidth / 2)
+        .attr("y", animate ? 0 : -a._boxHeight / 2)
+        .attr("width", animate ? 0 : a._boxWidth)
+        .attr("height", animate ? 0 : a._boxHeight)
         .attr("fill", a.fill ?? "none")
         .attr("opacity", a.opacity ?? 1)
         .attr("stroke", "#fff")
-        .attr("stroke-width", 1.5);
-
-      subject
-        .transition()
-        .delay(startDelay)
-        .duration(duration)
-        .attr("x", -boxWidth / 2)
-        .attr("y", -boxHeight / 2)
-        .attr("width", boxWidth)
-        .attr("height", boxHeight);
+        .attr("stroke-width", 1.5)
+        .call((sel) => {
+          if (animate) {
+            sel.transition()
+              .delay(startDelay)
+              .duration(duration)
+              .attr("x", -a._boxWidth / 2)
+              .attr("y", -a._boxHeight / 2)
+              .attr("width", a._boxWidth)
+              .attr("height", a._boxHeight);
+          }
+        });
     }
 
     const line = g
       .append("line")
       .attr("x1", lineStartX)
       .attr("y1", lineStartY)
-      .attr("x2", lineStartX)
-      .attr("y2", lineStartY)
+      .attr("x2", animate ? lineStartX : a._dx)
+      .attr("y2", animate ? lineStartY : a._dy)
       .attr("stroke", "#fff")
       .attr("stroke-width", 1);
 
-    line
-      .transition()
-      .delay(startDelay + duration * 0.7)
-      .duration(duration)
-      .attr("x2", dx)
-      .attr("y2", dy);
+    if (animate) {
+      line
+        .transition()
+        .delay(startDelay + duration * 0.7)
+        .duration(duration)
+        .attr("x2", a._dx)
+        .attr("y2", a._dy);
+    }
+
+    const anchor = a._dx < 0 ? "end" : "start";
 
     const textGroup = g
       .append("g")
-      .attr("transform", `translate(${dx}, ${dy + 8})`)
-      .style("opacity", 0);
+      .attr(
+        "transform",
+        animate
+          ? `translate(${a._dx}, ${a._dy + 8})`
+          : `translate(${a._dx}, ${a._dy})`
+      )
+      .style("opacity", animate ? 0 : 1)
+      .attr("text-anchor", anchor);
 
     if (a.note?.title) {
       textGroup
@@ -257,11 +343,13 @@ export function AnnotationLayer(
         .text(a.note.label);
     }
 
-    textGroup
-      .transition()
-      .delay(startDelay + duration + 100)
-      .duration(400)
-      .attr("transform", `translate(${dx}, ${dy})`)
-      .style("opacity", 1);
+    if (animate) {
+      textGroup
+        .transition()
+        .delay(startDelay + duration + 100)
+        .duration(400)
+        .attr("transform", `translate(${a._dx}, ${a._dy})`)
+        .style("opacity", 1);
+    }
   });
 }

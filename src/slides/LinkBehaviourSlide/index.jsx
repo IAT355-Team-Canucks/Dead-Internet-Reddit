@@ -5,9 +5,57 @@ import { HorizontalStackedBarChart } from "../../components/HorizontalStackedBar
 import { useViewport } from "../../context/ViewportContext";
 
 export const LinkBehaviourSlide = () => {
-    const [chartMode, setChartMode] = useState("bar");
     const { xlg } = useViewport();
     const [visible, setVisible] = useState(false);
+    const [canAnimate, setCanAnimate] = useState(true)
+    const [annotationToggle, setAnnotationToggle] = useState(true)
+
+    const annotationsTable = [
+        {
+          xValue: 100,
+          yValue: "False",
+          subjectShape: "circle",
+          radius: 8,
+          dx: 60,
+          dy: 100,
+          note: {
+            title: "Humans Don't Post Links",
+            label: "Linking to other sites is often seen as promo/bot-behaviour by Redditors",
+          },
+        },
+        {
+            xValue: 310,
+            yValue: "False",
+            subjectShape: "circle",
+            radius: 8,
+            dx: -60,
+            dy: 100,
+            note: {
+              title: "Not All Bots",
+              label: "Some don the disguise of being human well.",
+            },
+          },
+      ]
+
+const [currentAnnotation, setCurrentAnnotation] = useState([
+        annotationsTable[0]
+      ]);
+
+      const handleClick = () => {
+        if (annotationToggle) {
+            setCurrentAnnotation([
+                annotationsTable[1]
+              ])
+        } else {
+            setCurrentAnnotation([
+                annotationsTable[0]
+              ])
+        }
+        setAnnotationToggle(!annotationToggle)
+        if (canAnimate) {
+            setCanAnimate(false); // flag for dot animations
+        }
+    }
 
     // Animation clear out
     useEffect(() => {
@@ -59,7 +107,7 @@ export const LinkBehaviourSlide = () => {
 
                 {/* Chart area */}
                 <div
-                    onClick={() => setChartMode(m => m === "pie" ? "bar" : "pie")}
+                    onClick={() => handleClick()}
                     style={{
                         border: "1.5px dashed #3D2810",
                         borderRadius: "4px",
@@ -109,8 +157,9 @@ export const LinkBehaviourSlide = () => {
                         xKey={"contains_links"}
                         title={"Posts That Contain Links"}
                         xLabel={"Number of Posts"}
-
                         yLabel={"Contains a Link?"}
+                        annotations={currentAnnotation}
+                        canAnimate={canAnimate}
                     />
 
                     {/* <div style={{ textAlign: "left" }}>

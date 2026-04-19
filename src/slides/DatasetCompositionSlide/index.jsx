@@ -154,14 +154,14 @@ export const DatasetCompositionSlide = () => {
                     }}>
                         <InfoCard Icon={HumanIcon} title={"282"} subtitle={"Human Accounts"} text={"56.4% of total dataset"} />
                     </div>
-
+ {/* Bot card */}
                     <div style={{
                         borderStyle: "dashed",
                         borderColor: "var(--bot-colour)"
                     }}>
                         <InfoCard Icon={BotIcon} title={"218"} subtitle={"Bot Accounts"} text={"43.6% of total dataset"} />
                     </div>
-                    {/* Bot card */}
+                   
 
                 </div>
             </main>

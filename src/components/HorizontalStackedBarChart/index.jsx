@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import * as d3 from "d3";
 import "../../App.css";
+import { AnnotationLayer } from "../AnnotationLayer";
 import { useViewport } from "../../context/ViewportContext";
 import { useCsvData } from "../../context/CsvDataContext";
 
@@ -11,13 +12,16 @@ export const HorizontalStackedBarChart = ({
   yKey = "is_bot_flag",
   xLabel = "Count",
   yLabel = "Category",
+  canAnimate,
+  annotations = [],
 }) => {
   const containerRef = useRef(null);
   const hasAnimatedRef = useRef(false);
 
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const [containerWidth, setContainerWidth] = useState(680);
-  const { data: rawData } = useCsvData();  
+
+  const { data: rawData } = useCsvData();
   const { xlg } = useViewport();
 
   // Watch container size
@@ -38,7 +42,7 @@ export const HorizontalStackedBarChart = ({
     return () => resizeObserver.disconnect();
   }, []);
 
-  // Observer for animation
+  // Trigger animation once when entering viewport
   useEffect(() => {
     if (!containerRef.current || hasAnimatedRef.current) return;
 
@@ -60,7 +64,7 @@ export const HorizontalStackedBarChart = ({
     return () => observer.disconnect();
   }, []);
 
-  // Preprocess once when data or keys change
+  // Preprocess data once
   const { stackedData, stackKeys } = useMemo(() => {
     if (!rawData.length) {
       return { stackedData: [], stackKeys: [] };
@@ -90,9 +94,8 @@ export const HorizontalStackedBarChart = ({
     return { stackedData, stackKeys };
   }, [rawData, xKey, yKey]);
 
-  // Draw chart on resize using cached data
   useEffect(() => {
-    if (!containerRef.current || !shouldAnimate || !stackedData.length || containerWidth <= 0) return;
+    if (!containerRef.current || !stackedData.length || containerWidth <= 0) return;
 
     const width = Math.max(containerWidth, 0);
     const margin = { top: 20, right: 30, bottom: 60, left: 100 };
@@ -156,56 +159,66 @@ export const HorizontalStackedBarChart = ({
       .attr("class", "layer")
       .attr("fill", (d) => color(d.key));
 
-    layer
-      .selectAll("rect")
+    const segments = layer
+      .selectAll("g.segment")
       .data((d) => d)
       .enter()
+      .append("g")
+      .attr("class", "segment");
+
+    const rects = segments
       .append("rect")
       .attr("y", (d) => y(d.data.category))
       .attr("x", (d) => Math.min(x(d[0]), x(d[1])))
-      .attr("height", y.bandwidth())
-      .attr("width", 0)
-      .transition()
-      .duration(1800)
-      .attr("width", (d) => Math.max(0, x(d[1]) - x(d[0])));
+      .attr("opacity", 0.01)
+      .attr("height", y.bandwidth());
 
-      const segments = layer
-  .selectAll("g.segment")
-  .data((d) => d)
-  .enter()
-  .append("g")
-  .attr("class", "segment");
+    // Animate only once, otherwise render at final width
+    if (canAnimate && shouldAnimate) {
+      rects.attr("width", 0)
+        .transition()
+        .duration(1800)
+        .attr("opacity", 1)
+        .attr("width", (d) => Math.max(0, x(d[1]) - x(d[0])));
+    } else {
+      if (!canAnimate) {
+        rects.attr("width", 0)
+        .attr("opacity", 1)
+        .attr("width", (d) => Math.max(0, x(d[1]) - x(d[0])));
+      }
+    }
 
-segments
-  .append("rect")
-  .attr("y", (d) => y(d.data.category))
-  .attr("x", (d) => Math.min(x(d[0]), x(d[1])))
-  .attr("height", y.bandwidth())
-  .attr("width", 0)
-  .transition()
-  .duration(1800)
-  .attr("width", (d) => Math.max(0, x(d[1]) - x(d[0])));
 
-segments
-  .append("text")
-  .attr("x", (d) => (x(d[0]) + x(d[1])) / 2)
-  .attr("y", (d) => (y(d.data.category) ?? 0) + y.bandwidth() / 2)
-  .attr("dy", "0.35em")
-  .attr("text-anchor", "middle")
-  .attr("fill", "#fff")
-  .style("font-size", xlg ? "24px" : "12px")
-  .style("font-weight", "700")
-  .style("pointer-events", "none")
-  .style("opacity", 0)
-  .text((d) => {
-    const value = d[1] - d[0];
-    return value > 0 ? value : "";
-  })
-  .filter((d) => x(d[1]) - x(d[0]) > 24) // only show if segment is wide enough
-  .transition()
-  .delay(1800)
-  .duration(300)
-  .style("opacity", 1);
+    const labels = segments
+      .append("text")
+      .attr("x", (d) => (x(d[0]) + x(d[1])) / 2)
+      .attr("y", (d) => (y(d.data.category) ?? 0) + y.bandwidth() / 2)
+      .attr("dy", "0.35em")
+      .attr("text-anchor", "middle")
+      .attr("fill", "#fff")
+      .attr("opacity", 0.01)
+      .style("font-size", xlg ? "24px" : "12px")
+      .style("font-weight", "700")
+      .style("pointer-events", "none")
+      .text((d) => {
+        const value = d[1] - d[0];
+        return value > 0 ? value : "";
+      })
+      .filter((d) => x(d[1]) - x(d[0]) > 24);
+
+    if (canAnimate && shouldAnimate) {
+      labels
+        .style("opacity", 0.01)
+        .transition()
+        .delay(1800)
+        .duration(300)
+        .style("opacity", 1);
+    } else {
+      if (!canAnimate) {
+        labels.style("opacity", 1);
+      }
+      
+    }
 
     chart
       .append("g")
@@ -234,7 +247,29 @@ segments
       .attr("y", -80)
       .attr("text-anchor", "middle")
       .text(yLabel);
-  }, [stackedData, stackKeys, containerWidth, height, xLabel, yLabel, shouldAnimate]);
+
+      if (shouldAnimate) {
+        AnnotationLayer(chart, annotations, x, y, {
+          titleSize: xlg ? 22 : 26,
+          labelSize: xlg ? 18 : 20,
+          scaleFactor: Math.max(0.6, Math.min(1, innerWidth / 700)),
+          chartWidth: innerWidth,
+          chartHeight: innerHeight,
+        });
+    
+      }
+
+  }, [
+    stackedData,
+    stackKeys,
+    annotations,
+    containerWidth,
+    height,
+    xLabel,
+    yLabel,
+    shouldAnimate,
+    xlg,
+  ]);
 
   return (
     <div

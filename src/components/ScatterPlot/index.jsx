@@ -29,6 +29,7 @@ export const ScatterPlot = ({
     height: height,
   });
 
+  // Reduce dotsize if mobile
   if (sm) {
     dotSize = 4;
 
@@ -166,13 +167,11 @@ export const ScatterPlot = ({
       .append("g")
       .attr("class", "myXaxis")
       .attr("transform", `translate(0, ${innerHeight})`)
-      .attr("opacity", 0)
       .call(xAxis);
 
     chart
       .append("g")
       .attr("class", "myYaxis")
-      .attr("opacity", 0)
       .call(yAxis);
 
     // Axis text styling
@@ -216,19 +215,15 @@ export const ScatterPlot = ({
 
     chart
       .select(".myXaxis")
-      .transition()
-      .duration(1200)
       .attr("opacity", 1)
       .call(xAxis);
 
     chart
       .select(".myYaxis")
-      .transition()
-      .duration(1200)
       .attr("opacity", 1)
       .call(yAxis);
 
-    // Re-apply axis styles after transition
+    // Re-apply axis styles after transition (removed transitions for now)
     chart.selectAll(".myXaxis text, .myYaxis text").attr("fill", "#fff");
     chart.selectAll(".myXaxis path, .myXaxis line, .myYaxis path, .myYaxis line")
       .attr("stroke", "#fff");
@@ -252,8 +247,8 @@ export const ScatterPlot = ({
       titleSize: xlg ? 22 : 26,
       labelSize: xlg ? 18 : 20,
       scaleFactor: Math.max(0.6, Math.min(1, innerWidth / 700)),
-      chartWidth: innerWidth,
-      chartHeight: innerHeight,
+      chartWidth: width,
+      chartHeight: height,
     });
 
   }, [

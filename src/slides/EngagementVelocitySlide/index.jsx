@@ -30,7 +30,6 @@ const HumanIcon = () => {
 }
 
 export const EngagementVelocitySlide = () => {
-    const [chartMode, setChartMode] = useState("bar");
     const [visible, setVisible] = useState(false);
     const [canAnimate, setCanAnimate] = useState(true)
     const [annotationToggle, setAnnotationToggle] = useState(true)

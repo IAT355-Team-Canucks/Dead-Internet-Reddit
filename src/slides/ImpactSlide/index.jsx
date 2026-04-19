@@ -142,8 +142,8 @@ export const ImpactSlide = () => {
           >
             <PieChart
               data={[
-                { label: "Spam/Bots", value: 3418633786 },
-                { label: "Authentic Posts", value: 2526816278 },
+                { label: "Bot Posts [66.5%]", value: 3418633786 },
+                { label: "Human Posts [33.5%]", value: 2526816278 },
               ]}
               width={600}
               height={600}
