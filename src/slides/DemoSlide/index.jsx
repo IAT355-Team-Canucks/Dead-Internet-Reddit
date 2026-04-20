@@ -7,6 +7,7 @@ import { ScatterPlot } from '../../components/ScatterPlot'
 import { RadarChart } from '../../components/RadarChart'
 import { HorizontalBoxPlot } from '../../components/HorizontalBoxPlot'
 import { VerticalBoxPlot } from '../../components/VerticalBoxPlot'
+import { HexbinPlot } from "../../components/HexbinPlot"
 
 export const DemoSlide = () => {
 
@@ -15,6 +16,26 @@ export const DemoSlide = () => {
             <section id="center">
                 <h1>Sample Components Board</h1>
                 <div>
+                <HexbinPlot
+                        title="Account Age vs Karma"
+                        xKey="account_age_days"
+                        yKey="user_karma"
+                        xLabel="Account Age"
+                        yLabel="User Karma"
+                        hexRadius={22}
+                        annotations={[]}
+                        canAnimate={true}
+                        />
+                    <HexbinPlot
+                        title="Word Length vs User Karma"
+                        xKey="avg_word_length"
+                        yKey="user_karma"
+                        xLabel="Average Word Length"
+                        yLabel="User Karma"
+                        hexRadius={14}
+                        annotations={[]}
+                        canAnimate={true}
+                        />
                     <ScatterPlot />
                     <VerticalBoxPlot />
                     <HorizontalBoxPlot />

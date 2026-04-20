@@ -42,7 +42,7 @@ export function AnnotationLayer(
     chartWidth,
     chartHeight,
     overlayOpacity = 0.35,
-    highlightPadding = 8,
+    highlightPadding = 0,
     duration = 1200,
     delayStep = 150,
     defaultXAlign = "center",
@@ -77,14 +77,15 @@ export function AnnotationLayer(
     .append("rect")
     .attr("x", 0)
     .attr("y", 0)
-    .attr("width", chartWidth)
-    .attr("height", chartHeight)
+    .attr("width", chartWidth * 1.25)
+    .attr("height", chartHeight * 1.25)
     .attr("fill", "white");
 
   const cutoutGroup = mask.append("g").attr("class", "annotation-cutouts");
 
   const preparedAnnotations = annotations
     .map((a, i) => {
+      if (!a) return;
 
       const x = getScalePosition(xScale, a.xValue, a.xAlign ?? defaultXAlign);
       const y = getScalePosition(yScale, a.yValue, a.yAlign ?? defaultYAlign);
