@@ -8,8 +8,8 @@ import { useViewport } from "../../context/ViewportContext";
 
 
 export const ResponseTimingSlide = () => {
-    const [chartMode, setChartMode] = useState("bar");
     const [visible, setVisible] = useState(false);
+    const [canAnimate, setCanAnimate] = useState(true)
     const { sm } = useViewport();
 
     // Animation clear out
@@ -17,6 +17,12 @@ export const ResponseTimingSlide = () => {
         const t = setTimeout(() => setVisible(true), 100);
         return () => clearTimeout(t);
     }, []);
+
+    useEffect(() => {
+        if (visible) {
+            setCanAnimate(false)
+        }
+    }, [visible])
 
 
     return (
@@ -122,7 +128,7 @@ export const ResponseTimingSlide = () => {
                                 }} />
                             );
                         })}
-                        <ScatterPlot dotSize={5} xKey={"reply_delay_seconds"} xLabel={"Average Response Time (in Seconds)"} />
+                        <ScatterPlot dotSize={5} xKey={"reply_delay_seconds"} xLabel={"Average Response Time (in Seconds)"} canAnimate={true}/>
 
 
 

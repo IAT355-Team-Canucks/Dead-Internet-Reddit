@@ -37,7 +37,7 @@ export const EngagementVelocitySlide = () => {
 
     const annotationsTable = [
                 {
-                  xValue: 1350,
+                  xValue: 1500,
                   yValue: 25000,
                   dx: 75,
                   dy: 100,
@@ -47,8 +47,8 @@ export const EngagementVelocitySlide = () => {
                     title: "Human Accounts Vary in Age & Karma",
                     label: "Little to no correlation",
                   },
-                  boxWidth: "80%",
-                  boxHeight: "100%",
+                  boxWidth: "90%",
+                  boxHeight: "80%",
                   pointAt: "center",
                   focus: true
                 },
@@ -64,7 +64,7 @@ export const EngagementVelocitySlide = () => {
                     label: "Bots tend to be New Accounts with High Engagement",
                   },
                   boxWidth: "3%",
-                  boxHeight: "100%",
+                  boxHeight: "90%",
                   pointAt: "center",
                   focus: true
                 },

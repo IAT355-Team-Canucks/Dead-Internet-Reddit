@@ -3,10 +3,7 @@ import * as d3 from "d3";
 
 export const PieChart = ({
     title = "",
-    data = [
-        { label: "Humans", value: 300 },
-        { label: "Bots", value: 200 },
-    ],
+    data,
     width = 600,
     height = 600,
     innerRadius = 0,
@@ -96,6 +93,9 @@ export const PieChart = ({
         slices
             .append("path")
             .attr("fill", (d) => color(d.data.label))
+            .style("opacity", (d) =>
+                d.data.label === "Human Posts [85%]" ? 0.35 : 1
+            )
             .attr("stroke", "none")
             .attr("stroke-width", 2)
             .transition()
@@ -119,11 +119,14 @@ export const PieChart = ({
             .style("fill", "#fff")
             .style("font-size", "1rem")
             .style("font-weight", "700")
+            
             .style("opacity", 0)
             .transition()
             .delay(1200)
             .duration(500)
-            .style("opacity", 1);
+            .style("opacity", (d) =>
+            d.data.label === "Human Posts [85%]" ? 0.5 : 1
+        )
     }, [data, width, height, innerRadius, shouldAnimate]);
 
     return (

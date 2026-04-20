@@ -12,7 +12,7 @@ export const VerticalBoxPlot = ({
   xKey = "sentiment_score",
   yKey = "bot_type_label",
   xLabel = "Category",
-  yLabel = "sentiment_score",
+  yLabel = "Sentiment Score",
 }) => {
   const containerRef = useRef(null);
   const hasAnimatedRef = useRef(false);
@@ -243,7 +243,7 @@ export const VerticalBoxPlot = ({
         .attr("r", 0)
         .attr("fill", (p) => color(+p[xKey]))
         .attr("stroke", "black")
-        .attr("strokeWidth", 0.5)
+        .attr("stroke-width", 0.5)
         .attr("opacity", 0.9)
         .transition()
         .duration(1200)
@@ -257,7 +257,7 @@ export const VerticalBoxPlot = ({
         .attr("y1", y(d.whiskerMin))
         .attr("y2", y(d.whiskerMax))
         .attr("stroke", "orange")
-        .attr("strokeWidth", 2);
+        .attr("stroke-width", 2);
 
       let boxColour = "var(--bot-colour)";
       if (d.category === "None (Human)") {
@@ -271,9 +271,9 @@ export const VerticalBoxPlot = ({
         .attr("width", boxWidth)
         .attr("height", 0)
         .attr("fill", boxColour)
-        .attr("fill-opacity", 0.6)
-        .attr("stroke", "#7f8c8d")
-        .attr("strokeWidth", 1.5)
+        .attr("fill-opacity", 0.90)
+        .attr("stroke", "orange")
+        .attr("stroke-width", 0)
         .transition()
         .duration(1000)
         .attr("height", y(d.q1) - y(d.q3));
@@ -285,7 +285,7 @@ export const VerticalBoxPlot = ({
         .attr("y1", y(d.median))
         .attr("y2", y(d.median))
         .attr("stroke", "orange")
-        .attr("strokeWidth", 3);
+        .attr("stroke-width", 10);
     });
   }, [
     processed,

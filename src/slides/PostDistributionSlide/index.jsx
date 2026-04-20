@@ -168,7 +168,7 @@ export const PostDistributionSlide = () => {
                                 }} />
                             );
                         })}
-                        <RadarChart />
+                        <RadarChart canAnimate={canAnimate}/>
 
                         <div style={{ textAlign: "left" }}>
                             <div style={{

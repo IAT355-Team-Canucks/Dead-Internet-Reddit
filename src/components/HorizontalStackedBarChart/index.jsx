@@ -248,6 +248,7 @@ export const HorizontalStackedBarChart = ({
       .attr("text-anchor", "middle")
       .text(yLabel);
 
+      // idr why I needed to wrap this when scatterplot didn't lord help me
       if (shouldAnimate) {
         AnnotationLayer(chart, annotations, x, y, {
           titleSize: xlg ? 22 : 26,

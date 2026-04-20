@@ -14,7 +14,7 @@ export const ImpactSlide = () => {
   }
 
   // Guarding
-  const target = 3418633786;
+  const target = 891817510;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -142,8 +142,8 @@ export const ImpactSlide = () => {
           >
             <PieChart
               data={[
-                { label: "Bot Posts [66.5%]", value: 3418633786 },
-                { label: "Human Posts [33.5%]", value: 2526816278 },
+                { label: "Bot Posts [15%]", value: target },
+                { label: "Human Posts [85%]", value: 5053632554 },
               ]}
               width={600}
               height={600}

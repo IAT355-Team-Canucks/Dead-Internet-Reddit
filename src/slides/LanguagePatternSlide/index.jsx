@@ -29,20 +29,77 @@ const HumanIcon = () => {
 }
 
 export const LanguagePatternSlide = () => {
-    const [chartMode, setChartMode] = useState("bar");
-    const [canAnimate, setCanAnimate] = useState(true)
-    const [visible, setVisible] = useState(false);
-    const {xlg, med} = useViewport()
+    const [canAnimate, setCanAnimate] = useState(true);
+const [visible, setVisible] = useState(false);
+const [annotationToggle, setAnnotationToggle] = useState(0);
 
-    // Animation clear out
-    useEffect(() => {
-        const t = setTimeout(() => setVisible(true), 100);
-        return () => clearTimeout(t);
-    }, []);
+const { xlg, med } = useViewport();
 
-    const handleClick = () => {
-        return;
-    }
+const annotationsTable = [
+  {
+    xValue: 4.75,
+    yValue: 25000,
+    dx: 75,
+    dy: 100,
+    type: "callout",
+    subjectShape: "box",
+    note: {
+      title: "Humans Keep it Simple",
+      label: "Human posts tend to use fewer characters per word on average.",
+    },
+    boxWidth: "40%",
+    boxHeight: "80%",
+    pointAt: "center",
+    focus: true,
+  },
+  {
+    xValue: 6.75,
+    yValue: 25000,
+    dx: -50,
+    dy: 100,
+    type: "callout",
+    subjectShape: "box",
+    note: {
+      title: "Bots Sound Smart?",
+      label: "Bots tend to use larger words on average in their posts.",
+    },
+    boxWidth: "40%",
+    boxHeight: "80%",
+    pointAt: "center",
+    focus: true,
+  },
+  {
+    xValue: 5.75,
+    yValue: 25000,
+    dx: 100,
+    dy: 100,
+    type: "callout",
+    subjectShape: "box",
+    note: {
+      title: "Overlap",
+      label: "There exists an overlap between humans and bots of ~5.75 words",
+    },
+    boxWidth: "15%",
+    boxHeight: "80%",
+    pointAt: "center",
+    focus: true,
+  },
+];
+
+const currentAnnotation = [annotationsTable[annotationToggle]];
+
+useEffect(() => {
+  const t = setTimeout(() => setVisible(true), 100);
+  return () => clearTimeout(t);
+}, []);
+
+const handleClick = () => {
+  setAnnotationToggle((prev) => (prev + 1) % annotationsTable.length);
+
+  if (canAnimate) {
+    setCanAnimate(false);
+  }
+};
 
 
     return (
@@ -138,6 +195,7 @@ export const LanguagePatternSlide = () => {
                                 yKey={"user_karma"}
                                 xLabel={"Average Word Length"}
                                 canAnimate={canAnimate}
+                                annotations={currentAnnotation}
                             />
 
                     {/* <div style={{ textAlign: "left" }}>
