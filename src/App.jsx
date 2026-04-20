@@ -77,7 +77,7 @@ const ConclusionSlide = lazy(() =>
 
 
 
-import { DemoSlide } from "./slides/DemoSlide";
+// import { DemoSlide } from "./slides/DemoSlide";
 
 const sections = [
   {
@@ -165,12 +165,12 @@ const sections = [
     hasChart: false
   },
 
-  {
-    id: "demo",
-    num: "XX",
-    label: "Demo Slides",
-    component: DemoSlide,
-  },
+  // {
+  //   id: "demo",
+  //   num: "XX",
+  //   label: "Demo Slides",
+  //   component: DemoSlide,
+  // },
 ];
 
 export default function App() {
