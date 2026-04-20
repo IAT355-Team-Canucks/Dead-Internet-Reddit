@@ -32,10 +32,26 @@ const HumanIcon = () => {
 export const EngagementVelocitySlide = () => {
     const [visible, setVisible] = useState(false);
     const [canAnimate, setCanAnimate] = useState(true)
-    const [annotationToggle, setAnnotationToggle] = useState(true)
+    const [annotationToggle, setAnnotationToggle] = useState(0)
     const { xlg } = useViewport();
 
     const annotationsTable = [
+        {
+            xValue: 0,
+            yValue: 0,
+            dx: 0,
+            dy: 0,
+            type: "callout",
+            subjectShape: "box",
+            note: {
+              title: "",
+              label: "",
+            },
+            boxWidth: "0%",
+            boxHeight: "0%",
+            pointAt: "center",
+            focus: false
+          },
                 {
                   xValue: 1500,
                   yValue: 25000,
@@ -70,10 +86,7 @@ export const EngagementVelocitySlide = () => {
                 },
               ]
 
-    const [currentAnnotation, setCurrentAnnotation] = useState([
-                annotationsTable[0]
-              ]);
-
+              const currentAnnotation = [annotationsTable[annotationToggle]];
     // Animation clear out
     useEffect(() => {
         const t = setTimeout(() => setVisible(true), 100);
@@ -81,20 +94,12 @@ export const EngagementVelocitySlide = () => {
     }, []);
 
     const handleClick = () => {
-        if (annotationToggle) {
-            setCurrentAnnotation([
-                annotationsTable[1]
-              ])
-        } else {
-            setCurrentAnnotation([
-                annotationsTable[0]
-              ])
-        }
-        setAnnotationToggle(!annotationToggle)
+        setAnnotationToggle((prev) => (prev + 1) % annotationsTable.length);
+      
         if (canAnimate) {
-            setCanAnimate(false); // flag for dot animations
+          setCanAnimate(false);
         }
-    }
+      };
 
 
     return (

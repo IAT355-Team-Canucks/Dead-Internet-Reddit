@@ -75,7 +75,9 @@ const ConclusionSlide = lazy(() =>
   }))
 );
 
-import { DemoSlide } from "./slides/DemoSlide";
+
+
+// import { DemoSlide } from "./slides/DemoSlide";
 
 const sections = [
   {
@@ -161,7 +163,7 @@ const sections = [
     label: "Conclusion",
     component: ConclusionSlide,
     hasChart: false
-  }
+  },
 
   // {
   //   id: "demo",

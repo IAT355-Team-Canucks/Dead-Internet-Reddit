@@ -36,6 +36,22 @@ const [annotationToggle, setAnnotationToggle] = useState(0);
 const { xlg, med } = useViewport();
 
 const annotationsTable = [
+    {
+        xValue: 0,
+        yValue: 0,
+        dx: 0,
+        dy: 0,
+        type: "callout",
+        subjectShape: "box",
+        note: {
+          title: "",
+          label: "",
+        },
+        boxWidth: "0%",
+        boxHeight: "0%",
+        pointAt: "center",
+        focus: false
+      },
   {
     xValue: 4.75,
     yValue: 25000,
