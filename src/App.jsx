@@ -33,6 +33,13 @@ const DatasetCompositionSlide = lazy(() =>
   }))
 );
 
+// const CategoryBreakdownSlide = lazy(() =>
+//   import("./slides/CategoryBreakdownSlide").then((m) => ({
+//     default: m.CategoryBreakdownSlide,
+//   }))
+// );
+
+
 const EmotionalRangeSlide = lazy(() =>
   import("./slides/EmotionalRangeSlide").then((m) => ({
     default: m.EmotionalRangeSlide,
@@ -115,6 +122,13 @@ const sections = [
     component: DatasetCompositionSlide,
     hasChart: true
   },
+  // {
+  //   id: "breakdown",
+  //   num: "05",
+  //   label: "Catgeory Breakdown",
+  //   component: CategoryBreakdownSlide,
+  //   hasChart: false
+  // },
   {
     id: "emotion",
     num: "05",
@@ -122,6 +136,7 @@ const sections = [
     component: EmotionalRangeSlide,
     hasChart: true
   },
+
   {
     id: "language",
     num: "06",

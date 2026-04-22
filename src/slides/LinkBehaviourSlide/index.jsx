@@ -3,12 +3,13 @@ import { InfoCard } from "../../components/InfoCard";
 import { useState, useEffect } from 'react';
 import { HorizontalStackedBarChart } from "../../components/HorizontalStackedBarChart";
 import { useViewport } from "../../context/ViewportContext";
+import { AnnotationNav } from "../../components/AnnotationNav";
 
 export const LinkBehaviourSlide = () => {
     const { xlg } = useViewport();
     const [visible, setVisible] = useState(false);
     const [canAnimate, setCanAnimate] = useState(true)
-    const [annotationToggle, setAnnotationToggle] = useState(true)
+    const [annotationToggle, setAnnotationToggle] = useState(0)
 
     const annotationsTable = [
         {
@@ -32,30 +33,34 @@ export const LinkBehaviourSlide = () => {
             dy: 100,
             note: {
               title: "Not All Bots",
-              label: "Some don the disguise of being human well.",
+              label: "Many bots don't include links in their posts.",
+            },
+          },
+          {
+            xValue: 100,
+            yValue: "True",
+            subjectShape: "circle",
+            radius: 8,
+            dx: 90,
+            dy: 40,
+            note: {
+              title: "But Usually a Bot",
+              label: "But bots are more likely than humans to contain a link in their posts.",
             },
           },
       ]
 
-const [currentAnnotation, setCurrentAnnotation] = useState([
-        annotationsTable[0]
-      ]);
+      const currentAnnotation = [annotationsTable[annotationToggle]];
 
-      const handleClick = () => {
-        if (annotationToggle) {
-            setCurrentAnnotation([
-                annotationsTable[1]
-              ])
-        } else {
-            setCurrentAnnotation([
-                annotationsTable[0]
-              ])
-        }
-        setAnnotationToggle(!annotationToggle)
+      const handleAnnotationChange = (newIndex) => {
+        setAnnotationToggle(newIndex);
+    
         if (canAnimate) {
-            setCanAnimate(false); // flag for dot animations
+          setCanAnimate(false);
         }
-    }
+      };
+    
+
 
     // Animation clear out
     useEffect(() => {
@@ -107,14 +112,13 @@ const [currentAnnotation, setCurrentAnnotation] = useState([
 
                 {/* Chart area */}
                 <div
-                    onClick={() => handleClick()}
                     style={{
                         border: "1.5px dashed #3D2810",
                         borderRadius: "4px",
                         padding: "40px",
                         marginBottom: "28px",
-                        cursor: "pointer",
                         display: "flex",
+                        flexDirection: "column",
                         alignItems: "center",
                         justifyContent: "center",
                         minHeight: "clamp(300px, 40vh, 620px)",
@@ -171,6 +175,21 @@ const [currentAnnotation, setCurrentAnnotation] = useState([
 
                         </div>
                     </div> */}
+                    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                    
+                    <AnnotationNav
+                            annotations={annotationsTable}
+                            currentIndex={annotationToggle}
+                            onChange={handleAnnotationChange}
+                        />
+                        {/* <button onClick={handleNext}>Cycle Annotation</button> */}
+    
+                        {/* <div style={{ color: "#fff" }}>
+                            <p>Current title: {currentAnnotation[0]?.note?.title}</p>
+                            <p>Current label: {currentAnnotation[0]?.note?.label}</p>
+                        </div> */}
+                        </div>
+    
 
                 </div>
                 <div style={{

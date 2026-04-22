@@ -88,6 +88,13 @@ export const ImpactSlide = () => {
               minWidth: 0, // important in flex layouts
             }}
           >
+            <p style={{
+              fontSize: "clamp(1.2rem, 6.25vw, 2rem)",
+              fontFamily: "'Georgia', serif",
+              marginBottom: "1rem"
+            }}>
+              6 Months (January → June 2025)
+            </p>
             <p
               style={{
                 fontSize: "clamp(0.5rem, 6.5vw, 1rem)",

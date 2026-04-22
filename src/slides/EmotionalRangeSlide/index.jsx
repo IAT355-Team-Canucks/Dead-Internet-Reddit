@@ -1,17 +1,71 @@
 import { useState, useEffect, useRef } from "react";
 
-import { VerticalBarChart } from "../../components/VerticalBarChart";
 import { VerticalBoxPlot } from "../../components/VerticalBoxPlot";
 import { useViewport } from "../../context/ViewportContext";
-
-const MAX_VAL = 80;
+import { AnnotationNav } from "../../components/AnnotationNav";
 
 export const EmotionalRangeSlide = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [insightVisible, setInsightVisible] = useState(false);
-  const vizRef = useRef(null);
-  const containerRef = useRef(null);
-  const { xlg, med} = useViewport();
+  const [annotationToggle, setAnnotationToggle] = useState(0);
+  const [canAnimate, setCanAnimate] = useState(true)
+
+  const { xlg, med } = useViewport();
+
+  const handleAnnotationChange = (newIndex) => {
+    setAnnotationToggle(newIndex);
+
+    if (canAnimate) {
+      setCanAnimate(false);
+    }
+  };
+
+  const annotationsTable = [
+    {
+      xValue: "Engagement Farmer",
+      yValue: 0.6,
+      dx: 0,
+      dy: 120,
+      subjectShape: "circle",
+      radius: "70",
+      pointAt: "center",
+      focus: true,
+      note: {
+        title: "Positive Bots?",
+        label: "Bot posts tend to appear more positive overall."
+      }
+    },
+    {
+      xValue: "None (Human)",
+      yValue: -0.5,
+      dx: -90,
+      dy: -40,
+      subjectShape: "circle",
+      radius: "70",
+      pointAt: "center",
+      focus: true,
+      note: {
+        title: "Human posts are more negative",
+        label: "We see that humans tends to create more negative posts."
+      }
+    },
+    {
+      xValue: "Reprint Bot",
+      yValue: 0.175,
+      dx: -100,
+      dy: -30,
+      subjectShape: "box",
+      boxWidth: "18%",
+      boxHeight: "10%",
+      pointAt: "center",
+      focus: true,
+      note: {
+        title: "Spreading Positivity...?",
+        label: "Repost Bots tend to favour reposting positive-feeling posts."
+      }
+    }
+  ];
+
+  const currentAnnotation = [annotationsTable[annotationToggle]];
 
 
   // Trying out in file styling
@@ -79,6 +133,16 @@ export const EmotionalRangeSlide = () => {
       textAlign: "left",
       maxWidth: "100%"
     },
+    subHeader: {
+      fontSize: "clamp(1rem, 6.5vw, 1.5rem)",
+      lineHeight: "1",
+      color: "#f5e6c8",
+      margin: 0,
+      marginBottom: "-0.4rem",
+      fontWeight: "700",
+      maxWidth: xlg ? "80%" : "100%",
+      textAlign: "left"
+    },
     body: {
       fontSize: "clamp(0.5rem, 6.5vw, 1rem)",
       lineHeight: "1.65",
@@ -120,14 +184,35 @@ export const EmotionalRangeSlide = () => {
     <div style={styles.page}>
       {/* LEFT: Visualization */}
       <div style={styles.vizWrapper}>
-        <VerticalBoxPlot title={"Emotional Range of Posters"} />
-
+        <VerticalBoxPlot 
+        title={"Emotional Range of Posters"} 
+        annotations={currentAnnotation}
+        canAnimate={canAnimate}
+        
+        />
+        <AnnotationNav
+          annotations={annotationsTable}
+          currentIndex={annotationToggle}
+          onChange={handleAnnotationChange}
+      />
       </div>
 
       {/* RIGHT: Text */}
       <div style={styles.rightCol}>
         <h1 style={styles.heading}>Emotional Range</h1>
+        <h2 style={styles.subHeader}>
+          What am I looking At?
+        </h2>
         <p style={styles.body}>
+        <span style={{color: "#fff", fontWeight: "700"}}>Sentiment Scores</span> represent how emotionally negative or positive the comment is perceived to be.
+          These are then categorized by what type of posters. Bots are defined as either an <span style={{color: "#fff", fontWeight: "700"}}> AI Summarizer, Engagement Farmer,
+          or a Reprint Bot </span>.
+        </p>
+        <h2 style={styles.subHeader}>
+          What's the Takeaway?
+        </h2>
+        <p style={styles.body}>
+          
           Genuine human users express a far more diversive spectrum of emotions in their
           posts, which concentrates on either deeply negative or highly positive. Bots, by
           contrast, tend to cluster around neutral sentiment, rarely venturing

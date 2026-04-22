@@ -75,7 +75,6 @@ export const PostDistributionSlide = () => {
                             borderRadius: "4px",
                             padding: "40px",
                             marginBottom: "28px",
-                            cursor: "pointer",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
