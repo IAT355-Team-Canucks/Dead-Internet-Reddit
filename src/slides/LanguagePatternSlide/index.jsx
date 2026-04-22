@@ -38,7 +38,7 @@ export const LanguagePatternSlide = () => {
 
     const annotationsTable = [
         {
-            xValue: 3.87,
+            xValue: 3.95,
             yValue: 25000,
             dx: 100,
             dy: 100,
@@ -48,14 +48,14 @@ export const LanguagePatternSlide = () => {
                 title: "User Karma",
                 label: "The total amount of 'likes' a user has across all their posts. This can be synonymous with engagement and visibility.",
             },
-            boxWidth: "2%",
-            boxHeight: "20%",
+            boxWidth: "7%",
+            boxHeight: "5%",
             pointAt: "center",
             focus: true
         },
         {
-            xValue: 5.75,
-            yValue: -3000,
+            xValue: 5.5,
+            yValue: -1000,
             dx: 0,
             dy: 100,
             type: "callout",
@@ -64,7 +64,7 @@ export const LanguagePatternSlide = () => {
                 title: "Average Word Length",
                 label: "The average amount of letters (characters) per word in a particular post.",
             },
-            boxWidth: "15%",
+            boxWidth: "7%",
             boxHeight: "5%",
             pointAt: "center",
             focus: true

@@ -46,7 +46,7 @@ export const EngagementVelocitySlide = () => {
 
     const annotationsTable = [
         {
-            xValue: -115,
+            xValue: -80,
             yValue: 25000,
             dx: 100,
             dy: 100,
@@ -56,14 +56,14 @@ export const EngagementVelocitySlide = () => {
                 title: "User Karma",
                 label: "The total amount of 'likes' a user has across all their posts. This can be synonymous with engagement and visibility.",
             },
-            boxWidth: "2%",
-            boxHeight: "20%",
+            boxWidth: "7%",
+            boxHeight: "5%",
             pointAt: "center",
             focus: true
         },
         {
-            xValue: 1500,
-            yValue: -3200,
+            xValue: 1400,
+            yValue: -1000,
             dx: 100,
             dy: 100,
             type: "callout",
@@ -72,7 +72,7 @@ export const EngagementVelocitySlide = () => {
                 title: "Account Age Days",
                 label: "The number of days the account has existed for.",
             },
-            boxWidth: "11%",
+            boxWidth: "7%",
             boxHeight: "4%",
             pointAt: "center",
             focus: true
