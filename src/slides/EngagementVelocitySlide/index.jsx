@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { ScatterPlot } from "../../components/ScatterPlot";
 
 import { useViewport } from "../../context/ViewportContext";
+import { AnnotationNav } from "../../components/AnnotationNav";
 
 const BotIcon = () => {
     return (
@@ -35,23 +36,47 @@ export const EngagementVelocitySlide = () => {
     const [annotationToggle, setAnnotationToggle] = useState(0)
     const { xlg } = useViewport();
 
+    const handleAnnotationChange = (newIndex) => {
+        setAnnotationToggle(newIndex);
+    
+        if (canAnimate) {
+          setCanAnimate(false);
+        }
+      };
+
     const annotationsTable = [
         {
-            xValue: 0,
-            yValue: 0,
-            dx: 0,
-            dy: 0,
+            xValue: -80,
+            yValue: 25000,
+            dx: 100,
+            dy: 100,
             type: "callout",
             subjectShape: "box",
             note: {
-              title: "",
-              label: "",
+                title: "User Karma",
+                label: "The total amount of 'likes' a user has across all their posts. This can be synonymous with engagement and visibility.",
             },
-            boxWidth: "0%",
-            boxHeight: "0%",
+            boxWidth: "7%",
+            boxHeight: "5%",
             pointAt: "center",
-            focus: false
-          },
+            focus: true
+        },
+        {
+            xValue: 1400,
+            yValue: -1000,
+            dx: 100,
+            dy: 100,
+            type: "callout",
+            subjectShape: "box",
+            note: {
+                title: "Account Age Days",
+                label: "The number of days the account has existed for.",
+            },
+            boxWidth: "7%",
+            boxHeight: "4%",
+            pointAt: "center",
+            focus: true
+        },
                 {
                   xValue: 1500,
                   yValue: 25000,
@@ -145,14 +170,13 @@ One of the most noticeable patterns is how quickly bot accounts rack up karma, e
 
                 {/* Chart area */}
                 <div
-                    onClick={() => handleClick()}
                     style={{
                         border: "1.5px dashed #3D2810",
                         borderRadius: "4px",
                         padding: "40px",
                         marginBottom: "28px",
-                        cursor: "pointer",
                         display: "flex",
+                        flexDirection: "column",
                         alignItems: "center",
                         justifyContent: "center",
                         minHeight: "clamp(300px, 40vh, 620px)",
@@ -206,7 +230,22 @@ One of the most noticeable patterns is how quickly bot accounts rack up karma, e
                         
                         </div>
                     </div> */}
+                                    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                    
+                    <AnnotationNav
+                            annotations={annotationsTable}
+                            currentIndex={annotationToggle}
+                            onChange={handleAnnotationChange}
+                        />
+                        {/* <button onClick={handleNext}>Cycle Annotation</button> */}
+    
+                        {/* <div style={{ color: "#fff" }}>
+                            <p>Current title: {currentAnnotation[0]?.note?.title}</p>
+                            <p>Current label: {currentAnnotation[0]?.note?.label}</p>
+                        </div> */}
+                        </div>
                 </div>
+
 
                 {/* Anomaly */}
                 <div style={{

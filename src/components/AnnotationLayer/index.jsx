@@ -58,6 +58,7 @@ export function AnnotationLayer(
 
   const xlg = chartWidth >= 1920;
   const med = chartWidth >= 768;
+  const titlePadding = 5;
 
 
   chart.selectAll(".annotation-layer").remove();
@@ -185,7 +186,7 @@ export function AnnotationLayer(
     }
   });
 
-  if (preparedAnnotations[0]?.focus) {
+  if (preparedAnnotations.some((a) => a.focus)) {
     const overlay = layer
       .append("rect")
       .attr("class", "annotation-dim-overlay")
@@ -318,36 +319,58 @@ export function AnnotationLayer(
     const anchor = a._dx < 0 ? "end" : "start";
 
     const textGroup = g
-      .append("g")
-      .attr(
-        "transform",
-        animate
-          ? `translate(${a._dx}, ${a._dy + 8})`
-          : `translate(${a._dx}, ${a._dy})`
-      )
-      .style("opacity", animate ? 0 : 1)
-      .attr("text-anchor", anchor);
+  .append("g")
+  .attr(
+    "transform",
+    animate
+      ? `translate(${a._dx}, ${a._dy + 8})`
+      : `translate(${a._dx}, ${a._dy})`
+  )
+  .style("opacity", animate ? 0 : 1)
+  .attr("text-anchor", anchor);
 
-    if (a.note?.title) {
-      textGroup
-        .append("text")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("fill", "#fff")
-        .style("font-weight", "bold")
-        .style("font-size", "clamp(0.75rem, 6.5vw, 1rem)")
-        .text(a.note.title);
-    }
+const textContent = textGroup.append("g");
 
-    if (a.note?.label) {
-      textGroup
-        .append("text")
-        .attr("x", 0)
-        .attr("y", 16 * scaleFactor)
-        .attr("fill", "#fff")
-        .style("font-size", "clamp(0.5rem, 6.5vw, 0.75rem)")
-        .text(a.note.label);
-    }
+// --- TITLE ---
+if (a.note?.title) {
+  textContent
+    .append("text")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("fill", "#fff")
+    .style("font-weight", "bold")
+    .style("font-family", "'Georgia', serif")
+    .style("font-size", "clamp(0.75rem, 6.5vw, 1rem)")
+    .text(a.note.title);
+}
+
+// --- LABEL ---
+if (a.note?.label) {
+  textContent
+    .append("text")
+    .attr("x", 0)
+    .attr("y", 16 * scaleFactor + titlePadding)
+    .attr("fill", "#fff")
+    .style("font-family", "'Georgia', serif")
+    .style("font-size", "clamp(0.5rem, 6.5vw, 0.75rem)")
+    .text(a.note.label);
+}
+
+// AFTER text is rendered, add background box
+const bbox = textContent.node().getBBox();
+
+const padding = 16;
+
+textGroup
+  .insert("rect", ":first-child")
+  .attr("x", bbox.x - padding)
+  .attr("y", bbox.y - padding)
+  .attr("width", bbox.width + padding * 2)
+  .attr("height", bbox.height + padding * 2)
+  .attr("stroke-width", "0.2em")
+  .attr("stroke", "#D97757")
+  .attr("fill", "rgba(0,0,0,0.75)")
+  .attr("rx", 4); // rounded corners
 
     if (animate) {
       textGroup

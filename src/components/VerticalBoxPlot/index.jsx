@@ -3,26 +3,29 @@ import * as d3 from "d3";
 import "../../App.css";
 import { useViewport } from "../../context/ViewportContext";
 import { useCsvData } from "../../context/CsvDataContext";
+import { AnnotationLayer } from "../AnnotationLayer";
 
 export const VerticalBoxPlot = ({
   title = "Box Plot Component",
-  heightRatio = 0.7, // height = containerWidth * heightRatio
+  heightRatio = 0.7,
   minHeight = 870,
   maxHeight = 950,
   xKey = "sentiment_score",
   yKey = "bot_type_label",
   xLabel = "Category",
   yLabel = "Sentiment Score",
+  annotations = [],
+  canAnimate = true,
 }) => {
   const containerRef = useRef(null);
   const hasAnimatedRef = useRef(false);
-  const { xlg } = useViewport();
-  const { data: rawData } = useCsvData();  
+  const { xlg, sm } = useViewport();
+  const { data: rawData } = useCsvData();
+
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const [containerWidth, setContainerWidth] = useState(900);
   const [chartHeight, setChartHeight] = useState(600);
 
-  // Watch container size and derive width + height from it
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -47,7 +50,6 @@ export const VerticalBoxPlot = ({
     return () => resizeObserver.disconnect();
   }, [heightRatio, minHeight, maxHeight]);
 
-  // Observer for animation
   useEffect(() => {
     if (!containerRef.current || hasAnimatedRef.current) return;
 
@@ -69,7 +71,6 @@ export const VerticalBoxPlot = ({
     return () => observer.disconnect();
   }, []);
 
-  // Preprocess once
   const processed = useMemo(() => {
     if (!rawData.length) {
       return { filtered: [], categories: [], stats: [], xExtent: [0, 1] };
@@ -144,12 +145,9 @@ export const VerticalBoxPlot = ({
     const innerWidth = Math.max(0, width - margin.left - margin.right);
     const innerHeight = Math.max(0, height - margin.top - margin.bottom);
 
-    if (innerWidth === 0 || innerHeight === 0) {
-      d3.select(containerRef.current).select("svg").remove();
-      return;
-    }
-
     d3.select(containerRef.current).select("svg").remove();
+
+    if (innerWidth === 0 || innerHeight === 0) return;
 
     const svg = d3
       .select(containerRef.current)
@@ -213,6 +211,7 @@ export const VerticalBoxPlot = ({
       .attr("y", innerHeight + (width < 600 ? 70 : 50))
       .attr("fill", "white")
       .attr("text-anchor", "middle")
+      .style("font-size", width < 640 ? "12px" : "14px")
       .text(xLabel);
 
     chart
@@ -222,33 +221,45 @@ export const VerticalBoxPlot = ({
       .attr("y", width < 600 ? -50 : -80)
       .attr("fill", "white")
       .attr("text-anchor", "middle")
+      .style("font-size", width < 640 ? "12px" : "14px")
       .text(yLabel);
 
     stats.forEach((d) => {
       const xPos = x(d.category);
+      if (xPos == null) return;
+
       const centerX = xPos + x.bandwidth() / 2;
       const boxWidth = x.bandwidth() * 0.75;
       const jitterAmount = boxWidth * 0.85;
 
-      chart
+      const dots = chart
         .selectAll(`.dot-${CSS.escape(d.category)}`)
         .data(d.values)
         .enter()
         .append("circle")
-        .attr("cx", (_, i) => {
+        .attr("cx", canAnimate ? centerX : (_, i) => {
           const t = Math.sin((i + 1) * 999);
           return centerX + t * (jitterAmount / 2);
         })
-        .attr("cy", (p) => y(+p[xKey]))
-        .attr("r", 0)
+        .attr("cy", canAnimate ? innerHeight : (p) => y(+p[xKey]))
+        .attr("r", canAnimate ? 0 : width < 600 ? 3.5 : 6)
         .attr("fill", (p) => color(+p[xKey]))
         .attr("stroke", "black")
         .attr("stroke-width", 0.5)
-        .attr("opacity", 0.9)
-        .transition()
-        .duration(1200)
-        .delay((_, i) => i * 8)
-        .attr("r", width < 600 ? 3.5 : 6);
+        .attr("opacity", 0.9);
+
+      if (canAnimate) {
+        dots
+          .transition()
+          .duration(1200)
+          .delay((_, i) => i * 8)
+          .attr("cx", (_, i) => {
+            const t = Math.sin((i + 1) * 999);
+            return centerX + t * (jitterAmount / 2);
+          })
+          .attr("cy", (p) => y(+p[xKey]))
+          .attr("r", width < 600 ? 3.5 : 6);
+      }
 
       chart
         .append("line")
@@ -264,19 +275,23 @@ export const VerticalBoxPlot = ({
         boxColour = "var(--human-colour)";
       }
 
-      chart
+      const rect = chart
         .append("rect")
         .attr("x", centerX - boxWidth / 2)
         .attr("y", y(d.q3))
         .attr("width", boxWidth)
-        .attr("height", 0)
+        .attr("height", canAnimate ? 0 : y(d.q1) - y(d.q3))
         .attr("fill", boxColour)
-        .attr("fill-opacity", 0.90)
+        .attr("fill-opacity", 0.9)
         .attr("stroke", "orange")
-        .attr("stroke-width", 0)
-        .transition()
-        .duration(1000)
-        .attr("height", y(d.q1) - y(d.q3));
+        .attr("stroke-width", 0);
+
+      if (canAnimate) {
+        rect
+          .transition()
+          .duration(1000)
+          .attr("height", y(d.q1) - y(d.q3));
+      }
 
       chart
         .append("line")
@@ -287,6 +302,16 @@ export const VerticalBoxPlot = ({
         .attr("stroke", "orange")
         .attr("stroke-width", 10);
     });
+
+    AnnotationLayer(chart, annotations, x, y, {
+      titleSize: xlg ? 22 : 18,
+      labelSize: xlg ? 18 : 14,
+      scaleFactor: Math.max(0.6, Math.min(1, innerWidth / 700)),
+      chartWidth: innerWidth,
+      chartHeight: innerHeight,
+      defaultXAlign: "center",
+      defaultYAlign: "center",
+    });
   }, [
     processed,
     containerWidth,
@@ -294,6 +319,11 @@ export const VerticalBoxPlot = ({
     shouldAnimate,
     xLabel,
     yLabel,
+    annotations,
+    canAnimate,
+    xlg,
+    sm,
+    xKey,
   ]);
 
   return (
