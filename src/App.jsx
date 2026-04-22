@@ -122,40 +122,32 @@ const sections = [
     component: DatasetCompositionSlide,
     hasChart: true
   },
-  // {
-  //   id: "breakdown",
-  //   num: "05",
-  //   label: "Catgeory Breakdown",
-  //   component: CategoryBreakdownSlide,
-  //   hasChart: false
-  // },
+  {
+    id: "distribution",
+    num: "05",
+    label: "Post Distribution",
+    component: PostDistributionSlide,
+    hasChart: true
+  },
   {
     id: "emotion",
-    num: "05",
+    num: "06",
     label: "Emotional Range",
     component: EmotionalRangeSlide,
     hasChart: true
   },
-
   {
     id: "language",
-    num: "06",
+    num: "07",
     label: "Language Patterns",
     component: LanguagePatternSlide,
     hasChart: true
   },
   {
     id: "engagement",
-    num: "07",
+    num: "08",
     label: "Engagement Velocity",
     component: EngagementVelocitySlide,
-    hasChart: true
-  },
-  {
-    id: "distribution",
-    num: "08",
-    label: "Post Distribution",
-    component: PostDistributionSlide,
     hasChart: true
   },
   {
@@ -179,13 +171,6 @@ const sections = [
     component: ConclusionSlide,
     hasChart: false
   },
-
-  // {
-  //   id: "demo",
-  //   num: "XX",
-  //   label: "Demo Slides",
-  //   component: DemoSlide,
-  // },
 ];
 
 export default function App() {
