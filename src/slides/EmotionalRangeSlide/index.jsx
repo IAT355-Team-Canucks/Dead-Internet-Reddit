@@ -213,19 +213,13 @@ export const EmotionalRangeSlide = () => {
         </h2>
         <p style={styles.body}>
           
-          Genuine human users express a far more diversive spectrum of emotions in their
-          posts, which concentrates on either deeply negative or highly positive. Bots, by
-          contrast, tend to cluster around neutral sentiment, rarely venturing
-          into emotional extremes.
+        We observe clear differences in emotional behavior across users and bot types. Human posts exhibit the most extreme emotions, with a dense concentration at both the highest (+1.0) and lowest (−1.0) sentiment values, and are the only group with a slightly negative average overall.
         </p>
         <div style={styles.spacer} />
         <div style={styles.insightBox}>
           <div style={styles.insightLabel}>KEY INSIGHT</div>
           <p style={styles.insightText}>
-            The diversity in human emotional expression serves as a crucial
-            differentiator. Bots maintain calculated neutrality, avoiding the
-            emotional peaks and valleys that characterize authentic human
-            interaction.
+          In contrast, reprint bots skew positively, suggesting they prioritize uplifting or viral content. Engagement farming bots display the widest emotional spread, likely using both positive and negative extremes to drive interaction. Meanwhile, AI summarizers remain the most neutral, with sentiment centered near zero and fewer extreme values, aligning with their goal of producing balanced, informational content.
           </p>
         </div>
       </div>
