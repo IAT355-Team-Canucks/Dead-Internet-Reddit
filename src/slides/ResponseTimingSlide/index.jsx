@@ -54,7 +54,7 @@ export const ResponseTimingSlide = () => {
                         fontFamily: "'Georgia', serif",
                     }}>
                         Response Timing
-                        & Sentiment
+                        & Engagement
                     </h1>
                     <p style={{
                         textAlign: "left",
@@ -66,7 +66,7 @@ export const ResponseTimingSlide = () => {
                         letterSpacing: "0.2px",
                     }}>
 
-                        Sentiment doesn’t show a clear pattern on its own. But when paired with reply timing, a stronger difference appears.
+                        An interesting pattern emerges when we observe bots' response times.
                     </p>
                     <p style={{
                         textAlign: "left",
@@ -77,7 +77,7 @@ export const ResponseTimingSlide = () => {
                         margin: "0 0 40px 0",
                         letterSpacing: "0.2px",
                     }}>
-                        Bots cluster at near-instant reply times, responding almost immediately. Human users, on the other hand, are more spread out, taking longer and more varied amounts of time to respond.
+                        Bots cluster at near-instant reply times, regardless of their karma, responding almost immediately. Human users, on the other hand, are more spread out, taking longer and more varied amounts of time to respond.
                     </p>
                 </div>
 
@@ -140,7 +140,7 @@ export const ResponseTimingSlide = () => {
                             fontSize: "clamp(0.5rem, 6.5vw, 1rem)",
                             lineHeight: 1.35
                         }}>
-                            So sentiment varies for both groups, but timing makes the difference clearer. Bots respond quickly and consistently, while humans are slower and less predictable.
+                            So while karma/engagement varies for both groups, but timing makes the difference clearer. Bots respond quickly and consistently, while humans are slower and less predictable.
                         </p>
                     </div>
                 </div>

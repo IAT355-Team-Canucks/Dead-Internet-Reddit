@@ -58,6 +58,7 @@ export function AnnotationLayer(
 
   const xlg = chartWidth >= 1920;
   const med = chartWidth >= 768;
+  const titlePadding = 5;
 
 
   chart.selectAll(".annotation-layer").remove();
@@ -348,7 +349,7 @@ if (a.note?.label) {
   textContent
     .append("text")
     .attr("x", 0)
-    .attr("y", 16 * scaleFactor)
+    .attr("y", 16 * scaleFactor + titlePadding)
     .attr("fill", "#fff")
     .style("font-family", "'Georgia', serif")
     .style("font-size", "clamp(0.5rem, 6.5vw, 0.75rem)")
